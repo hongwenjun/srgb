@@ -1,0 +1,32 @@
+Code::Blocks 学习助手 使用说明
+
+CBStudy.exe 和 CBStudy.ini
+放到 Code::Blocks 目录，请和 codeblocks.exe  (不是必须)
+
+
+gcc目录 是MinGW_GCC本地语言支持，请放到C:盘，确保以下路径存在
+C:\gcc\share\locale\zh_CN\LC_MESSAGES\gcc.mo
+请确保是下面地址下载的 支持启用本地语言支持的mingw gcc
+
+
+vc目录 是VC2010编译器本地语言支持，请放到VC编译器中，参考路径
+D:\codeblocks\build\vc\bin\2052\clui.dll
+
+
+怎样把 CBStudy.exe 添加到 Code::Blocks 工具菜单中：
+1. 开启Code::Blocks，菜单选到工具，添加
+2. 编辑工具对话框中，名称填写“Code::Blocks 学习助手”
+   可执行文件填写  $(CODEBLOCKS)\CBStudy.exe
+   工作目录填写    $(CODEBLOCKS)
+   启动选项选 “启动显示链接的工具(无输出重定向)”
+3. 完成后，就可以在CB菜单中使用本工具了
+
+------------------------------------------------------------------
+CBStudy_src   源代码
+
+GCC 编译器路径 ,推荐使用启用本地语言支持的mingw gcc
+下载地址：http://pcxprj.googlecode.com/files/MinGW_gcc4.5.3.20110310_with_nls.7z
+先运行install_with_nls.bat批处理，作用是把share文件夹复制到C:\gcc下,因为MinGW_GCC的语言包使用绝对路径简单点
+
+这个GCC 没有附带GDB，推荐下载
+http://code.google.com/p/qp-gcc/wiki/GDB 下载的 GDB 可以支持调试的时候显示中文字符
