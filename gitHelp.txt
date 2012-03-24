@@ -1,0 +1,8 @@
+https://code.google.com/hosting/settings
+
+git add .
+git git commit -m "提交信息"
+git push https://hongwenjun@code.google.com/p/srgb/
+
+git clone https://hongwenjun@code.google.com/p/srgb/
+git clone https://code.google.com/p/srgb/
