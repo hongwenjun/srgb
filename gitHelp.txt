@@ -1,8 +1,17 @@
 https://code.google.com/hosting/settings
 
-git add .
-git git commit -m "提交信息"
-git push https://hongwenjun@code.google.com/p/srgb/
+git add .        添加全部
+git git commit -m "Msg"
+
+git push https://hongwenjun:密码@code.google.com/p/srgb/ master
 
 git clone https://hongwenjun@code.google.com/p/srgb/
 git clone https://code.google.com/p/srgb/
+
+==================================================================================
+$ git status
+#       modified:   gitHelp.txt   (红色警告文件没有缓存)
+
+$ git add gitHelp.txt
+$ git status
+#       modified:   gitHelp.txt  (使用git add后，再git status显示绿色已经缓存)
