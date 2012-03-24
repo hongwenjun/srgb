@@ -9,58 +9,58 @@
 #include <cctype>
 
 using namespace std;
-void help(); // µ÷ÓÃÊ¹ÓÃ°ïÖú
-bool blank_lines(const string& str); // ¼ì²â¿ÕĞĞ
-string& find_replace(string& str_line, const string& str1 , const string& str2); // ²éÕÒÌæ»»×Ö·û´Ü
-string& Chinese_Punctuation_Conver_English(string& str_line); // ÖĞÎÄ±êµã·ûºÅÎªÓ¢ÎÄ
+void help(); // è°ƒç”¨ä½¿ç”¨å¸®åŠ©
+bool blank_lines(const string& str); // æ£€æµ‹ç©ºè¡Œ
+string& find_replace(string& str_line, const string& str1 , const string& str2); // æŸ¥æ‰¾æ›¿æ¢å­—ç¬¦çªœ
+string& Chinese_Punctuation_Conver_English(string& str_line); // ä¸­æ–‡æ ‡ç‚¹ç¬¦å·ä¸ºè‹±æ–‡
 
 int main(int argc, char* argv[])
 {
-    if ((1 == argc)) {    //´íÎóÊäÈë´¦Àí
+    if ((1 == argc)) {    //é”™è¯¯è¾“å…¥å¤„ç†
         help();
         return -1;
     }
     ifstream infile(argv[1]);
     if (!infile.good()) {
-        printf("ÎÄ¼ş´íÎó£º²»ÄÜ´ò¿ªÊäÈëÎÄ¼ş: %s \n\a\n", argv[1]);
+        printf("æ–‡ä»¶é”™è¯¯ï¼šä¸èƒ½æ‰“å¼€è¾“å…¥æ–‡ä»¶: %s \n\a\n", argv[1]);
         help();
         return -1;
     }
-    // Ö÷Ä£¿é¹¦ÄÜ£ºÖĞÎÄ±êµã·ûºÅÎªÓ¢ÎÄ£¬°´Ìõ¼şÉ¾³ı¿ÕĞĞ
-    stringstream oss;   // Êä³öÏÈĞ´ oss »º³åÇø
+    // ä¸»æ¨¡å—åŠŸèƒ½ï¼šä¸­æ–‡æ ‡ç‚¹ç¬¦å·ä¸ºè‹±æ–‡ï¼ŒæŒ‰æ¡ä»¶åˆ é™¤ç©ºè¡Œ
+    stringstream oss;   // è¾“å‡ºå…ˆå†™ oss ç¼“å†²åŒº
     string str_line;
     bool CodeBlocks_flag = false;
     while (getline(infile, str_line)) {
         Chinese_Punctuation_Conver_English(str_line);
-        if (!blank_lines(str_line))   // ¼ì²â²»ÊÇ¿ÕĞĞ
+        if (!blank_lines(str_line))   // æ£€æµ‹ä¸æ˜¯ç©ºè¡Œ
             oss << str_line << endl;
         else if (CodeBlocks_flag) {
             oss << str_line << endl;
             CodeBlocks_flag = false;
         }
-        // Èç¹ûµ±Ç°Óï¾ä¿é½áÊø£¬±£ÁôÏÂÒ»ĞĞ¿ÕĞĞ±ê¼Ç
+        // å¦‚æœå½“å‰è¯­å¥å—ç»“æŸï¼Œä¿ç•™ä¸‹ä¸€è¡Œç©ºè¡Œæ ‡è®°
         if (str_line[str_line.size() - 1] == '}')
             CodeBlocks_flag = true;
     }
     infile.close();
     ofstream outfile;
     if (2 < argc)
-        outfile.open(argv[2]); // Êä³öµ½ĞÂÎÄ¼ş
+        outfile.open(argv[2]); // è¾“å‡ºåˆ°æ–°æ–‡ä»¶
     else
-        outfile.open(argv[1]); // Ìæ»»Ô´ÎÄ¼ş
-    outfile << oss.str();  // »º³åÇøĞ´ÎÄ¼ş
-    cout << "±¾¹¤¾ßÕûÀí´úÂëÖĞµÄÖĞÎÄ±êµã·ûºÅÎªÓ¢ÎÄ£¬É¾³ı¿ÕĞĞ   BY Hong Wenjun\n\n"
+        outfile.open(argv[1]); // æ›¿æ¢æºæ–‡ä»¶
+    outfile << oss.str();  // ç¼“å†²åŒºå†™æ–‡ä»¶
+    cout << "æœ¬å·¥å…·æ•´ç†ä»£ç ä¸­çš„ä¸­æ–‡æ ‡ç‚¹ç¬¦å·ä¸ºè‹±æ–‡ï¼Œåˆ é™¤ç©ºè¡Œ   BY Hong Wenjun\n\n"
          "Chinese Punctuation Conver English Punctuation OK! ...." << endl;
     return 0;
 }
 
 void help()
 {
-    printf("±¾¹¤¾ßÕûÀí´úÂëÖĞµÄÖĞÎÄ±êµã·ûºÅÎªÓ¢ÎÄ£¬É¾³ı¿ÕĞĞ   BY Hong Wenjun\n\n"
-           "CodeTool filename [Êä³öfilename] \n\n"
-           "Ê¾Àı 1 £ºD:\\>CodeTool   D:\\app.cpp  \n"
-           "Ê¾Àı 1 £ºD:\\>CodeTool   D:\\app.cpp  D:\\app_new.cpp \n"
-           "\nÊä³öÎÄ¼ş²»Ìî£¬¸²¸ÇÔ­ÊäÈëÎÄ¼ş\n");
+    printf("æœ¬å·¥å…·æ•´ç†ä»£ç ä¸­çš„ä¸­æ–‡æ ‡ç‚¹ç¬¦å·ä¸ºè‹±æ–‡ï¼Œåˆ é™¤ç©ºè¡Œ   BY Hong Wenjun\n\n"
+           "CodeTool filename [è¾“å‡ºfilename] \n\n"
+           "ç¤ºä¾‹ 1 ï¼šD:\\>CodeTool   D:\\app.cpp  \n"
+           "ç¤ºä¾‹ 1 ï¼šD:\\>CodeTool   D:\\app.cpp  D:\\app_new.cpp \n"
+           "\nè¾“å‡ºæ–‡ä»¶ä¸å¡«ï¼Œè¦†ç›–åŸè¾“å…¥æ–‡ä»¶\n");
 }
 
 
@@ -68,7 +68,7 @@ bool blank_lines(const string& str)
 {
     string::const_iterator it;
     for (it=str.begin() ; it != str.end(); it++ ) {
-        if (!isspace(*it)) // Èç¹û²»ÊÇ¿Õ¸ñ£¬¾Í²»ÊÇ¿ÕĞĞ
+        if (!isspace(*it)) // å¦‚æœä¸æ˜¯ç©ºæ ¼ï¼Œå°±ä¸æ˜¯ç©ºè¡Œ
             return false;
     }
     return true;
@@ -79,7 +79,7 @@ string& find_replace(string& str_line, const string& str1 , const string& str2)
     string::size_type pos;
     size_t CPsize = str1.size();
 
-    pos = str_line.find(str1); // ²éÕÒ str1 Ìæ»»³É str2
+    pos = str_line.find(str1); // æŸ¥æ‰¾ str1 æ›¿æ¢æˆ str2
     while (pos != string::npos) {
         str_line.replace(pos, CPsize, str2);
         pos = str_line.find(str1, pos + 1);
@@ -89,26 +89,26 @@ string& find_replace(string& str_line, const string& str1 , const string& str2)
 
 string& Chinese_Punctuation_Conver_English(string& str_line)
 {
-    find_replace(str_line, "¡°", "\"");
-    find_replace(str_line, "¡±", "\"");
+    find_replace(str_line, "â€œ", "\"");
+    find_replace(str_line, "â€", "\"");
 
-    find_replace(str_line, "¡®", "\'");
-    find_replace(str_line, "¡¯", "\'");
+    find_replace(str_line, "â€˜", "\'");
+    find_replace(str_line, "â€™", "\'");
 
-    find_replace(str_line, "£¬", ",");
-    find_replace(str_line, "¡£", ".");
+    find_replace(str_line, "ï¼Œ", ",");
+    find_replace(str_line, "ã€‚", ".");
 
-    find_replace(str_line, "£¡", "!");
-    find_replace(str_line, "£¿", "?");
+    find_replace(str_line, "ï¼", "!");
+    find_replace(str_line, "ï¼Ÿ", "?");
 
-    find_replace(str_line, "£»", ";");
-    find_replace(str_line, "£º", ":");
+    find_replace(str_line, "ï¼›", ";");
+    find_replace(str_line, "ï¼š", ":");
 
-    find_replace(str_line, "¡¡", " "); // È«½Ç¿Õ¸ñ
-    find_replace(str_line, "£¨", "(");
-    find_replace(str_line, "£©", ")");
-    find_replace(str_line, "¡´", "<");
-    find_replace(str_line, "¡µ", ">");
+    find_replace(str_line, "ã€€", " "); // å…¨è§’ç©ºæ ¼
+    find_replace(str_line, "ï¼ˆ", "(");
+    find_replace(str_line, "ï¼‰", ")");
+    find_replace(str_line, "ã€ˆ", "<");
+    find_replace(str_line, "ã€‰", ">");
 
     return str_line;
 }

@@ -12,7 +12,7 @@ int main()
     ifstream infile("NAMESPACE_STD.CPP");
     set<string> keyword_set;
     string keyword;
-    // ×°ÔØ¹Ø¼ü×Öµ½setÈÝÆ÷
+    // è£…è½½å…³é”®å­—åˆ°setå®¹å™¨
     while (infile >> keyword)
         keyword_set.insert(keyword);
 
@@ -21,7 +21,7 @@ int main()
     infile.open("src.cpp");
     stringstream oss;
     oss << infile.rdbuf();
-    string text = oss.str();   // ÐÞ¸ÄÊäÈëÎÄ±¾ text ÖÐ·Ç×ÖÄ¸Îª¿Õ¸ñ
+    string text = oss.str();   // ä¿®æ”¹è¾“å…¥æ–‡æœ¬ text ä¸­éžå­—æ¯ä¸ºç©ºæ ¼
     for (size_t i = 0 ; i != text.size() ; i++) {
         if (!isalpha(text[i]))
             text[i] = ' ';
@@ -29,7 +29,7 @@ int main()
     oss.clear();
     oss.str(text);
 
-    // Êä³ö½á¹ûµ½ÎÄ¼þ
+    // è¾“å‡ºç»“æžœåˆ°æ–‡ä»¶
     ofstream outfile("keyword.txt");
     int cnt = 0;
     while (oss >> keyword) {
@@ -39,6 +39,6 @@ int main()
                 outfile << endl ;
         }
     }
-    cout << "\nÕÒµ½µ¥´Ê×Ü´ÎÊý:" << cnt << "´Î\n";
+    cout << "\næ‰¾åˆ°å•è¯æ€»æ¬¡æ•°:" << cnt << "æ¬¡\n";
     return 0;
 }
