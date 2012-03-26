@@ -30,6 +30,8 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-include cbstudy.h" />
 		</Compiler>
 		<Linker>
 			<Add library="gdi32" />
@@ -37,6 +39,8 @@
 			<Add library="kernel32" />
 		</Linker>
 		<Unit filename="ACER.ICO" />
+		<Unit filename="CBStudyApp.cpp" />
+		<Unit filename="cbstudy.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="picture1.bmp" />
 		<Unit filename="picture2.bmp" />

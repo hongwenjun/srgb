@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1299773202 source:e:\mycpp\cbstudy\resource.rc
+1299852066 source:e:\mycpp\cbstudy\resource.rc
 	<windows.h>
 	<commctrl.h>
 	<richedit.h>
@@ -502,12 +502,11 @@
 	<pshpack4.h>
 	<poppack.h>
 
-1299773202 e:\mycpp\cbstudy\resource.h
+1299852066 e:\mycpp\cbstudy\resource.h
 
-1299774029 source:e:\mycpp\cbstudy\main.cpp
-	<windows.h>
-	<stdio.h>
-	"resource.h"
+1299860632 source:e:\mycpp\cbstudy\main.cpp
+	"cbstudy.h"
+	"cbstudy.h"
 
 1257349408 d:\codeblockssvn\build\vc\include\stdio.h
 	<crtdefs.h>
@@ -515,4 +514,345 @@
 
 1256212236 d:\codeblockssvn\build\vc\include\swprintf.inl
 	<vadefs.h>
+
+1257685584 d:\codeblockssvn\build\vc\include\string
+	<istream>
+
+1257685584 d:\codeblockssvn\build\vc\include\istream
+	<ostream>
+
+1257685584 d:\codeblockssvn\build\vc\include\ostream
+	<ios>
+
+1257685584 d:\codeblockssvn\build\vc\include\ios
+	<xlocnum>
+
+1251657266 d:\codeblockssvn\build\vc\include\xlocnum
+	<climits>
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<streambuf>
+
+1251657266 d:\codeblockssvn\build\vc\include\climits
+	<yvals.h>
+	<limits.h>
+
+1258285976 d:\codeblockssvn\build\vc\include\yvals.h
+	<crtdefs.h>
+	<xkeycheck.h>
+	<crtwrn.h>
+	<use_ansi.h>
+	<crtwrn.h>
+	<crtwrn.h>
+
+1251662394 d:\codeblockssvn\build\vc\include\xkeycheck.h
+
+1257685584 d:\codeblockssvn\build\vc\include\crtwrn.h
+	<crtdefs.h>
+
+1254313428 d:\codeblockssvn\build\vc\include\use_ansi.h
+
+1251657266 d:\codeblockssvn\build\vc\include\cmath
+	<yvals.h>
+	<math.h>
+	<math.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\math.h
+	<crtdefs.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\cstdio
+	<yvals.h>
+	<stdio.h>
+	<stdio.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\cstdlib
+	<yvals.h>
+	<stdlib.h>
+	<stdlib.h>
+
+1254313428 d:\codeblockssvn\build\vc\include\streambuf
+	<xiosbase>
+
+1254313428 d:\codeblockssvn\build\vc\include\xiosbase
+	<xlocale>
+	<system_error>
+	<share.h>
+
+1263132742 d:\codeblockssvn\build\vc\include\xlocale
+	<climits>
+	<cstring>
+	<stdexcept>
+	<typeinfo>
+	<xlocinfo>
+	<xdebug>
+
+1251657266 d:\codeblockssvn\build\vc\include\cstring
+	<yvals.h>
+	<string.h>
+	<string.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\stdexcept
+	<exception>
+	<xstring>
+
+1254313428 d:\codeblockssvn\build\vc\include\exception
+	<xstddef>
+	<eh.h>
+	<malloc.h>
+	<string.h>
+
+1254313428 d:\codeblockssvn\build\vc\include\xstddef
+	<yvals.h>
+	<cstddef>
+
+1251657266 d:\codeblockssvn\build\vc\include\cstddef
+	<yvals.h>
+	<stddef.h>
+	<stddef.h>
+
+1254313428 d:\codeblockssvn\build\vc\include\stddef.h
+	<crtdefs.h>
+
+1254313428 d:\codeblockssvn\build\vc\include\eh.h
+	<crtdefs.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\malloc.h
+	<crtdefs.h>
+
+1257685584 d:\codeblockssvn\build\vc\include\xstring
+	<xmemory>
+
+1254313428 d:\codeblockssvn\build\vc\include\xmemory
+	<cstdlib>
+	<new>
+	<xutility>
+
+1251657266 d:\codeblockssvn\build\vc\include\new
+	<exception>
+
+1258285976 d:\codeblockssvn\build\vc\include\xutility
+	<climits>
+	<cstdlib>
+	<utility>
+
+1257685584 d:\codeblockssvn\build\vc\include\utility
+	<xstddef>
+	<iosfwd>
+	<type_traits>
+
+1254313428 d:\codeblockssvn\build\vc\include\iosfwd
+	<cstdio>
+	<cstring>
+	<cwchar>
+	<xstddef>
+	<crtdbg.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\cwchar
+	<yvals.h>
+	<wchar.h>
+	<wchar.h>
+
+1257349408 d:\codeblockssvn\build\vc\include\wchar.h
+	<crtdefs.h>
+	<swprintf.inl>
+	<wtime.inl>
+
+1251657266 d:\codeblockssvn\build\vc\include\wtime.inl
+
+1254313428 d:\codeblockssvn\build\vc\include\crtdbg.h
+	<crtdefs.h>
+
+1263132742 d:\codeblockssvn\build\vc\include\type_traits
+	<limits>
+	<xtr1common>
+	<xfwrap>
+
+1251657266 d:\codeblockssvn\build\vc\include\limits
+	<ymath.h>
+	<cfloat>
+	<climits>
+	<cmath>
+	<cwchar>
+	<xstddef>
+
+1251657266 d:\codeblockssvn\build\vc\include\ymath.h
+	<yvals.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\cfloat
+	<yvals.h>
+	<float.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\float.h
+	<crtdefs.h>
+	<crtwrn.h>
+
+1254313428 d:\codeblockssvn\build\vc\include\xtr1common
+	<yvals.h>
+
+1263132742 d:\codeblockssvn\build\vc\include\xfwrap
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+	<xfwrap1>
+
+1263132742 d:\codeblockssvn\build\vc\include\xfwrap1
+	<xxbind1>
+	<xxcallfun>
+	<xxcallobj>
+	<xxcallpmf>
+	<xxfunction>
+	<xxmem_fn>
+	<xxpmfcaller>
+	<xxrefwrap>
+	<xxresult>
+	<xxshared>
+	<xxtuple0>
+	<xxtuple1>
+	<xxtype_traits>
+
+1254313428 d:\codeblockssvn\build\vc\include\xxbind1
+
+1254313428 d:\codeblockssvn\build\vc\include\xxcallfun
+
+1254313428 d:\codeblockssvn\build\vc\include\xxcallobj
+
+1254313428 d:\codeblockssvn\build\vc\include\xxcallpmf
+
+1257685584 d:\codeblockssvn\build\vc\include\xxfunction
+
+1251662394 d:\codeblockssvn\build\vc\include\xxmem_fn
+
+1254313428 d:\codeblockssvn\build\vc\include\xxpmfcaller
+
+1254313428 d:\codeblockssvn\build\vc\include\xxrefwrap
+
+1254313428 d:\codeblockssvn\build\vc\include\xxresult
+
+1251662394 d:\codeblockssvn\build\vc\include\xxshared
+
+1254313428 d:\codeblockssvn\build\vc\include\xxtuple0
+
+1251662394 d:\codeblockssvn\build\vc\include\xxtuple1
+
+1251662394 d:\codeblockssvn\build\vc\include\xxtype_traits
+
+1257685584 d:\codeblockssvn\build\vc\include\typeinfo
+	<xstddef>
+	<string.h>
+	<exception>
+
+1254313428 d:\codeblockssvn\build\vc\include\xlocinfo
+	<xlocinfo.h>
+	<cstdlib>
+	<xstddef>
+
+1254313428 d:\codeblockssvn\build\vc\include\xlocinfo.h
+	<ctype.h>
+	<locale.h>
+	<wchar.h>
+	<yvals.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\locale.h
+	<crtdefs.h>
+
+1263132742 d:\codeblockssvn\build\vc\include\xdebug
+	<yvals.h>
+	<crtdbg.h>
+	<xmemory>
+
+1260279354 d:\codeblockssvn\build\vc\include\system_error
+	<cerrno>
+	<cstdlib>
+	<stdexcept>
+
+1251657266 d:\codeblockssvn\build\vc\include\cerrno
+	<yvals.h>
+	<errno.h>
+	<errno.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\errno.h
+	<crtdefs.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\share.h
+
+1299860918 e:\mycpp\cbstudy\cbstudy.h
+	<windows.h>
+	<cstdio>
+	<cctype>
+	"resource.h"
+	<string>
+	<vector>
+
+1258285976 d:\codeblockssvn\build\vc\include\vector
+	<memory>
+	<stdexcept>
+	<xfunctional>
+
+1267621944 d:\codeblockssvn\build\vc\include\memory
+	<xmemory>
+	<exception>
+	<typeinfo>
+	<type_traits>
+	<intrin.h>
+	<xfwrap>
+	<xfwrap>
+	<xfwrap>
+
+1263132742 d:\codeblockssvn\build\vc\include\intrin.h
+	<crtdefs.h>
+	<setjmp.h>
+	<stddef.h>
+	<immintrin.h>
+	<mm3dnow.h>
+
+1251662392 d:\codeblockssvn\build\vc\include\immintrin.h
+	<wmmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\wmmintrin.h
+	<nmmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\nmmintrin.h
+	<smmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\smmintrin.h
+	<tmmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\tmmintrin.h
+	<pmmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\pmmintrin.h
+	<emmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\emmintrin.h
+	<xmmintrin.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\xmmintrin.h
+	<mmintrin.h>
+	"xmm_func.h"
+	<malloc.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\mmintrin.h
+	<crtdefs.h>
+
+1251657266 d:\codeblockssvn\build\vc\include\mm3dnow.h
+	<crtdefs.h>
+	<mmintrin.h>
+	<xmmintrin.h>
+
+1251662394 d:\codeblockssvn\build\vc\include\xfunctional
+	<cstdlib>
+	<xstring>
+
+1251657266 d:\codeblockssvn\build\vc\include\cctype
+	<yvals.h>
+	<ctype.h>
+	<ctype.h>
 

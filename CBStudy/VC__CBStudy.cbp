@@ -41,6 +41,7 @@
 			<Add directory="$(#psdk.lib)" />
 		</Linker>
 		<Unit filename="ACER.ICO" />
+		<Unit filename="cbstudy.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="picture1.bmp" />
 		<Unit filename="picture2.bmp" />

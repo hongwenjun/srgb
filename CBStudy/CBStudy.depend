@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1299773202 source:e:\mycpp\cbstudy\resource.rc
+1299852066 source:e:\mycpp\cbstudy\resource.rc
 	<windows.h>
 	<commctrl.h>
 	<richedit.h>
@@ -502,12 +502,11 @@
 	<pshpack4.h>
 	<poppack.h>
 
-1299773202 e:\mycpp\cbstudy\resource.h
+1299852066 e:\mycpp\cbstudy\resource.h
 
-1299844899 source:e:\mycpp\cbstudy\main.cpp
-	<windows.h>
-	<stdio.h>
-	"resource.h"
+1299859769 source:e:\mycpp\cbstudy\main.cpp
+	"cbstudy.h"
+	"cbstudy.h"
 
 1257349408 d:\codeblockssvn\build\vc\include\stdio.h
 	<crtdefs.h>
@@ -515,4 +514,13 @@
 
 1256212236 d:\codeblockssvn\build\vc\include\swprintf.inl
 	<vadefs.h>
+
+1299856788 e:\mycpp\cbstudy\cbstudy.h
+	<windows.h>
+	<cstdio>
+	"resource.h"
+	<string>
+	<vector>
+
+1299856739 source:e:\mycpp\cbstudy\cbstudyapp.cpp
 
