@@ -7,6 +7,8 @@
 #include <richedit.h>
 #include "resource.h"
 
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDI_ICON           ICON           ".\\ACER.ICO"
 
 
 

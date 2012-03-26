@@ -19,8 +19,12 @@
 #include <string>
 #include <vector>
 
-using std::string;
+#include <iostream>
+#include <fstream>
 
+using std::cout;
+using std::endl;
+using std::string;
 
 
 #endif // CBSTUDY_H_INCLUDED

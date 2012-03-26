@@ -6,14 +6,21 @@ Release模式，可以显示图片和图标，不显示命令行后台
 */
 #include "cbstudy.h"  //加载预编译头文件
 
-//INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-void CBStudyInitdialog(HWND & hwnd);
-void CBStudyReadINI(HWND & hwnd);
 
+
+
+
+INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void CBStudyInitdialog(HWND & hwnd);
+void CBStudyReadINI();    //读取配置模块
+
+bool Clui_Language(int CodePage);    // 设置VC编译器语言代码页
+bool CBSfullPath(char* CBS_PATH, char* mypath);  // 转换绝对路径
+bool ConsoleCompiler(char * ch);
 
 HBITMAP g_hBitmap1;	// 第一个图片的句柄
 HBITMAP g_hBitmap2;	// 第二个图片的句柄
-HICON	g_hIcon;	// 对话框图标句柄
+HICON	g_hIcon = ::LoadIcon(hInst, (LPCTSTR)IDI_ICON);
 HBRUSH	g_hBgBrush;	// 背景刷子
 
 
@@ -22,10 +29,7 @@ bool Change_PIC = false ;
 char CBS_vcbin[MAX_PATH], CBS_include[MAX_PATH], CBS_lib[MAX_PATH],
      CBS_PATH[MAX_PATH], CBS_gccbin[MAX_PATH];
 
-string strCBS_Cmdline , strCBS_CN2052, strCBS_EN1033, strCBS_TMP;
-char * cn2052 , * en2052 ;
-
-
+string strCBS_Cmdline ;
 
 // Windows系统的主函数
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nCmd)
@@ -35,6 +39,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nCmd)
     g_hBitmap1 = ::LoadBitmap(hInst, (LPCTSTR)IDB_BITMAP1);
     g_hBitmap2 = ::LoadBitmap(hInst, (LPCTSTR)IDB_BITMAP2);
     g_hIcon = ::LoadIcon(hInst, (LPCTSTR)IDI_ICON);
+
+    CBStudyReadINI();    // 读取 CBStudy.ini 的路径配置
 
     // 用这个系统函数创建我们刚刚绘制好的窗体DLG_MAIN，设置回叫函数为DlgProc
     DialogBox(hInst, MAKEINTRESOURCE(DLG_MAIN ), 0, DlgProc);
@@ -46,15 +52,11 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nCmd)
 INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 
-
     // 对消息类别进行判断
     switch(uMsg) {
 
     case WM_INITDIALOG: {
-
         CBStudyInitdialog(hwnd); // 设置标题栏图标,// 设置图片
-        CBStudyReadINI(hwnd);    // 读取 CBStudy.ini 配置
-
 
     }
     break;
@@ -76,68 +78,34 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             break;
         case IDC_CLUI_CN:
-
-            strCBS_TMP = CBS_vcbin;
-            strCBS_CN2052 = CBS_PATH;
-            strCBS_CN2052 += strCBS_TMP;
-            strCBS_EN1033 = strCBS_CN2052 + "\\EN2052";
-            strCBS_CN2052 += "\\2052";
-
-            cn2052 =new char[MAX_PATH];
-            en2052 =new char[MAX_PATH];
-            strcpy(cn2052, strCBS_CN2052.c_str());
-            strcpy(en2052, strCBS_EN1033.c_str());
-
-            MoveFile(en2052,cn2052);
-            printf("%s\n",cn2052);
-            printf("%s\n",en2052);
-
-            delete[] cn2052;
-            delete[] en2052;
-
+            Clui_Language(2052); //设置中文代码页2052
+            SetDlgItemText(hwnd, IDC_INFO_TEXT,  "您已经切换VC2010编译器构建信息为中文!");
             break;
 
         case IDC_CLUI_EN:
-
-            strCBS_TMP = CBS_vcbin;
-            strCBS_CN2052 = CBS_PATH;
-            strCBS_CN2052 += strCBS_TMP;
-            strCBS_EN1033 = strCBS_CN2052 + "\\EN2052";
-            strCBS_CN2052 += "\\2052";
-
-            cn2052 =new char[MAX_PATH];
-            en2052 =new char[MAX_PATH];
-            strcpy(cn2052, strCBS_CN2052.c_str());
-            strcpy(en2052, strCBS_EN1033.c_str());
-
-            MoveFile(cn2052, en2052);
-            printf("%s\n",cn2052);
-            printf("%s\n",en2052);
-
-            delete[] cn2052;
-            delete[] en2052;
+            Clui_Language(1033); //设置中文代码页1033
+            SetDlgItemText(hwnd, IDC_INFO_TEXT,  "VC2010 compiler build information for the English!");
 
             break;
 
         case IDC_CLUI_VCCMD:
-
-            strCBS_TMP = CBS_vcbin;
-            strCBS_Cmdline = CBS_PATH;
-            strCBS_Cmdline += strCBS_TMP;
-            printf("%s\n",strCBS_Cmdline.c_str());
-
+            printf("VC编译器路径 %s\n",CBS_vcbin);
+            ConsoleCompiler("vc");
             break;
 
         case IDC_CLUI_GCCMD:
-            printf("命令行VC2010编译器\nVC编译器路径 %s\n",CBS_gccbin);
+            printf("GCC编译器路径 %s\n",CBS_gccbin);
+            ConsoleCompiler("gcc");
             break;
 
             // 如果是Cancel按钮被按下
         case IDC_BTN_QUIT :
             // 这里读者可以充分发挥想象力，控制台函数可以调用 :)
 
-            if (Change_PIC)
+            if (Change_PIC) {
                 ::EndDialog (hwnd, IDC_BTN_QUIT);
+                DeleteFile("CBStudy.cmd");
+            }
 
             // 分配空间作为临时存储
             char buf[512];
@@ -148,7 +116,7 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             // 用printf打印我们获得的内容
             printf("%s\n", buf);
 
-            SetDlgItemText(hwnd, IDC_INFO_TEXT, "菜鸟，想退出了吗！程序中有个彩蛋等你发现！");
+            SetDlgItemText(hwnd, IDC_INFO_TEXT, "菜鸟，想退出了吗！程序中还有个彩蛋等你发现呢！");
             Change_PIC = true;
 
             break;
@@ -182,16 +150,90 @@ void CBStudyInitdialog(HWND & hwnd)
     SetDlgItemText(hwnd, IDC_INFO_TEXT, "本工具切换VC2010中英文，或者开启命令行的编译器环境");
 }
 
-#include "cbstudy.h"
-
-
-void CBStudyReadINI(HWND & hwnd)
+void CBStudyReadINI()
 {
-    GetCurrentDirectoryA(MAX_PATH, CBS_PATH);
-
+    //读取配置文件路径
     GetPrivateProfileString("VC2010_PATH", "VCBIN", "VCBIN", CBS_vcbin, MAX_PATH,".\\CBStudy.ini");
     GetPrivateProfileString("VC2010_PATH", "INCLUDE", "INCLUDE", CBS_include, MAX_PATH,".\\CBStudy.ini");
     GetPrivateProfileString("VC2010_PATH", "LIB", "LIB", CBS_lib, MAX_PATH,".\\CBStudy.ini");
     GetPrivateProfileString("GCC_PATH", "GCCBIN", "GCCBIN", CBS_gccbin, MAX_PATH,".\\CBStudy.ini");
+    // 转为为绝对路径
+    GetCurrentDirectoryA(MAX_PATH, CBS_PATH);
+    CBSfullPath(CBS_PATH, CBS_vcbin);
+    CBSfullPath(CBS_PATH, CBS_include);
+    CBSfullPath(CBS_PATH, CBS_lib);
+    CBSfullPath(CBS_PATH, CBS_gccbin);
 }
 
+bool CBSfullPath(char* CBS_PATH, char* mypath)
+{
+    string strCBS(CBS_PATH);
+    string absPath(mypath);
+    string relativePath(mypath, 1, MAX_PATH - 3);
+    if(mypath[0] == '.') {
+        absPath = strCBS + relativePath;
+        strcpy(mypath, absPath.c_str());
+    }
+    return true;
+}
+
+bool Clui_Language(int CodePage)
+{
+    string strCBS_CN2052(CBS_vcbin);
+    string strCBS_EN2052(CBS_vcbin);
+    strCBS_CN2052 += "\\2052";
+    strCBS_EN2052 += "\\EN2052";
+    char * cn2052 , * en2052 ;
+
+    cn2052 =new char[MAX_PATH];
+    en2052 =new char[MAX_PATH];
+    strcpy(cn2052, strCBS_CN2052.c_str());
+    strcpy(en2052, strCBS_EN2052.c_str());
+
+    if (2052 == CodePage)       //中文
+        MoveFile(en2052, cn2052);
+
+    if (1033 == CodePage)       //英文
+        MoveFile(cn2052, en2052);
+    delete[] cn2052;
+    delete[] en2052;
+    printf("%i\n", CodePage);
+    return true;
+}
+
+bool ConsoleCompiler(char * ch)
+{
+    // 建立批处理文件
+    std::ofstream fout( "CBStudy.cmd" );
+    if ('v'==ch[0]) {
+        fout << "@echo off\nset PATH=" << CBS_vcbin << ";%PATH%\nset INCLUDE=" <<CBS_include
+             <<"\nset LIB=" << CBS_lib <<"\ncolor a\n@echo 欢迎使用命令行VC2010编译器中文版  你可以使用TAB自动补全\ncl\ncd \\mycpp\n" ;
+    }
+    if ('g'==ch[0]) {
+        fout << "@echo off\nset PATH=" << CBS_gccbin << ";%PATH%\ncolor a\n@echo 欢迎使用命令行 GCC 编译器中文版  你可以使用TAB自动补全\ng++ -v\ncd \\mycpp\n" ;
+    }
+    fout.close();
+
+    // 执行批处理文件
+    char szCommandLine[] = "cmd /k CBStudy.cmd";
+    STARTUPINFO si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    si.dwFlags = STARTF_USESHOWWINDOW;	// 指定wShowWindow成员有效
+    si.wShowWindow = TRUE;			// 此成员设为TRUE的话则显示新建进程的主窗口，
+    // 为FALSE的话则不显示
+    BOOL bRet = ::CreateProcess (
+                    NULL,			// 不在此指定可执行文件的文件名
+                    szCommandLine,		// 命令行参数
+                    NULL,			// 默认进程安全性
+                    NULL,			// 默认线程安全性
+                    FALSE,			// 指定当前进程内的句柄不可以被子进程继承
+                    CREATE_NEW_CONSOLE,	// 为新进程创建一个新的控制台窗口
+                    NULL,			// 使用本进程的环境变量
+                    NULL,			// 使用本进程的驱动器和目录
+                    &si,
+                    &pi);
+
+
+    return true;
+}
