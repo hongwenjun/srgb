@@ -7,17 +7,25 @@ Release模式，可以显示图片和图标，不显示命令行后台
 #include <windows.h>
 #include <stdio.h>      // 注意这里添加了控制台的头文件
 #include "resource.h"
+#include <string>
 
 
 INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 void CBStudyInitdialog(HWND & hwnd);
+void CBStudyReadINI(HWND & hwnd);
 
 bool Change_PIC = false ;
 HBITMAP g_hBitmap1;	// 第一个图片的句柄
 HBITMAP g_hBitmap2;	// 第二个图片的句柄
 HICON	g_hIcon;	// 对话框图标句柄
 HBRUSH	g_hBgBrush;	// 背景刷子
+
+
+//定义路径全局变量存储
+char CBS_vcbin[MAX_PATH], CBS_include[MAX_PATH],
+     CBS_lib[MAX_PATH], CBS_gccbin[MAX_PATH];
+char * pCBS_PATH = NULL;
 
 
 // Windows系统的主函数
@@ -41,9 +49,10 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     // 对消息类别进行判断
     switch(uMsg) {
 
-    case WM_INITDIALOG: { // 如果窗口初始化,读取配置文件
+    case WM_INITDIALOG: {
 
         CBStudyInitdialog(hwnd); // 设置标题栏图标,// 设置图片
+        CBStudyReadINI(hwnd);    // 读取 CBStudy.ini 配置
 
 
     }
@@ -74,16 +83,20 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             break;
 
         case IDC_CLUI_VCCMD:
-            printf("命令行VC2010编译器\n");
+            printf("命令行VC2010编译器\nVC编译器路径 %s\n",CBS_vcbin);
             break;
 
         case IDC_CLUI_GCCMD:
-            printf("命令行 GCC 编译器\n");
+            printf("命令行VC2010编译器\nVC编译器路径 %s\n",CBS_gccbin);
             break;
 
             // 如果是Cancel按钮被按下
         case IDC_BTN_QUIT :
             // 这里读者可以充分发挥想象力，控制台函数可以调用 :)
+
+            if (Change_PIC)
+                ::EndDialog (hwnd, IDC_BTN_QUIT);
+
             // 分配空间作为临时存储
             char buf[512];
 
@@ -93,8 +106,9 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             // 用printf打印我们获得的内容
             printf("%s\n", buf);
 
-            SetDlgItemText(hwnd, IDC_INFO_TEXT, "菜鸟，你点取消了！");
-            //  ::EndDialog (hwnd, IDC_BTN_QUIT);
+            SetDlgItemText(hwnd, IDC_INFO_TEXT, "菜鸟，想退出了吗！程序中有个彩蛋等你发现！");
+            Change_PIC = true;
+
             break;
         }
         break;
@@ -124,4 +138,13 @@ void CBStudyInitdialog(HWND & hwnd)
     // 设置图片
     ::SendDlgItemMessage(hwnd, IDC_BABY_PIC, STM_SETIMAGE, IMAGE_BITMAP, (long)g_hBitmap1);
     SetDlgItemText(hwnd, IDC_INFO_TEXT, "本工具切换VC2010中英文，或者开启命令行的编译器环境");
+}
+
+void CBStudyReadINI(HWND & hwnd)
+{
+    GetPrivateProfileString("VC2010_PATH", "VCBIN", "VCBIN", CBS_vcbin, MAX_PATH,"E:\\mycpp\\CBStudy\\CBStudy.ini");
+    GetPrivateProfileString("VC2010_PATH", "INCLUDE", "INCLUDE", CBS_include, MAX_PATH,"E:\\mycpp\\CBStudy\\CBStudy.ini");
+    GetPrivateProfileString("VC2010_PATH", "LIB", "LIB", CBS_lib, MAX_PATH,"E:\\mycpp\\CBStudy\\CBStudy.ini");
+    GetPrivateProfileString("GCC_PATH", "GCCBIN", "GCCBIN", CBS_gccbin, MAX_PATH,"E:\\mycpp\\CBStudy\\CBStudy.ini");
+    printf("%s\n%s\n%s\n%s\n", CBS_vcbin, CBS_include, CBS_lib, CBS_gccbin);
 }
