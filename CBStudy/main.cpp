@@ -1,10 +1,10 @@
 /*
-Code::Blocks Ñ§Ï°ÖúÊÖ V0.18 By Ìm¹«×Ó
-±¾¹¤¾ßÇĞ»»VC2010ÖĞÓ¢ÎÄ£¬»òÕß¿ªÆôÃüÁîĞĞµÄ±àÒëÆ÷»·¾³
-DebugÄ£Ê½£¬ÃüÁîĞĞºóÌ¨Êä³öµ÷ÊÔĞÅÏ¢£¬µ«ÊÇ²»ÄÜÏÔÊ¾Í¼Æ¬
-ReleaseÄ£Ê½£¬¿ÉÒÔÏÔÊ¾Í¼Æ¬ºÍÍ¼±ê£¬²»ÏÔÊ¾ÃüÁîĞĞºóÌ¨
+Code::Blocks å­¦ä¹ åŠ©æ‰‹ V0.18 By è˜­å…¬å­
+æœ¬å·¥å…·åˆ‡æ¢VC2010ä¸­è‹±æ–‡ï¼Œæˆ–è€…å¼€å¯å‘½ä»¤è¡Œçš„ç¼–è¯‘å™¨ç¯å¢ƒ
+Debugæ¨¡å¼ï¼Œå‘½ä»¤è¡Œåå°è¾“å‡ºè°ƒè¯•ä¿¡æ¯ï¼Œä½†æ˜¯ä¸èƒ½æ˜¾ç¤ºå›¾ç‰‡
+Releaseæ¨¡å¼ï¼Œå¯ä»¥æ˜¾ç¤ºå›¾ç‰‡å’Œå›¾æ ‡ï¼Œä¸æ˜¾ç¤ºå‘½ä»¤è¡Œåå°
 */
-#include "cbstudy.h"  //¼ÓÔØÔ¤±àÒëÍ·ÎÄ¼ş
+#include "cbstudy.h"  //åŠ è½½é¢„ç¼–è¯‘å¤´æ–‡ä»¶
 
 
 
@@ -12,37 +12,38 @@ ReleaseÄ£Ê½£¬¿ÉÒÔÏÔÊ¾Í¼Æ¬ºÍÍ¼±ê£¬²»ÏÔÊ¾ÃüÁîĞĞºóÌ¨
 
 INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void CBStudyInitdialog(HWND & hwnd);
-void CBStudyReadINI();    //¶ÁÈ¡ÅäÖÃÄ£¿é
+void CBStudyReadINI();    //è¯»å–é…ç½®æ¨¡å—
 
-bool Clui_Language(int CodePage);    // ÉèÖÃVC±àÒëÆ÷ÓïÑÔ´úÂëÒ³
-bool CBSfullPath(char* CBS_PATH, char* mypath);  // ×ª»»¾ø¶ÔÂ·¾¶
-bool ConsoleCompiler(char * ch);
+bool Clui_Language(int CodePage);    // è®¾ç½®VCç¼–è¯‘å™¨è¯­è¨€ä»£ç é¡µ
+bool CBSfullPath(char* CBS_PATH, char* mypath);  // è½¬æ¢ç»å¯¹è·¯å¾„
+bool ConsoleCompiler(const char * ch);
 
-HBITMAP g_hBitmap1;	// µÚÒ»¸öÍ¼Æ¬µÄ¾ä±ú
-HBITMAP g_hBitmap2;	// µÚ¶ş¸öÍ¼Æ¬µÄ¾ä±ú
-HICON	g_hIcon = ::LoadIcon(hInst, (LPCTSTR)IDI_ICON);
-HBRUSH	g_hBgBrush;	// ±³¾°Ë¢×Ó
+HBITMAP g_hBitmap1;	// ç¬¬ä¸€ä¸ªå›¾ç‰‡çš„å¥æŸ„
+HBITMAP g_hBitmap2;	// ç¬¬äºŒä¸ªå›¾ç‰‡çš„å¥æŸ„
+HICON	g_hIcon;	// å¯¹è¯æ¡†å›¾æ ‡å¥æŸ„
+HBRUSH	g_hBgBrush;	// èƒŒæ™¯åˆ·å­
 
 
-//¶¨ÒåÂ·¾¶È«¾Ö±äÁ¿´æ´¢
+//å®šä¹‰è·¯å¾„å…¨å±€å˜é‡å­˜å‚¨
 bool Change_PIC = false ;
-char CBS_vcbin[MAX_PATH], CBS_include[MAX_PATH], CBS_lib[MAX_PATH],
-     CBS_PATH[MAX_PATH], CBS_gccbin[MAX_PATH];
+char CBS_vcbin[MAX_PATH],  CBS_include[MAX_PATH], CBS_lib[MAX_PATH],
+     CBS_gccbin[MAX_PATH], CBS_gccnls[MAX_PATH],
+     CBS_PATH[MAX_PATH],   CBS_MYAPP[MAX_PATH];
 
 string strCBS_Cmdline ;
 
-// WindowsÏµÍ³µÄÖ÷º¯Êı
+// Windowsç³»ç»Ÿçš„ä¸»å‡½æ•°
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nCmd)
 {
 
-    // ´Ó×ÊÔ´ÖĞ¼ÓÔØBMPÎÄ¼şºÍÍ¼±ê£¬ÕâĞ©¹¤×÷Ò²¿ÉÒÔÔÚWM_INITDIALOGÏûÏ¢ÖĞ½øĞĞ
+    // ä»èµ„æºä¸­åŠ è½½BMPæ–‡ä»¶å’Œå›¾æ ‡ï¼Œè¿™äº›å·¥ä½œä¹Ÿå¯ä»¥åœ¨WM_INITDIALOGæ¶ˆæ¯ä¸­è¿›è¡Œ
     g_hBitmap1 = ::LoadBitmap(hInst, (LPCTSTR)IDB_BITMAP1);
     g_hBitmap2 = ::LoadBitmap(hInst, (LPCTSTR)IDB_BITMAP2);
     g_hIcon = ::LoadIcon(hInst, (LPCTSTR)IDI_ICON);
 
-    CBStudyReadINI();    // ¶ÁÈ¡ CBStudy.ini µÄÂ·¾¶ÅäÖÃ
+    CBStudyReadINI();    // è¯»å– CBStudy.ini çš„è·¯å¾„é…ç½®
 
-    // ÓÃÕâ¸öÏµÍ³º¯Êı´´½¨ÎÒÃÇ¸Õ¸Õ»æÖÆºÃµÄ´°ÌåDLG_MAIN£¬ÉèÖÃ»Ø½Ğº¯ÊıÎªDlgProc
+    // ç”¨è¿™ä¸ªç³»ç»Ÿå‡½æ•°åˆ›å»ºæˆ‘ä»¬åˆšåˆšç»˜åˆ¶å¥½çš„çª—ä½“DLG_MAINï¼Œè®¾ç½®å›å«å‡½æ•°ä¸ºDlgProc
     DialogBox(hInst, MAKEINTRESOURCE(DLG_MAIN ), 0, DlgProc);
 
     return 0;
@@ -52,25 +53,25 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nCmd)
 INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 
-    // ¶ÔÏûÏ¢Àà±ğ½øĞĞÅĞ¶Ï
+    // å¯¹æ¶ˆæ¯ç±»åˆ«è¿›è¡Œåˆ¤æ–­
     switch(uMsg) {
 
     case WM_INITDIALOG: {
-        CBStudyInitdialog(hwnd); // ÉèÖÃ±êÌâÀ¸Í¼±ê,// ÉèÖÃÍ¼Æ¬
+        CBStudyInitdialog(hwnd); // è®¾ç½®æ ‡é¢˜æ å›¾æ ‡,// è®¾ç½®å›¾ç‰‡
 
     }
     break;
 
-    // Èç¹ûÊÇÃüÁîÊÂ¼ş£¨°´Å¥µÈ£©
+    // å¦‚æœæ˜¯å‘½ä»¤äº‹ä»¶ï¼ˆæŒ‰é’®ç­‰ï¼‰
     case WM_COMMAND:
-        // ¶ÔwParamµÍ×Ö½Ú½øĞĞÅĞ¶Ï£¬ÆäÖĞÊÇÎÒÃÇµÄID£¨²Î¼ûMSDN£©
+        // å¯¹wParamä½å­—èŠ‚è¿›è¡Œåˆ¤æ–­ï¼Œå…¶ä¸­æ˜¯æˆ‘ä»¬çš„IDï¼ˆå‚è§MSDNï¼‰
         switch(LOWORD(wParam)) {
 
         case IDC_Change_PIC:
             if (!Change_PIC) {
-                SetDlgItemText(hwnd, IDC_INFO_TEXT, "ÃÀÅ®¶¼ÈÃÄã·¢ÏÖÁË£¬ÄãÕæÀ÷º¦£¡");
+                SetDlgItemText(hwnd, IDC_INFO_TEXT, "ç¾å¥³éƒ½è®©ä½ å‘ç°äº†ï¼Œä½ çœŸå‰å®³ï¼");
                 ::SendDlgItemMessage(hwnd, IDC_BABY_PIC, STM_SETIMAGE, IMAGE_BITMAP, (long)g_hBitmap2);
-                printf("¸ÄÍ¼Æ¬\n");
+                printf("æ”¹å›¾ç‰‡\n");
                 Change_PIC = true;
             } else {
                 CBStudyInitdialog(hwnd);
@@ -78,91 +79,97 @@ INT_PTR CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             }
             break;
         case IDC_CLUI_CN:
-            Clui_Language(2052); //ÉèÖÃÖĞÎÄ´úÂëÒ³2052
-            SetDlgItemText(hwnd, IDC_INFO_TEXT,  "ÄúÒÑ¾­ÇĞ»»VC2010±àÒëÆ÷¹¹½¨ĞÅÏ¢ÎªÖĞÎÄ!");
+            Clui_Language(2052); //è®¾ç½®ä¸­æ–‡ä»£ç é¡µ2052
+            SetDlgItemText(hwnd, IDC_INFO_TEXT,  "æ‚¨å·²ç»åˆ‡æ¢C/C++ç¼–è¯‘å™¨æ„å»ºä¿¡æ¯ä¸ºä¸­æ–‡!");
             break;
 
         case IDC_CLUI_EN:
-            Clui_Language(1033); //ÉèÖÃÖĞÎÄ´úÂëÒ³1033
-            SetDlgItemText(hwnd, IDC_INFO_TEXT,  "VC2010 compiler build information for the English!");
+            Clui_Language(1033); //è®¾ç½®ä¸­æ–‡ä»£ç é¡µ1033
+            SetDlgItemText(hwnd, IDC_INFO_TEXT,  "C/C++ compiler build information for the English!");
 
             break;
 
         case IDC_CLUI_VCCMD:
-            printf("VC±àÒëÆ÷Â·¾¶ %s\n",CBS_vcbin);
+            printf("VCç¼–è¯‘å™¨è·¯å¾„ %s\n",CBS_vcbin);
             ConsoleCompiler("vc");
             break;
 
         case IDC_CLUI_GCCMD:
-            printf("GCC±àÒëÆ÷Â·¾¶ %s\n",CBS_gccbin);
+            printf("GCCç¼–è¯‘å™¨è·¯å¾„ %s\n",CBS_gccbin);
             ConsoleCompiler("gcc");
             break;
 
-            // Èç¹ûÊÇCancel°´Å¥±»°´ÏÂ
+            // å¦‚æœæ˜¯CancelæŒ‰é’®è¢«æŒ‰ä¸‹
         case IDC_BTN_QUIT :
-            // ÕâÀï¶ÁÕß¿ÉÒÔ³ä·Ö·¢»ÓÏëÏóÁ¦£¬¿ØÖÆÌ¨º¯Êı¿ÉÒÔµ÷ÓÃ :)
+            // è¿™é‡Œè¯»è€…å¯ä»¥å……åˆ†å‘æŒ¥æƒ³è±¡åŠ›ï¼Œæ§åˆ¶å°å‡½æ•°å¯ä»¥è°ƒç”¨ :)
 
             if (Change_PIC) {
                 ::EndDialog (hwnd, IDC_BTN_QUIT);
                 DeleteFile("CBStudy.cmd");
             }
 
-            // ·ÖÅä¿Õ¼ä×÷ÎªÁÙÊ±´æ´¢
+            // åˆ†é…ç©ºé—´ä½œä¸ºä¸´æ—¶å­˜å‚¨
             char buf[512];
 
-            // »ñµÃEdit ControlÄÚÈİ
+            // è·å¾—Edit Controlå†…å®¹
             GetDlgItemText(hwnd, IDC_INFO_TEXT, buf, 512);
 
-            // ÓÃprintf´òÓ¡ÎÒÃÇ»ñµÃµÄÄÚÈİ
+            // ç”¨printfæ‰“å°æˆ‘ä»¬è·å¾—çš„å†…å®¹
             printf("%s\n", buf);
 
-            SetDlgItemText(hwnd, IDC_INFO_TEXT, "²ËÄñ£¬ÏëÍË³öÁËÂğ£¡³ÌĞòÖĞ»¹ÓĞ¸ö²Êµ°µÈÄã·¢ÏÖÄØ£¡");
+            SetDlgItemText(hwnd, IDC_INFO_TEXT, "èœé¸Ÿï¼Œæƒ³é€€å‡ºäº†å—ï¼ç¨‹åºä¸­è¿˜æœ‰ä¸ªå½©è›‹ç­‰ä½ å‘ç°å‘¢ï¼");
             Change_PIC = true;
 
             break;
         }
         break;
 
-        // Èç¹û´°¿Ú±»¹Ø±Õ
+        // å¦‚æœçª—å£è¢«å…³é—­
     case WM_CLOSE:
-        // ÒªÇóÏµÍ³¹Ø±ÕÕâ¸ö³ÌĞò
+        // è¦æ±‚ç³»ç»Ÿå…³é—­è¿™ä¸ªç¨‹åº
         PostQuitMessage(0);
         break;
     }
 
-    // Ä¬ÈÏ·µ»Ø0
+    // é»˜è®¤è¿”å›0
     return 0;
 }
 
 void CBStudyInitdialog(HWND & hwnd)
 {
 
-    // ÉèÖÃ±êÌâÀ¸Í¼±ê
+    // è®¾ç½®æ ‡é¢˜æ å›¾æ ‡
     ::SendMessage(hwnd, WM_SETICON, ICON_BIG, (long)g_hIcon);
 
-    // ³õÊ¼»¯ÏÔÊ¾Í¼Æ¬µÄ¾²Ì¬¿ò¼Ü
+    // åˆå§‹åŒ–æ˜¾ç¤ºå›¾ç‰‡çš„é™æ€æ¡†æ¶
     HWND hWndBmp = ::GetDlgItem(hwnd, IDC_BABY_PIC );
-    // ÉèÖÃSS_BITMAP·ç¸ñ
+    // è®¾ç½®SS_BITMAPé£æ ¼
     LONG nStyle = ::GetWindowLong(hWndBmp, GWL_STYLE);
     ::SetWindowLong(hWndBmp, GWL_STYLE, nStyle | SS_BITMAP);
-    // ÉèÖÃÍ¼Æ¬
+    // è®¾ç½®å›¾ç‰‡
     ::SendDlgItemMessage(hwnd, IDC_BABY_PIC, STM_SETIMAGE, IMAGE_BITMAP, (long)g_hBitmap1);
-    SetDlgItemText(hwnd, IDC_INFO_TEXT, "±¾¹¤¾ßÇĞ»»VC2010ÖĞÓ¢ÎÄ£¬»òÕß¿ªÆôÃüÁîĞĞµÄ±àÒëÆ÷»·¾³");
+    SetDlgItemText(hwnd, IDC_INFO_TEXT, "æœ¬å·¥å…·åˆ‡æ¢C++ç¼–è¯‘å™¨ä¸­è‹±æ–‡ï¼Œå¼€å¯å‘½ä»¤è¡Œçš„ç¼–è¯‘å™¨ç¯å¢ƒ");
 }
 
 void CBStudyReadINI()
 {
-    //¶ÁÈ¡ÅäÖÃÎÄ¼şÂ·¾¶
+    //è¯»å–é…ç½®æ–‡ä»¶è·¯å¾„
     GetPrivateProfileString("VC2010_PATH", "VCBIN", "VCBIN", CBS_vcbin, MAX_PATH,".\\CBStudy.ini");
     GetPrivateProfileString("VC2010_PATH", "INCLUDE", "INCLUDE", CBS_include, MAX_PATH,".\\CBStudy.ini");
     GetPrivateProfileString("VC2010_PATH", "LIB", "LIB", CBS_lib, MAX_PATH,".\\CBStudy.ini");
     GetPrivateProfileString("GCC_PATH", "GCCBIN", "GCCBIN", CBS_gccbin, MAX_PATH,".\\CBStudy.ini");
-    // ×ªÎªÎª¾ø¶ÔÂ·¾¶
+    GetPrivateProfileString("GCC_PATH", "GCCNLS", "C:\\gcc\\share\\locale\\zh_CN", CBS_gccnls, MAX_PATH,".\\CBStudy.ini");
+    GetPrivateProfileString("MYAPP_PATH", "MYAPP", "E:\\myapp", CBS_MYAPP, MAX_PATH,".\\CBStudy.ini");
+
+    // è½¬ä¸ºä¸ºç»å¯¹è·¯å¾„
     GetCurrentDirectoryA(MAX_PATH, CBS_PATH);
     CBSfullPath(CBS_PATH, CBS_vcbin);
     CBSfullPath(CBS_PATH, CBS_include);
     CBSfullPath(CBS_PATH, CBS_lib);
     CBSfullPath(CBS_PATH, CBS_gccbin);
+    CBSfullPath(CBS_PATH, CBS_gccnls);
+    CBSfullPath(CBS_PATH, CBS_MYAPP);
+//    printf("%s\n%s\n",CBS_gccnls,CBS_MYAPP);
 }
 
 bool CBSfullPath(char* CBS_PATH, char* mypath)
@@ -190,10 +197,10 @@ bool Clui_Language(int CodePage)
     strcpy(cn2052, strCBS_CN2052.c_str());
     strcpy(en2052, strCBS_EN2052.c_str());
 
-    if (2052 == CodePage)       //ÖĞÎÄ
+    if (2052 == CodePage)       //ä¸­æ–‡
         MoveFile(en2052, cn2052);
 
-    if (1033 == CodePage)       //Ó¢ÎÄ
+    if (1033 == CodePage)       //è‹±æ–‡
         MoveFile(cn2052, en2052);
     delete[] cn2052;
     delete[] en2052;
@@ -201,39 +208,40 @@ bool Clui_Language(int CodePage)
     return true;
 }
 
-bool ConsoleCompiler(char * ch)
+bool ConsoleCompiler(const char * ch)
 {
-    // ½¨Á¢Åú´¦ÀíÎÄ¼ş
+    // å»ºç«‹æ‰¹å¤„ç†æ–‡ä»¶
     std::ofstream fout( "CBStudy.cmd" );
     if ('v'==ch[0]) {
         fout << "@echo off\nset PATH=" << CBS_vcbin << ";%PATH%\nset INCLUDE=" <<CBS_include
-             <<"\nset LIB=" << CBS_lib <<"\ncolor a\n@echo »¶Ó­Ê¹ÓÃÃüÁîĞĞVC2010±àÒëÆ÷ÖĞÎÄ°æ  Äã¿ÉÒÔÊ¹ÓÃTAB×Ô¶¯²¹È«\ncl\ncd \\mycpp\n" ;
+             <<"\nset LIB=" << CBS_lib <<"\ncolor a\n@echo æ¬¢è¿ä½¿ç”¨å‘½ä»¤è¡ŒVC2010ç¼–è¯‘å™¨ä¸­æ–‡ç‰ˆ  ä½ å¯ä»¥ä½¿ç”¨TABè‡ªåŠ¨è¡¥å…¨\ncl\n" ;
     }
     if ('g'==ch[0]) {
-        fout << "@echo off\nset PATH=" << CBS_gccbin << ";%PATH%\ncolor a\n@echo »¶Ó­Ê¹ÓÃÃüÁîĞĞ GCC ±àÒëÆ÷ÖĞÎÄ°æ  Äã¿ÉÒÔÊ¹ÓÃTAB×Ô¶¯²¹È«\ng++ -v\ncd \\mycpp\n" ;
+        fout << "@echo off\nset PATH=" << CBS_gccbin << ";%PATH%\ncolor a\n@echo æ¬¢è¿ä½¿ç”¨å‘½ä»¤è¡Œ GCC ç¼–è¯‘å™¨ä¸­æ–‡ç‰ˆ  ä½ å¯ä»¥ä½¿ç”¨TABè‡ªåŠ¨è¡¥å…¨\ng++ -v\n" ;
     }
+    fout << "CD " << CBS_MYAPP << endl;
     fout.close();
 
-    // Ö´ĞĞÅú´¦ÀíÎÄ¼ş
+    // æ‰§è¡Œæ‰¹å¤„ç†æ–‡ä»¶
     char szCommandLine[] = "cmd /k CBStudy.cmd";
     STARTUPINFO si = { sizeof(si) };
     PROCESS_INFORMATION pi;
 
-    si.dwFlags = STARTF_USESHOWWINDOW;	// Ö¸¶¨wShowWindow³ÉÔ±ÓĞĞ§
-    si.wShowWindow = TRUE;			// ´Ë³ÉÔ±ÉèÎªTRUEµÄ»°ÔòÏÔÊ¾ĞÂ½¨½ø³ÌµÄÖ÷´°¿Ú£¬
-    // ÎªFALSEµÄ»°Ôò²»ÏÔÊ¾
+    si.dwFlags = STARTF_USESHOWWINDOW;	// æŒ‡å®šwShowWindowæˆå‘˜æœ‰æ•ˆ
+    si.wShowWindow = TRUE;			// æ­¤æˆå‘˜è®¾ä¸ºTRUEçš„è¯åˆ™æ˜¾ç¤ºæ–°å»ºè¿›ç¨‹çš„ä¸»çª—å£ï¼Œ
+    // ä¸ºFALSEçš„è¯åˆ™ä¸æ˜¾ç¤º
     BOOL bRet = ::CreateProcess (
-                    NULL,			// ²»ÔÚ´ËÖ¸¶¨¿ÉÖ´ĞĞÎÄ¼şµÄÎÄ¼şÃû
-                    szCommandLine,		// ÃüÁîĞĞ²ÎÊı
-                    NULL,			// Ä¬ÈÏ½ø³Ì°²È«ĞÔ
-                    NULL,			// Ä¬ÈÏÏß³Ì°²È«ĞÔ
-                    FALSE,			// Ö¸¶¨µ±Ç°½ø³ÌÄÚµÄ¾ä±ú²»¿ÉÒÔ±»×Ó½ø³Ì¼Ì³Ğ
-                    CREATE_NEW_CONSOLE,	// ÎªĞÂ½ø³Ì´´½¨Ò»¸öĞÂµÄ¿ØÖÆÌ¨´°¿Ú
-                    NULL,			// Ê¹ÓÃ±¾½ø³ÌµÄ»·¾³±äÁ¿
-                    NULL,			// Ê¹ÓÃ±¾½ø³ÌµÄÇı¶¯Æ÷ºÍÄ¿Â¼
+                    NULL,			// ä¸åœ¨æ­¤æŒ‡å®šå¯æ‰§è¡Œæ–‡ä»¶çš„æ–‡ä»¶å
+                    szCommandLine,		// å‘½ä»¤è¡Œå‚æ•°
+                    NULL,			// é»˜è®¤è¿›ç¨‹å®‰å…¨æ€§
+                    NULL,			// é»˜è®¤çº¿ç¨‹å®‰å…¨æ€§
+                    FALSE,			// æŒ‡å®šå½“å‰è¿›ç¨‹å†…çš„å¥æŸ„ä¸å¯ä»¥è¢«å­è¿›ç¨‹ç»§æ‰¿
+                    CREATE_NEW_CONSOLE,	// ä¸ºæ–°è¿›ç¨‹åˆ›å»ºä¸€ä¸ªæ–°çš„æ§åˆ¶å°çª—å£
+                    NULL,			// ä½¿ç”¨æœ¬è¿›ç¨‹çš„ç¯å¢ƒå˜é‡
+                    NULL,			// ä½¿ç”¨æœ¬è¿›ç¨‹çš„é©±åŠ¨å™¨å’Œç›®å½•
                     &si,
                     &pi);
 
 
-    return true;
+    return bRet;
 }

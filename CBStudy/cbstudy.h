@@ -5,7 +5,7 @@
  * Created:   2011-03-11
  * Copyright:
  * License:
- * 使用方法: 项目构建选项-->其他选项-->填入下面两行
+ * 浣跨敤鏂规硶: 椤圭洰鏋勫缓閫夐」-->鍏朵粬閫夐」-->濉叆涓嬮潰涓よ
  -Winvalid-pch
  -include cbstudy.h
  **************************************************************/
@@ -13,7 +13,7 @@
 #define CBSTUDY_H_INCLUDED
 
 #include <windows.h>
-#include <cstdio>      // 注意这里添加了控制台的头文件
+#include <cstdio>      // 娉ㄦ剰杩欓噷娣诲姞浜嗘帶鍒跺彴鐨勫ご鏂囦欢
 #include <cctype>
 #include "resource.h"
 #include <string>

@@ -39,7 +39,6 @@
 			<Add library="kernel32" />
 		</Linker>
 		<Unit filename="ACER.ICO" />
-		<Unit filename="CBStudyApp.cpp" />
 		<Unit filename="cbstudy.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="picture1.bmp" />
