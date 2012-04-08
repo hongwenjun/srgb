@@ -1,0 +1,7 @@
+打包 Adobe InDesign 文档中的字体工具
+(C) 版权所有 2012.01 Hongwenjun (蘭公子)
+
+Usage: IDFonts.exe  <InDesign_Doc.indd>  [SaveFontPath]
+用 法: IDFonts.exe  <InDesign文档.indd>  [存放字体目录]
+
+窗口对话框的界面 筹划中
