@@ -55,4 +55,7 @@ bool LoadSystemFonts(map<string, string> &map_SystemFonts);
 // windows控制台彩色文本函数
 bool SetConsoleColor(WORD Color);
 
+// 亮绿， 打印帮助信息
+void helpinfo(const char* exefile);
+
 #endif // IDTXT_H_INCLUDED
