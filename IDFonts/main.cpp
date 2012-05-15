@@ -1,4 +1,5 @@
 #include "idtxt.h"
+#include "psdfonts.h"
 
 int main(int argc, char* argv[])
 {
@@ -10,6 +11,13 @@ int main(int argc, char* argv[])
         OutPath = argv[2];
     CreateDirectory(OutPath, NULL);
 
+    if (strstr(idFileName, ".psd") || strstr(idFileName, ".PSD")) {
+        int ret = psdFonts(argc , argv);  // 子程序处理 Photoshop格式(*.psd) 模块
+        return ret; // 结束程序
+    }
+
+
+    /// ************* 以下为默认，处理ID或者AI文档 **************** ///
     fstream idfile(idFileName, fstream::in | fstream::binary);
     size_t idf_size = get_file_Size(idfile); // 获得文件大小
     char* buffile = new char[idf_size + 1];  // 文件读到缓冲
@@ -19,11 +27,19 @@ int main(int argc, char* argv[])
     const char* flag_end = "</stFnt:fontFileName>";
     map<string, size_t> map_fontFileName;
     map<string, size_t>::iterator iter_Fnt;
-    // 搜索文件缓存，把fontFileName装载到容器 map_fontFileName
+    // 搜索ID或AI文件缓存，把fontFileName装载到容器 map_fontFileName <字体文件名>
     if (menSearch_FlagToMap(buffile, idf_size, flag_beg, flag_end, map_fontFileName))
         ;
     else
-        cout << "InDesign文档.indd 做为参数，请确认文档是否存在!\n";
+        cout << "请用Adobe文档.indd 做为参数，请确认文档是否存在!\n";
+
+    flag_beg = "<stFnt:fontName>";
+    flag_end = "</stFnt:fontName>";
+    map<string, size_t> map_fontName;
+    // 搜索ID或AI文件缓存，把fontName装载到容器 map_fontName <英文名字体>
+    menSearch_FlagToMap(buffile, idf_size, flag_beg, flag_end, map_fontName);
+
+    delete[] buffile; // 释放文件缓冲
 
     map<string, string> map_SystemFonts;
     map<string, string>::iterator iter_SFt;
@@ -69,11 +85,7 @@ int main(int argc, char* argv[])
         iter_Ffp++;
     }
 
-    SetConsoleColor(0xA);  //亮绿
-    printf("\n打包 Adobe InDesign 文档中的字体工具\n"
-           "(C) 版权所有 2012.01 Hongwenjun (蘭公子)\n\n"
-           "Usage: %s  <InDesign_Doc.indd>  [SaveFontPath]\n"
-           "用 法: %s  <InDesign文档.indd>  [存放字体目录]\n", argv[0] , argv[0]);
+    helpinfo(argv[0]);  //亮绿， 打印帮助信息
 
     // 没有找到的字体报告
     if (map_fontFileName.size() != vec_fontFullPath.size()) {
@@ -96,30 +108,21 @@ int main(int argc, char* argv[])
         SetConsoleColor(0x7);  //恢复
     }
 
-
-
-
     if (1) {
-        flag_beg = "<stFnt:fontName>";
-        flag_end = "</stFnt:fontName>";
-        map<string, size_t> map_fontName;
-// 搜索文件缓存，把fontName装载到容器 map_fontName
-        menSearch_FlagToMap(buffile, idf_size, flag_beg, flag_end, map_fontName);
-
         cout << endl << idFileName << "  文档使用字体(英文名)的报告:" << endl ;
         iter_Fnt = map_fontName.begin();
         while (iter_Fnt != map_fontName.end())
             cout << (iter_Fnt++)->first << "\t";
-
     }
 
-    delete[] buffile;
     return 0;
 }
 
 /***************************** 代码储备，不参与编译 ****************************/
 #define CODE_STORE_NOT_COMPILE
 #ifndef CODE_STORE_NOT_COMPILE
+
+
 
 
 
