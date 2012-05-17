@@ -1,9 +1,9 @@
 https://code.google.com/hosting/settings
 
 git add .        添加全部
-git git commit -m "Msg"
+git commit -m "Msg"
 
-git push https://hongwenjun:密码@code.google.com/p/srgb/ master
+git push https://hongwenjun:rh2Ww9Qh4JD4@code.google.com/p/srgb/  master
 
 git clone https://hongwenjun@code.google.com/p/srgb/
 git clone https://code.google.com/p/srgb/

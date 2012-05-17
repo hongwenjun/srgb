@@ -56,7 +56,7 @@ bool menSearch_FlagToMap(const char* buffer, size_t count,
     char* pch2 = NULL;
     pch = memfind(ps, flag_beg , count);
     if (pch == NULL) {
-        printf("警告: 内存缓冲区找不到 flag_beg\n");
+     //   printf("警告: 内存缓冲区找不到 flag_beg\n");
         return false;
     }
     while (pch != NULL) {

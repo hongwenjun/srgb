@@ -1,15 +1,15 @@
 #include "GuIDF.h"
 
-// å…¨å±€å˜é‡
+// È«¾Ö±äÁ¿
 char ConfigFile[MAX_PATH] = {0};
 WCHAR appFile[MAX_PATH] =  L"IDFonts.exe";
 WCHAR docFile[MAX_PATH] =  L"test.indd";
 WCHAR fontPath[MAX_PATH] = L"D:\\Fonts";
 
-// å…¨å±€å¥æŸ„
+// È«¾Ö¾ä±ú
 HELE appEdit , docEdit, fontEdit;
 
-// è¯»å–å’Œä¿å­˜é…ç½®
+// ¶ÁÈ¡ºÍ±£´æÅäÖÃ
 void LoadConfigFile()
 {
     wfstream wFile(ConfigFile , fstream::in);
@@ -27,7 +27,7 @@ void SaveConfigFile()
     wFile.close();
 }
 
-// æ£€æŸ¥ä¸€ä¸ªæ–‡ä»¶æ˜¯å¦å­˜åœ¨
+// ¼ì²éÒ»¸öÎÄ¼şÊÇ·ñ´æÔÚ
 BOOL IsFileExist(LPCTSTR lpFileName)
 {
     WIN32_FIND_DATA fd = {0};
@@ -38,29 +38,29 @@ BOOL IsFileExist(LPCTSTR lpFileName)
     return ((hFind != INVALID_HANDLE_VALUE) && !(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-// åŠŸèƒ½ è·å¾—å½“å‰è·¯å¾„
+// ¹¦ÄÜ »ñµÃµ±Ç°Â·¾¶
 char* GetAppDir(char* szPath)
 {
     char* ret = szPath;
     int i;
-    GetModuleFileName(NULL, szPath, MAX_PATH); // å¾—åˆ°å½“å‰æ‰§è¡Œæ–‡ä»¶çš„æ–‡ä»¶åï¼ˆåŒ…å«è·¯å¾„ï¼‰
+    GetModuleFileName(NULL, szPath, MAX_PATH); // µÃµ½µ±Ç°Ö´ĞĞÎÄ¼şµÄÎÄ¼şÃû£¨°üº¬Â·¾¶£©
     i = strlen(szPath);
-    while ((i > 0) && (szPath[i - 1] != '\\')) { // åˆ é™¤æ–‡ä»¶åï¼Œåªç•™ä¸‹ç›®å½•
+    while ((i > 0) && (szPath[i - 1] != '\\')) { // É¾³ıÎÄ¼şÃû£¬Ö»ÁôÏÂÄ¿Â¼
         szPath[--i] = 0;
     }
     return ret;
 }
 
-// çª—å£å¸ƒå±€
+// ´°¿Ú²¼¾Ö
 void InitXC_Window(HWINDOW& hWindow)
 {
-    XWnd_SetImage(hWindow, XImage_LoadFile(L"GuiBG.png")); // è®¾ç½®çª—å£èƒŒæ™¯å›¾ç‰‡
+    XWnd_SetImage(hWindow, XImage_LoadFile(L"GuiBG.png")); // ÉèÖÃ´°¿Ú±³¾°Í¼Æ¬
 
-    HELE hStatic = XStatic_Create(7, 10, 390, 18, L"ç”¨æ³•: IDFonts.exe  InDesign_Doc.indd  [SaveFontPath]", hWindow);
-    //åˆ›å»ºé™æ€æ–‡æœ¬å…ƒç´ 
-    XEle_SetBkTransparent(hStatic, true); //è®¾ç½®èƒŒæ™¯é€æ˜
+    HELE hStatic = XStatic_Create(7, 10, 390, 18, L"ÓÃ·¨: IDFonts.exe  InDesign_Doc.indd  [SaveFontPath]", hWindow);
+    //´´½¨¾²Ì¬ÎÄ±¾ÔªËØ
+    XEle_SetBkTransparent(hStatic, true); //ÉèÖÃ±³¾°Í¸Ã÷
 
-    // åˆ›å»ºç¼–è¾‘æ¡†
+    // ´´½¨±à¼­¿ò
     appEdit = XEdit_Create(5, 30, 270, 22, hWindow);
     docEdit = XEdit_Create(5, 60, 270, 22, hWindow);
     fontEdit = XEdit_Create(5, 90, 270, 22, hWindow);
@@ -70,25 +70,25 @@ void InitXC_Window(HWINDOW& hWindow)
     XEdit_SetText(docEdit, docFile);
     XEdit_SetText(fontEdit, fontPath);
 
-    // å·¥å…·æç¤ºæŒ‰é’®
-    HELE appButton = XBtn_Create(282 , 30, 78, 22, L"IDFontsç¨‹åº", hWindow);
-    XEle_EnableToolTips(appButton, true);       //å¯ç”¨å·¥å…·æç¤º
-    XEle_SetToolTips(appButton, L"é€‰æ‹©IDFonts.exeç¨‹åºä½ç½®"); //è®¾ç½®å·¥å…·æç¤ºå†…å®¹
+    // ¹¤¾ßÌáÊ¾°´Å¥
+    HELE appButton = XBtn_Create(282 , 30, 78, 22, L"IDFonts³ÌĞò", hWindow);
+    XEle_EnableToolTips(appButton, true);       //ÆôÓÃ¹¤¾ßÌáÊ¾
+    XEle_SetToolTips(appButton, L"Ñ¡ÔñIDFonts.exe³ÌĞòÎ»ÖÃ"); //ÉèÖÃ¹¤¾ßÌáÊ¾ÄÚÈİ
 
-    HELE docButton = XBtn_Create(282, 60, 78, 22, L"InDesignæ–‡ä»¶", hWindow);
+    HELE docButton = XBtn_Create(282, 60, 78, 22, L"InDesignÎÄ¼ş", hWindow);
     XEle_EnableToolTips(docButton, true);
-    XEle_SetToolTips(docButton, L"é€‰æ‹©ä¸€ä¸ªAdobeInDesignæ–‡ä»¶");
+    XEle_SetToolTips(docButton, L"Ñ¡ÔñÒ»¸öAdobeInDesignÎÄ¼ş");
 
-    HELE fontButton = XBtn_Create(282, 90, 78, 22, L"å­—ä½“æ‰“åŒ…ç›®å½•", hWindow);
+    HELE fontButton = XBtn_Create(282, 90, 78, 22, L"×ÖÌå´ò°üÄ¿Â¼", hWindow);
     XEle_EnableToolTips(fontButton, true);
-    XEle_SetToolTips(fontButton, L"é€‰æ‹©å­—ä½“æ‰“åŒ…ä¿å­˜çš„ç›®å½•");
+    XEle_SetToolTips(fontButton, L"Ñ¡Ôñ×ÖÌå´ò°ü±£´æµÄÄ¿Â¼");
 
-    HELE runButton = XBtn_Create(230, 130, 100, 50, L"å¼€å§‹æ‰§è¡Œ", hWindow);
+    HELE runButton = XBtn_Create(230, 130, 100, 50, L"¿ªÊ¼Ö´ĞĞ", hWindow);
     XEle_EnableToolTips(runButton, true);
-    XEle_SetToolTips(runButton, L"å¼€å§‹æ‰§è¡Œå­—ä½“æ‰“åŒ…ä»»åŠ¡");
-    HELE closeButton = XBtn_Create(230, 200, 100, 30, L"ä¿å­˜å…³é—­", hWindow);
+    XEle_SetToolTips(runButton, L"¿ªÊ¼Ö´ĞĞ×ÖÌå´ò°üÈÎÎñ");
+    HELE closeButton = XBtn_Create(230, 200, 100, 30, L"±£´æ¹Ø±Õ", hWindow);
 
-    // æ³¨å†ŒæŒ‰é’®äº‹ä»¶
+    // ×¢²á°´Å¥ÊÂ¼ş
     XEle_RegisterEvent(appButton, XE_BNCLICK, appBtnClick);
     XEle_RegisterEvent(docButton, XE_BNCLICK, docBtnClick);
     XEle_RegisterEvent(fontButton, XE_BNCLICK, fontBtnClick);
@@ -98,7 +98,7 @@ void InitXC_Window(HWINDOW& hWindow)
 }
 
 
-// äº‹ä»¶å“åº”
+// ÊÂ¼şÏìÓ¦
 bool CALLBACK appBtnClick(HELE hEle, HELE hEventEle)
 {
     char buf[MAX_PATH];
@@ -157,7 +157,7 @@ bool CALLBACK closeBtnClick(HELE hEle, HELE hEventEle)
 }
 
 
-// æ‰§è¡Œå‘½ä»¤è¡Œ
+// Ö´ĞĞÃüÁîĞĞ
 int execute_command(char* cmdline)
 {
     SetConsoleTitle(cmdline);
@@ -166,7 +166,7 @@ int execute_command(char* cmdline)
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
 
-    // åå°éšè—
+    // ºóÌ¨Òş²Ø
     si.dwFlags   =   STARTF_USESHOWWINDOW;
     si.wShowWindow   =   SW_HIDE;
 
@@ -180,8 +180,8 @@ int execute_command(char* cmdline)
     DWORD ret;
     GetExitCodeProcess(pi.hProcess, &ret);
     if (!ret) {
-        ::MessageBox(NULL, "æ£€æµ‹æ‰“åŒ…Adobeæ–‡æ¡£å­—ä½“å·¥å…·æ‰§è¡Œå®Œæˆ!",
-                     "(C) ç‰ˆæƒæ‰€æœ‰ 2012.05 Hongwenjun (è˜­å…¬å­)", MB_OKCANCEL);
+        ::MessageBox(NULL, "¼ì²â´ò°üAdobeÎÄµµ×ÖÌå¹¤¾ßÖ´ĞĞÍê³É!",
+                     "(C) °æÈ¨ËùÓĞ 2012.05 Hongwenjun (Ìm¹«×Ó)", MB_OKCANCEL);
     }
     // Close process and thread handles.
     CloseHandle(pi.hProcess);
@@ -189,27 +189,27 @@ int execute_command(char* cmdline)
     return ret;
 }
 
-// é€‰æ‹©ä¸€ä¸ªç›®å½•
+// Ñ¡ÔñÒ»¸öÄ¿Â¼
 int   GetPath(HWND hWnd, char* pBuffer)
 {
     BROWSEINFO   bf;
     LPITEMIDLIST   lpitem;
     memset(&bf, 0, sizeof(BROWSEINFO));
     bf.hwndOwner = hWnd;
-    bf.lpszTitle = "é€‰æ‹©è·¯å¾„ ";
-    bf.ulFlags = BIF_RETURNONLYFSDIRS;   //å±æ€§ä½ å¯è‡ªå·±é€‰æ‹©
+    bf.lpszTitle = "Ñ¡ÔñÂ·¾¶ ";
+    bf.ulFlags = BIF_RETURNONLYFSDIRS;   //ÊôĞÔÄã¿É×Ô¼ºÑ¡Ôñ
     lpitem = SHBrowseForFolder(&bf);
-    if (lpitem == NULL)  //å¦‚æœæ²¡æœ‰é€‰æ‹©è·¯å¾„åˆ™è¿”å›   0
+    if (lpitem == NULL)  //Èç¹ûÃ»ÓĞÑ¡ÔñÂ·¾¶Ôò·µ»Ø   0
         return   0;
 
-    //å¦‚æœé€‰æ‹©äº†è·¯å¾„åˆ™å¤åˆ¶è·¯å¾„,è¿”å›è·¯å¾„é•¿åº¦
+    //Èç¹ûÑ¡ÔñÁËÂ·¾¶Ôò¸´ÖÆÂ·¾¶,·µ»ØÂ·¾¶³¤¶È
 
     SHGetPathFromIDList(lpitem, pBuffer);
     return   lstrlen(pBuffer);
 }
 
 
-// é€‰æ‹©ä¸€ä¸ªæ–‡ä»¶
+// Ñ¡ÔñÒ»¸öÎÄ¼ş
 int   GetFilePath(HWND hWnd, char* szFile)
 {
 
@@ -222,8 +222,8 @@ int   GetFilePath(HWND hWnd, char* szFile)
     // Set lpstrFile[0] to '\0' so that GetOpenFileName does not
     // use the contents of szFile to initialize itself.
     ofn.lpstrFile[0] = '\0';
-    ofn.nMaxFile = 260; // æœ¬æ¥sizeof(szFile);
-    ofn.lpstrFilter = "Adobe InDesign æ–‡æ¡£\0*.indd\0Adobe Photoshop æ–‡æ¡£\0*.psd\0Adobe Illustrator æ–‡æ¡£\0*.ai\0IDFontsç¨‹åºæ–‡ä»¶\0*.exe\0";
+    ofn.nMaxFile = 260; // ±¾À´sizeof(szFile);
+    ofn.lpstrFilter = "Adobe InDesign ÎÄµµ\0*.indd\0Adobe Photoshop ÎÄµµ\0*.psd\0Adobe Illustrator ÎÄµµ\0*.ai\0IDFonts³ÌĞòÎÄ¼ş\0*.exe\0";
     ofn.nFilterIndex = 1;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;
@@ -235,10 +235,10 @@ int   GetFilePath(HWND hWnd, char* szFile)
     return   lstrlen(szFile);
 }
 
-// è·¯å¾„è½¬å®½å­—èŠ‚
+// Â·¾¶×ª¿í×Ö½Ú
 WCHAR* charToWCHAR(WCHAR* wch, char* czs)
 {
-    MultiByteToWideChar(CP_ACP, 0, czs, -1, wch, MAX_PATH); // czs è½¬æ¢åˆ°å®½å­—èŠ‚wch
+    MultiByteToWideChar(CP_ACP, 0, czs, -1, wch, MAX_PATH); // czs ×ª»»µ½¿í×Ö½Úwch
     return wch;
 }
 char* WCHARTochar(char* czs , WCHAR* wch)

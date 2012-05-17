@@ -3,22 +3,22 @@
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-    XInitXCGUI(); // åˆå§‹åŒ–
+    XInitXCGUI(); // ³õÊ¼»¯
     extern char ConfigFile[MAX_PATH];
     GetAppDir(ConfigFile);
     strcat(ConfigFile, "/GuiDF.ini");
     if (IsFileExist(ConfigFile))
         LoadConfigFile();
 
-    HWINDOW hWindow = XWnd_CreateWindow(0, 0, 380, 280, L"æ£€æµ‹æ‰“åŒ…Adobeæ–‡æ¡£å­—ä½“å·¥å…·(C)2012.01è˜­å…¬å­"); // åˆ›å»ºçª—å£
+    HWINDOW hWindow = XWnd_CreateWindow(0, 0, 380, 280, L"¼ì²â´ò°üAdobeÎÄµµ×ÖÌå¹¤¾ß(C)2012.01Ìm¹«×Ó"); // ´´½¨´°¿Ú
     if (hWindow) {
-        // è®¾ç½®å›¾æ ‡
+        // ÉèÖÃÍ¼±ê
         HICON logo_hIcon = LoadIcon(hInstance, (LPCTSTR)LOGO_ICON);
         XWnd_SetIcon(hWindow, logo_hIcon, false);
-        InitXC_Window(hWindow); // çª—å£å¸ƒå±€
+        InitXC_Window(hWindow); // ´°¿Ú²¼¾Ö
 
-        XWnd_ShowWindow(hWindow, SW_SHOW); //æ˜¾ç¤ºçª—å£
-        XRunXCGUI(); //è¿è¡Œ
+        XWnd_ShowWindow(hWindow, SW_SHOW); //ÏÔÊ¾´°¿Ú
+        XRunXCGUI(); //ÔËĞĞ
     }
     return 0;
 }

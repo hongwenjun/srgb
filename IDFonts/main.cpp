@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
     if (strstr(idFileName, ".psd") || strstr(idFileName, ".PSD")) {
         int ret = psdFonts(argc , argv);  // 子程序处理 Photoshop格式(*.psd) 模块
-        return ret; // 结束程序
+        return 0; // 结束程序
     }
 
 
@@ -108,11 +108,16 @@ int main(int argc, char* argv[])
         SetConsoleColor(0x7);  //恢复
     }
 
+    fstream coutlog("使用字体报告.txt", fstream::out | fstream::app);
     if (1) {
         cout << endl << idFileName << "  文档使用字体(英文名)的报告:" << endl ;
+        coutlog << endl << "-------------------------------------------"
+                << endl << idFileName << " 字体报告:" << endl ;
         iter_Fnt = map_fontName.begin();
-        while (iter_Fnt != map_fontName.end())
-            cout << (iter_Fnt++)->first << "\t";
+        while (iter_Fnt != map_fontName.end()) {
+            cout << (iter_Fnt)->first << "\t";
+            coutlog << (iter_Fnt++)->first << "\n";
+        }
     }
 
     return 0;
