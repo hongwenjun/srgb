@@ -38,28 +38,28 @@
 #define THROW_EXCEPTION_CUSTOM_MSG1(msg,args) { throw std::runtime_error(msg); }
 
 #if defined(_WIN32) || defined(WIN32)
-	#define MRPT_OS_WINDOWS
+#define MRPT_OS_WINDOWS
 
-	typedef unsigned __int64 uint64_t;
+typedef unsigned __int64 uint64_t;
 
-        #ifdef _MSC_VER
-        	#include <sys/utime.h>
-        #endif
-	#include <io.h>
-	#include <windows.h>
-	#include <direct.h>
+#ifdef _MSC_VER
+#include <sys/utime.h>
+#endif
+#include <io.h>
+#include <windows.h>
+#include <direct.h>
 #else
-	#define MRPT_OS_LINUX
+#define MRPT_OS_LINUX
 
-	#include <sys/types.h>
-	#include <dirent.h>
-	#include <unistd.h>
-	#include <time.h>
-	#include <utime.h>
-	#include <unistd.h>
-	#include <errno.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <time.h>
+#include <utime.h>
+#include <unistd.h>
+#include <errno.h>
 
-	//typedef unsigned __int64 uint64_t;
+//typedef unsigned __int64 uint64_t;
 #endif
 
 #include <queue>
@@ -74,50 +74,48 @@ using namespace mrpt::system;
 using namespace std;
 
 /*---------------------------------------------------------------
-		explore
+        explore
  ---------------------------------------------------------------*/
 void CDirectoryExplorer::explore(
-	const string 		&path,
-	const unsigned long 	in_mask,
-	TFileInfoList  		&outList )
+    const string&        path,
+    const unsigned long     in_mask,
+    TFileInfoList&       outList)
 {
-	MRPT_TRY_START
+    MRPT_TRY_START
 
-	unsigned long mask = in_mask;
+    unsigned long mask = in_mask;
 
-	outList.clear();
+    outList.clear();
 
-	// The path terminated in "/" or "\\"
-	string 			searchPath( path );
+    // The path terminated in "/" or "\\"
+    string          searchPath(path);
 
 
 #ifdef MRPT_OS_WINDOWS
-	// ====================
-	// WINDOWS VERSION
-	// ====================
-	WIN32_FIND_DATAA		f;
-	TFileInfo		newEntry;
+    // ====================
+    // WINDOWS VERSION
+    // ====================
+    WIN32_FIND_DATAA        f;
+    TFileInfo       newEntry;
 
-	string searchPath_mask=searchPath;
+    string searchPath_mask = searchPath;
 
-	HANDLE h = FindFirstFileA( searchPath_mask.c_str(), &f);
-	if (h==INVALID_HANDLE_VALUE)
-		return; // No files.
+    HANDLE h = FindFirstFileA(searchPath_mask.c_str(), &f);
+    if (h == INVALID_HANDLE_VALUE)
+        return; // No files.
 
-	// Include the FILE_ATTRIB_ARCHIVE flag for files:
-	if (mask & FILE_ATTRIB_ARCHIVE) mask |= FILE_ATTRIBUTE_NORMAL;
-	do
-	{
-		if ( (mask & f.dwFileAttributes)!=0  )	// Passes the user masks:
-		{
-			// File name:
-			newEntry.name = string(f.cFileName);
+    // Include the FILE_ATTRIB_ARCHIVE flag for files:
+    if (mask & FILE_ATTRIB_ARCHIVE) mask |= FILE_ATTRIBUTE_NORMAL;
+    do {
+        if ((mask & f.dwFileAttributes) != 0) {  // Passes the user masks:
+            // File name:
+            newEntry.name = string(f.cFileName);
 
             // Complete file path:
             newEntry.wholePath = searchPath;        // utf8_bom_tools  作者 Jose Luis Blanco Claraco 原使用下行代码
             // newEntry.wholePath = newEntry.name;  // 为了修复 参数 a\a.cpp 屏蔽这句使用上行代码, GCC编译器有效
 
-// VC 和 GCC 不同，增加 转换代码,   path 传入 abc/*.txt GCC 会 转换为 abc/test.txt  ，而 VC不会转换，还是abc/*.txt
+            // VC 和 GCC 不同，增加 转换代码,   path 传入 abc/*.txt GCC 会 转换为 abc/test.txt  ，而 VC不会转换，还是abc/*.txt
 // 例如  R:\vcbom\txt\*.txt  bom_add.txt  R:\vcbom\txt\bom_add.txt 12
 #ifdef _MSC_VER
             size_t loc;
@@ -131,123 +129,121 @@ void CDirectoryExplorer::explore(
 //  printf("%s  %s  %s %d\n", searchPath_mask.c_str() , newEntry.name.c_str() ,  newEntry.wholePath.c_str(), loc);
 #endif
 
+            // File size:
+            newEntry.fileSize = ((uint64_t)f.nFileSizeLow) + (((uint64_t)f.nFileSizeHigh) << 32);
 
-			// File size:
-			newEntry.fileSize = ((uint64_t)f.nFileSizeLow) + (((uint64_t)f.nFileSizeHigh) << 32);
+            // File times:
+            struct stat statDat;
+            if (stat(newEntry.wholePath.c_str(), &statDat)) {
+                FindClose(h);
+                THROW_EXCEPTION_CUSTOM_MSG1("Cannot get stat for file: '%s'", newEntry.wholePath.c_str())
+            }
 
-			// File times:
-			struct stat statDat;
-			if (stat( newEntry.wholePath.c_str(),&statDat ))
-			{
-				FindClose(h);
-				THROW_EXCEPTION_CUSTOM_MSG1("Cannot get stat for file: '%s'",newEntry.wholePath.c_str())
-			}
+            newEntry.modTime    = statDat.st_mtime;
+            newEntry.accessTime = statDat.st_atime;
 
-			newEntry.modTime    = statDat.st_mtime;
-			newEntry.accessTime = statDat.st_atime;
-
-			// Flags:
-			newEntry.isDir = 0!=(statDat.st_mode &_S_IFDIR);
-			newEntry.isSymLink = false; // (We donnot look for this in Windows, by now...)
+            // Flags:
+            newEntry.isDir = 0 != (statDat.st_mode & _S_IFDIR);
+            newEntry.isSymLink = false; // (We donnot look for this in Windows, by now...)
 
 
-			// Save:
-			outList.push_back( newEntry );
-		}
-	} while(FindNextFileA(h, &f));
+            // Save:
+            outList.push_back(newEntry);
+        }
+    } while (FindNextFileA(h, &f));
 
-	FindClose(h); // Ignore possible errors..
+    FindClose(h); // Ignore possible errors..
 
-	// Done
+    // Done
 #else
-	// ====================
-	// LINUX VERSION
-	// ====================
-	TFileInfo		newEntry;
+    // ====================
+    // LINUX VERSION
+    // ====================
+    TFileInfo       newEntry;
 
-	newEntry.wholePath = searchPath;
+    newEntry.wholePath = searchPath;
 
-	struct stat statDat, lstatDat;
-	if (!stat( newEntry.wholePath.c_str(),&statDat ))
-		outList.push_back( newEntry );
+    struct stat statDat, lstatDat;
+    if (!stat(newEntry.wholePath.c_str(), &statDat))
+        outList.push_back(newEntry);
 
-	return;
+    return;
 
-//	struct dirent 		*ent;
+//  struct dirent       *ent;
 //
-//	DIR *dir = opendir( searchPath.c_str() );
-//	if (!dir)
-//		THROW_EXCEPTION("Error starting exploration! (does path exist?)");
+//  DIR *dir = opendir( searchPath.c_str() );
+//  if (!dir)
+//      THROW_EXCEPTION("Error starting exploration! (does path exist?)");
 //
 //
-//	while((ent = readdir(dir)) != NULL)
-//	{
-//		if ( strcmp(ent->d_name,".") && strcmp(ent->d_name,"..") )
-//		{
-//			// File name:
-//			newEntry.name = string(ent->d_name);
+//  while((ent = readdir(dir)) != NULL)
+//  {
+//      if ( strcmp(ent->d_name,".") && strcmp(ent->d_name,"..") )
+//      {
+//          // File name:
+//          newEntry.name = string(ent->d_name);
 //
-//			// Complete file path:
-//			newEntry.wholePath = searchPath;
-//			newEntry.wholePath += newEntry.name;
+//          // Complete file path:
+//          newEntry.wholePath = searchPath;
+//          newEntry.wholePath += newEntry.name;
 //
-//			// File times:
-//			struct stat statDat, lstatDat;
-//			if (stat( newEntry.wholePath.c_str(),&statDat ))
-//			{
-//				closedir(dir);
-//				THROW_EXCEPTION_CUSTOM_MSG1("Cannot get stat for file: '%s'",newEntry.wholePath.c_str())
-//			}
+//          // File times:
+//          struct stat statDat, lstatDat;
+//          if (stat( newEntry.wholePath.c_str(),&statDat ))
+//          {
+//              closedir(dir);
+//              THROW_EXCEPTION_CUSTOM_MSG1("Cannot get stat for file: '%s'",newEntry.wholePath.c_str())
+//          }
 //
-//			newEntry.modTime    = statDat.st_mtime;
-//			newEntry.accessTime = statDat.st_atime;
+//          newEntry.modTime    = statDat.st_mtime;
+//          newEntry.accessTime = statDat.st_atime;
 //
-//			// Flags:
-//			newEntry.isDir = S_ISDIR(statDat.st_mode);
+//          // Flags:
+//          newEntry.isDir = S_ISDIR(statDat.st_mode);
 //
-//			if ( ( (mask & FILE_ATTRIB_ARCHIVE)!=0 && !newEntry.isDir ) ||
-//			     ( (mask & FILE_ATTRIB_DIRECTORY)!=0 && newEntry.isDir ) )
-//			{
-//				// File size:
-//				newEntry.fileSize = (intmax_t)statDat.st_size;
+//          if ( ( (mask & FILE_ATTRIB_ARCHIVE)!=0 && !newEntry.isDir ) ||
+//               ( (mask & FILE_ATTRIB_DIRECTORY)!=0 && newEntry.isDir ) )
+//          {
+//              // File size:
+//              newEntry.fileSize = (intmax_t)statDat.st_size;
 //
-//				// Is it a symbolic link?? Need to call "lstat":
-//				if (!lstat( newEntry.wholePath.c_str(),&lstatDat ))
-//				{
-//					newEntry.isSymLink = S_ISLNK(lstatDat.st_mode);
-//				}
-//				else	newEntry.isSymLink = false;
+//              // Is it a symbolic link?? Need to call "lstat":
+//              if (!lstat( newEntry.wholePath.c_str(),&lstatDat ))
+//              {
+//                  newEntry.isSymLink = S_ISLNK(lstatDat.st_mode);
+//              }
+//              else    newEntry.isSymLink = false;
 //
-//				// Save:
-//				outList.push_back( newEntry );
-//			}
-//		}
-//	}
+//              // Save:
+//              outList.push_back( newEntry );
+//          }
+//      }
+//  }
 //
-//	closedir(dir);
+//  closedir(dir);
 
-	// Done
+    // Done
 #endif
 
-	MRPT_TRY_END
+    MRPT_TRY_END
 }
 
 
 // Auxiliary function to order by name, ascending
-bool cmpFileEntriesName_Asc(const CDirectoryExplorer::TFileInfo &a, const CDirectoryExplorer::TFileInfo &b)
+bool cmpFileEntriesName_Asc(const CDirectoryExplorer::TFileInfo& a, const CDirectoryExplorer::TFileInfo& b)
 {
     return a.wholePath < b.wholePath;
 }
-bool cmpFileEntriesName_Desc(const CDirectoryExplorer::TFileInfo &a, const CDirectoryExplorer::TFileInfo &b)
+bool cmpFileEntriesName_Desc(const CDirectoryExplorer::TFileInfo& a, const CDirectoryExplorer::TFileInfo& b)
 {
     return a.wholePath < b.wholePath;
 }
 
 /*---------------------------------------------------------------
-		sortByName
+        sortByName
  ---------------------------------------------------------------*/
-void CDirectoryExplorer::sortByName( TFileInfoList &lstFiles, bool ascendingOrder )
+void CDirectoryExplorer::sortByName(TFileInfoList& lstFiles, bool ascendingOrder)
 {
-    std::sort(lstFiles.begin(),lstFiles.end(), ascendingOrder ? cmpFileEntriesName_Asc : cmpFileEntriesName_Desc );
+    std::sort(lstFiles.begin(), lstFiles.end(), ascendingOrder ? cmpFileEntriesName_Asc : cmpFileEntriesName_Desc);
 }
 
