@@ -114,8 +114,9 @@ void CDirectoryExplorer::explore(
 			newEntry.name = string(f.cFileName);
 
 			// Complete file path:
-			//newEntry.wholePath = searchPath;
-			newEntry.wholePath = newEntry.name;
+			newEntry.wholePath = searchPath;        // utf8_bom_tools  作者 Jose Luis Blanco Claraco 原使用下行代码
+			// newEntry.wholePath = newEntry.name;  // 为了修复 参数 a\a.cpp 屏蔽这句使用上行代码
+
 
 			// File size:
 			newEntry.fileSize = ((uint64_t)f.nFileSizeLow) + (((uint64_t)f.nFileSizeHigh) << 32);
