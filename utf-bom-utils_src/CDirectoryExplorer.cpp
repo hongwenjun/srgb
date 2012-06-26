@@ -113,9 +113,23 @@ void CDirectoryExplorer::explore(
 			// File name:
 			newEntry.name = string(f.cFileName);
 
-			// Complete file path:
-			newEntry.wholePath = searchPath;        // utf8_bom_tools  作者 Jose Luis Blanco Claraco 原使用下行代码
-			// newEntry.wholePath = newEntry.name;  // 为了修复 参数 a\a.cpp 屏蔽这句使用上行代码
+            // Complete file path:
+            newEntry.wholePath = searchPath;        // utf8_bom_tools  作者 Jose Luis Blanco Claraco 原使用下行代码
+            // newEntry.wholePath = newEntry.name;  // 为了修复 参数 a\a.cpp 屏蔽这句使用上行代码, GCC编译器有效
+
+// VC 和 GCC 不同，增加 转换代码,   path 传入 abc/*.txt GCC 会 转换为 abc/test.txt  ，而 VC不会转换，还是abc/*.txt
+// 例如  R:\vcbom\txt\*.txt  bom_add.txt  R:\vcbom\txt\bom_add.txt 12
+#ifdef _MSC_VER
+            size_t loc;
+            loc = searchPath.rfind("\\");
+
+            if (loc != string::npos) {
+                newEntry.wholePath =  searchPath.substr(0, loc + 1) + newEntry.name;
+            } else
+                newEntry.wholePath = newEntry.name;
+
+//  printf("%s  %s  %s %d\n", searchPath_mask.c_str() , newEntry.name.c_str() ,  newEntry.wholePath.c_str(), loc);
+#endif
 
 
 			// File size:
