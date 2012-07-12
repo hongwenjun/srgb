@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include <windows.h>
 #include <iostream>
-#include <stdio.h>
 #include <string.h>
 using namespace std;
 
@@ -22,19 +22,12 @@ typedef void (CALLBACK* MD5Update_Tpye)(MD5_CTX* context,
                                         unsigned int inlen);
 typedef void (CALLBACK* MD5Final_Tpye)(MD5_CTX* context);
 
-int main(int argc, char** argv)
+char* MD5(char* pszSrc, int nSrcLength, char* pszDest)
 {
-    if (argc != 2) {
-        cerr << "Args Count Err! 参数错误!" << endl;
-
-        const char* pargv = strrchr(argv[0] , '\\');
-        cerr << "请使用: " << (pargv ? pargv + 1 : argv[0]) << "\t<字符串>\n";
-        return 0;
-    }
-
     HINSTANCE hDLL = LoadLibrary("Cryptdll.dll");
     if (hDLL == NULL) {
-        return -1;
+        FreeLibrary(hDLL);
+        return NULL;
     }
 
     MD5Init_Tpye   MD5Init;
@@ -46,26 +39,54 @@ int main(int argc, char** argv)
     MD5Final = (MD5Final_Tpye)GetProcAddress(hDLL, "MD5Final");
     if (MD5Init == NULL || MD5Update == NULL || MD5Final == NULL) {
         FreeLibrary(hDLL);
-        return -1;
+        return NULL;
     }
 
     MD5_CTX md5_context;
     MD5Init(&md5_context);
-    unsigned char src[100];
 
-    unsigned length = strlen(argv[1]);
-    memcpy(src, argv[1], length);
-
-
-    MD5Update(&md5_context, src, length);
+    MD5Update(&md5_context, (unsigned char*)pszSrc, nSrcLength);
     MD5Final(&md5_context);
-    char dest[100] = { 0 };
-    char* p = dest;
+
+    char* p = pszDest;
     for (int i = 0; i < 16; ++i) {
         sprintf(p, "%02x", md5_context.digest[i]);
         p += 2;
     }
-    cout << dest << endl;
+
+//   cout << pszDest << endl;
     FreeLibrary(hDLL);
+    return pszDest;
+}
+
+char* MD5(char* pszSrc, char* pszDest)
+{
+    return MD5(pszSrc , strlen(pszSrc) , pszDest);
+}
+
+static char md5_buf[65];
+char* MD5(char* pszSrc)
+{
+    return MD5(pszSrc , strlen(pszSrc) , md5_buf);
+}
+
+int main(int argc, char** argv)
+{
+    if (argc != 2) {
+        cerr << "Args Count Err! 参数错误!" << endl;
+
+        const char* pargv = strrchr(argv[0] , '\\');
+        cerr << "请使用: " << (pargv ? pargv + 1 : argv[0]) << "\t<字符串>\n";
+        return -1;
+    }
+
+    char md5Dest[100];
+
+    cout <<  argv[1] << "  --> " << MD5(argv[1] , strlen(argv[1]) , md5Dest) << endl;
+
+    cout <<  "hello world!" << "  --> " << MD5("hello world!", md5Dest) << endl;
+    cout <<  "hello world!" << "  --> " << MD5("hello world!") << endl;
+
+
     return 0;
 }
