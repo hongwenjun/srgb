@@ -1,4 +1,6 @@
-REM 创建 2007年8月28日 By 蘭公子
+REM 创建 2007年8月28日 By 蘭公子    修改 2011年02月19日
+GLOBAL BITMAP_LOGO$ , Help_File$ , BJ_File$ ,BITMAP_CD3D$, URLText$
+
 DECLARE SUB ShellExecute LIB "shell32" (BYVAL hWnd&,BYVAL Operation&,BYVAL File$,BYVAL Parameters&,BYVAL Directory&,BYVAL Show&) ALIAS "ShellExecuteA"
 DECLARE SUB BJWJ
 DECLARE SUB JX4J
@@ -6,6 +8,7 @@ DECLARE SUB ZX4B
 DECLARE SUB WZQX
 DECLARE SUB Xgs2
 DECLARE SUB OPENBJ
+DECLARE SUB sRGB3D
 
 #define DRAWOBJECT "CorelDRAW.Automation.9"
 
@@ -18,21 +21,29 @@ IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
 ENDIF
 
 BITMAP_LOGO$ = CurDir$+"\CD9JX.bmp"
+BITMAP_CD3D$ = CurDir$+"\CD3D.bmp"
 Help_File$ = CurDir$+"\CD9JX.txt"
+URLText$ = "Http://sRGB.cz.cc"
 
 XZ=0
-BEGIN DIALOG Dialog1 257, 117, "CorelDRAW9个性标记工具 By 蘭公子"
+
+
+BEGIN DIALOG Dialog1 257, 128, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 蘭公子"
 	OPTIONGROUP XZ
 		OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
 		OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
 		OPTIONBUTTON  12, 35, 154, 13, "把中线放置到页边中间(请先选择中线)"
 		OPTIONBUTTON  11, 50, 150, 13, "把所有文本转曲线(不需要解散群组)"
 		OPTIONBUTTON  12, 65, 150, 13, "调用外部插件: 维思自动拼版7.0"
-	PUSHBUTTON  20, 90, 80, 22, "开始执行所选命令"
-	PUSHBUTTON  112, 90, 60, 22, "关闭"
+		OPTIONBUTTON  12, 80, 153, 13, "CorelDRAW9 3D展示盒变形插件"
+	PUSHBUTTON  20, 100, 80, 22, "开始执行所选命令"
+	PUSHBUTTON  112, 100, 60, 22, "关闭"
 	IMAGE  179, 8, 67, 67, BITMAP_LOGO$
-	PUSHBUTTON  186, 90, 60, 22, "帮助说明"
+	PUSHBUTTON  187, 100, 60, 22, "帮助说明"
+	TEXTBOX  173, 80, 77, 13, URLText$
 END DIALOG
+
+
 
 j=dialog(dialog1)
 IF j=3 THEN '选择确定
@@ -48,6 +59,8 @@ IF j=3 THEN '选择确定
 		CALL  WZQX
 		case 4
 		CALL  Xgs2
+		case 5
+		CALL sRGB3D
 		case else
 		'没有选择操作
 	END SELECT
@@ -57,7 +70,7 @@ IF j=5 THEN '选择帮助
    IF XZ=2 THEN 
       CALL OPENBJ
    END IF
-ShellExecute 0,0,"http://srgb.net.cn/",0,0,0
+ShellExecute 0,0,"http://srgb.cz.cc/",0,0,0
 ShellExecute 0,0,Help_File$,0,0,0
 END IF
 
@@ -150,4 +163,49 @@ ENDIF
 BJ_File$ = CurDir$+"\CD9JX.cdr"
 .FileOpen BJ_File$
 END WITHOBJECT
+END SUB
+
+SUB sRGB3D
+CD3D=0
+BEGIN DIALOG CD3D_Dialog 227, 131, "CorelDRAW9 3D展示盒变形插件 By 蘭公子"
+	OPTIONGROUP CD3D
+		OPTIONBUTTON  12, 5, 120, 13, "正面变形(请先选择正面物件)"
+		OPTIONBUTTON  12, 20, 120, 13, "侧面变形(请先选择侧面物件)"
+		OPTIONBUTTON  11, 35, 120, 13, "顶盖变形(请先选择顶盖物件)"
+	PUSHBUTTON  15, 101, 80, 22, "执行所选变形命令"
+	PUSHBUTTON  106, 101, 60, 22, "关闭"
+	IMAGE  152, 8, 67, 67, BITMAP_LOGO$
+	IMAGE  6, 50, 136, 47, BITMAP_CD3D$
+	TEXTBOX  146, 80, 77, 13, URLText$
+END DIALOG
+
+J3D=dialog(CD3D_Dialog)
+
+IF J3D=3 THEN '选择确定
+ 	SELECT CASE CD3D
+
+		case 0
+		'正面变形
+WITHOBJECT DRAWOBJECT
+.StretchObject 0.951, 1, 0.937, 1, FALSE, FALSE, 1
+.SkewObject 0, 7000000, 1
+END WITHOBJECT
+		case 1
+'侧面变形
+WITHOBJECT DRAWOBJECT
+.StretchObject 0.468, 1, 0.937, 1, FALSE, FALSE, 3
+.SkewObject 0, -45000000, 3
+END WITHOBJECT
+		case 2
+'顶盖变形
+WITHOBJECT DRAWOBJECT
+.StretchObject 0.951, 1, 0.525, 1, FALSE, FALSE, 1
+.SkewObject 41700000, 7000000, 1
+END WITHOBJECT
+		case else
+		'没有选择操作
+	END SELECT
+END IF
+
+
 END SUB
