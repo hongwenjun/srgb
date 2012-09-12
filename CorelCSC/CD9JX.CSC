@@ -1,4 +1,4 @@
-REM 创建 2007年8月28日 By 蘭公子    修改 2011年02月19日
+REM 创建 2007年8月28日 By 蘭公子
 GLOBAL BITMAP_LOGO$ , Help_File$ , BJ_File$ ,BITMAP_CD3D$, URLText$
 
 DECLARE SUB ShellExecute LIB "shell32" (BYVAL hWnd&,BYVAL Operation&,BYVAL File$,BYVAL Parameters&,BYVAL Directory&,BYVAL Show&) ALIAS "ShellExecuteA"
@@ -9,6 +9,7 @@ DECLARE SUB WZQX
 DECLARE SUB Xgs2
 DECLARE SUB OPENBJ
 DECLARE SUB sRGB3D
+DECLARE SUB SetPageSize
 
 #define DRAWOBJECT "CorelDRAW.Automation.9"
 
@@ -28,7 +29,7 @@ URLText$ = "Http://sRGB.cz.cc"
 XZ=0
 
 
-BEGIN DIALOG Dialog1 257, 128, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 蘭公子"
+BEGIN DIALOG Dialog1 257, 143, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 蘭公子"
 	OPTIONGROUP XZ
 		OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
 		OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
@@ -36,11 +37,12 @@ BEGIN DIALOG Dialog1 257, 128, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 
 		OPTIONBUTTON  11, 50, 150, 13, "把所有文本转曲线(不需要解散群组)"
 		OPTIONBUTTON  12, 65, 150, 13, "调用外部插件: 维思自动拼版7.0"
 		OPTIONBUTTON  12, 80, 153, 13, "CorelDRAW9 3D展示盒变形插件"
-	PUSHBUTTON  20, 100, 80, 22, "开始执行所选命令"
-	PUSHBUTTON  112, 100, 60, 22, "关闭"
+		OPTIONBUTTON  12, 95, 153, 13, "拼版物件居中设定页面大小"		
+	PUSHBUTTON  20, 115, 80, 22, "开始执行所选命令"
+	PUSHBUTTON  112, 115, 60, 22, "关闭"
 	IMAGE  179, 8, 67, 67, BITMAP_LOGO$
-	PUSHBUTTON  187, 100, 60, 22, "帮助说明"
-	TEXTBOX  173, 80, 77, 13, URLText$
+	PUSHBUTTON  187, 115, 60, 22, "帮助说明"
+	TEXTBOX  173, 95, 77, 13, URLText$
 END DIALOG
 
 
@@ -61,6 +63,8 @@ IF j=3 THEN '选择确定
 		CALL  Xgs2
 		case 5
 		CALL sRGB3D
+		case 6
+		CALL SetPageSize
 		case else
 		'没有选择操作
 	END SELECT
@@ -164,6 +168,42 @@ BJ_File$ = CurDir$+"\CD9JX.cdr"
 .FileOpen BJ_File$
 END WITHOBJECT
 END SUB
+
+
+SUB SetPageSize '拼版物件居中设定页面大小
+
+REM  拼版工序--按物件设定页面大小  创建 2012年9月11日 By 蘭公子
+
+WITHOBJECT  DRAWOBJECT
+    .Group                  ' 群组
+    .GetSize XSize&, YSize& '得到物件大小
+
+    ' 所选物件居中
+    Id&=.GetObjectID(0,TRUE,TRUE)
+    .SelectObjectOfCDRStaticID Id&
+    .AlignToCenterOfPage 3, 3 ' 居中对齐
+    .Ungroup                  ' 解散群组
+    .UnSelectAll              ' 取消选择所有物件
+
+    ' 设定页面大小 为物件大小
+    XSize& = int(XSize& / 10000 + 0.5) * 10000   ' 尺寸 mm取整
+    YSize& = int(YSize& / 10000 + 0.5) * 10000
+    .SetCurrentPageSize  XSize&, YSize&      ' 设定页面大小为 物件大小取整
+
+    ' 画一个矩形        Top       Left      Bottom     Right   CornerRadius(圆角半径可选四个参数)
+    .CreateRectangle YSize&/2, -XSize&/2, -YSize&/2, XSize&/2,   0   ' 相对于中心的 顶-左-下-右 四个坐标 画矩形
+    .ApplyOutline 1500, 1, 0, 0, 100, 0, 0, -1, -1, FALSE, 2, 0, FALSE   ' 0.15mm轮廓线
+
+	.StoreColor 5020, 100, 100, 100, 100, 0, 0, 0, 0                     ' 拼版色
+	.SetOutlineColor                                                     ' 设置轮廓颜色
+
+END WITHOBJECT
+
+END SUB
+
+
+
+
 
 SUB sRGB3D
 CD3D=0
