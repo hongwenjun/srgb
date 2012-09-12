@@ -9,24 +9,24 @@ DECLARE SUB CMYKMARK
 
 CALL COLORMARK
 
-SUB COLORMARK ' µ¼ÈëÑÕÉ«Ì××¼±ê¼ÇÎÄ¼ş£¬ ¸ñÊ½»¯MarkNameID&(5) Êı×é
+SUB COLORMARK ' å¯¼å…¥é¢œè‰²å¥—å‡†æ ‡è®°æ–‡ä»¶ï¼Œ æ ¼å¼åŒ–MarkNameID&(5) æ•°ç»„
 WITHOBJECT DRAWOBJECT
     CurDir$ = GetCurrFolder()
     IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
         CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
     ENDIF
     BJ_File$ = CurDir$+"\ColorMark.cdr"
-    .GetPageSize PXSize&, PYSize& 'µÃµ½Ò³Ãæ´óĞ¡
-    .FileImport BJ_File$, 1796, FALSE  'µ¼ÈëÎÄ¼ş
+    .GetPageSize PXSize&, PYSize& 'å¾—åˆ°é¡µé¢å¤§å°
+    .FileImport BJ_File$, 1796, FALSE  'å¯¼å…¥æ–‡ä»¶
     .AlignToCenterOfPage 3, 1
-    .MoveObject 0, -(PYSize&/2+300000) 'Ò³Ãæ×óÏÂ(3cm)¶¨Î»
+    .MoveObject 0, -(PYSize&/2+300000) 'é¡µé¢å·¦ä¸‹(3cm)å®šä½
     REM .ZoomToSelection
     .Ungroup
 
-	DIM MarkNameID&(5)   ' ´æ´¢ÑÕÉ«Ì××¼±ê¼ÇIdºÅ
-	.SelectAllObjects   ' ÏÈÈ«Ñ¡£¬¾Í»á´Ó×îºóµ¼ÈëµÄÎï¼şÑ¡ÔñÁË
+	DIM MarkNameID&(5)   ' å­˜å‚¨é¢œè‰²å¥—å‡†æ ‡è®°Idå·
+	.SelectAllObjects   ' å…ˆå…¨é€‰ï¼Œå°±ä¼šä»æœ€åå¯¼å…¥çš„ç‰©ä»¶é€‰æ‹©äº†
 
-	FOR ix = 1 TO 10 STEP 1	     ' ´æ´¢ÑÕÉ«Ì××¼±ê¼Ç µ½ MarkNameID&(5) Êı×éÖĞ
+	FOR ix = 1 TO 10 STEP 1	     ' å­˜å‚¨é¢œè‰²å¥—å‡†æ ‡è®° åˆ° MarkNameID&(5) æ•°ç»„ä¸­
 		.SelectNextObject 0
 		MarkName$ = .GetObjectData( "MarkName" )
 
@@ -65,7 +65,7 @@ WITHOBJECT DRAWOBJECT
             case 4
                 CAll  CMYKMARK
             case else
-            'Ã»ÓĞ²Ù×÷
+            'æ²¡æœ‰æ“ä½œ
         END SELECT
 
 	NEXT ix
@@ -76,55 +76,55 @@ END SUB
 
 
 
-SUB JX4J ' "°Ñ½ÇÏß·ÅÖÃµ½Ò³ÃæËÄ½Ç(ÇëÏÈÑ¡Ôñ½ÇÏß)"
+SUB JX4J ' "æŠŠè§’çº¿æ”¾ç½®åˆ°é¡µé¢å››è§’(è¯·å…ˆé€‰æ‹©è§’çº¿)"
 WITHOBJECT DRAWOBJECT
     Id&=.GetObjectID(0,TRUE,TRUE)
     .SelectObjectOfCDRStaticID Id&
-    .GetSize XSize&, YSize& 'µÃµ½Îï¼ş´óĞ¡
-    .GetPageSize PXSize&, PYSize& 'µÃµ½Ò³Ãæ´óĞ¡
+    .GetSize XSize&, YSize& 'å¾—åˆ°ç‰©ä»¶å¤§å°
+    .GetPageSize PXSize&, PYSize& 'å¾—åˆ°é¡µé¢å¤§å°
     .SelectObjectOfCDRStaticID Id&
-    .AlignToCenterOfPage 2, 1 '×óÉÏ¶ÔÆëµ½Ò³ÃæÖĞĞÄ
-    .MoveObject -PXSize&/2,  PYSize&/2 '×óÉÏÒÆ
+    .AlignToCenterOfPage 2, 1 'å·¦ä¸Šå¯¹é½åˆ°é¡µé¢ä¸­å¿ƒ
+    .MoveObject -PXSize&/2,  PYSize&/2 'å·¦ä¸Šç§»
     .DuplicateObject 0, 0
     .RotateObject -90000000, FALSE, 0, 0
     .AlignToCenterOfPage 1, 1
-    .MoveObject  PXSize&/2,  PYSize&/2 'ÓÒÉÏÒÆ
+    .MoveObject  PXSize&/2,  PYSize&/2 'å³ä¸Šç§»
     .DuplicateObject 0, 0
     .RotateObject -180000000, FALSE, 0, 0
     .AlignToCenterOfPage 2, 2
-    .MoveObject -PXSize&/2, -PYSize&/2 '×óÏÂÒÆ
+    .MoveObject -PXSize&/2, -PYSize&/2 'å·¦ä¸‹ç§»
     .DuplicateObject 0, 0
     .RotateObject 90000000, FALSE, 0, 0
     .AlignToCenterOfPage 1, 2
-    .MoveObject  PXSize&/2, -PYSize&/2 'ÓÒÏÂÒÆ
+    .MoveObject  PXSize&/2, -PYSize&/2 'å³ä¸‹ç§»
 END WITHOBJECT
 END SUB
 
 
-SUB ZX4B ' "°ÑÖĞÏß·ÅÖÃµ½Ò³±ßÖĞ¼ä(ÇëÏÈÑ¡ÔñÖĞÏß)"
+SUB ZX4B ' "æŠŠä¸­çº¿æ”¾ç½®åˆ°é¡µè¾¹ä¸­é—´(è¯·å…ˆé€‰æ‹©ä¸­çº¿)"
 WITHOBJECT DRAWOBJECT
     Id&=.GetObjectID(0,TRUE,TRUE)
     .SelectObjectOfCDRStaticID Id&
-    .GetSize XSize&, YSize& 'µÃµ½Îï¼ş´óĞ¡
-    .GetPageSize PXSize&, PYSize& 'µÃµ½Ò³Ãæ´óĞ¡
+    .GetSize XSize&, YSize& 'å¾—åˆ°ç‰©ä»¶å¤§å°
+    .GetPageSize PXSize&, PYSize& 'å¾—åˆ°é¡µé¢å¤§å°
     .SelectObjectOfCDRStaticID Id&
-    .AlignToCenterOfPage 3, 1 'ÉÏ¶ÔÆëµ½Ò³ÃæÖĞĞÄ
-    .MoveObject 0,  PYSize&/2 'ÉÏÒÆ
+    .AlignToCenterOfPage 3, 1 'ä¸Šå¯¹é½åˆ°é¡µé¢ä¸­å¿ƒ
+    .MoveObject 0,  PYSize&/2 'ä¸Šç§»
 
     .DuplicateObject 0, 0
     .RotateObject 180000000, FALSE, 0, 0
     .AlignToCenterOfPage 3, 2
-    .MoveObject  0,  -PYSize&/2 'ÏÂÒÆ
+    .MoveObject  0,  -PYSize&/2 'ä¸‹ç§»
 
     .DuplicateObject 0, 0
     .RotateObject -90000000, FALSE, 0, 0
     .AlignToCenterOfPage 2, 3
-    .MoveObject -PXSize&/2, 0 '×óÒÆ
+    .MoveObject -PXSize&/2, 0 'å·¦ç§»
 
     .DuplicateObject 0, 0
     .RotateObject 180000000, FALSE, 0, 0
     .AlignToCenterOfPage 1, 3
-    .MoveObject  PXSize&/2, 0 'ÓÒÒÆ
+    .MoveObject  PXSize&/2, 0 'å³ç§»
 END WITHOBJECT
 END SUB
 
