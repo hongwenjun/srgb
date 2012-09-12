@@ -27,12 +27,12 @@ ENDIF
 BITMAP_LOGO$ = CurDir$+"\CD9JX.bmp"
 BITMAP_CD3D$ = CurDir$+"\CD3D.bmp"
 Help_File$ = CurDir$+"\CD9JX.txt"
-URLText$ = "Http://sRGB.cz.cc"
+URLText$ = "sRGB.GoogleCode.com"
 
 XZ=0   ' 对话框选择功能
 
 
-BEGIN DIALOG Dialog1 257, 143, "Http://sRGB.GoogleCode.com CorelDRAW9精品工具箱 By 蘭公子"
+BEGIN DIALOG Dialog1 257, 143, "  sRGB.GoogleCode.com CorelDRAW9精品工具箱 By 蘭公子"
 	OPTIONGROUP XZ
 		OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
 		OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
@@ -77,7 +77,7 @@ IF j=5 THEN '选择帮助
    IF XZ=2 THEN 
       CALL OPENBJ
    END IF
-ShellExecute 0,0,"http://srgb.cz.cc/",0,0,0
+ShellExecute 0,0,"https://code.google.com/p/srgb/",0,0,0
 ShellExecute 0,0,Help_File$,0,0,0
 END IF
 
@@ -87,13 +87,13 @@ CurDir$ = GetCurrFolder()
 IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
 	CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
 ENDIF
-BJ_File$ = CurDir$+"\CD9JX.cdr"
-.GetPageSize PXSize&, PYSize& '得到页面大小
-.FileImport BJ_File$, 1796, FALSE  '导入文件
-.AlignToCenterOfPage 3, 1
-.MoveObject 0, -(PYSize&/2+300000) '页面左下(3cm)定位
-REM .ZoomToSelection
-.Ungroup
+	BJ_File$ = CurDir$+"\CD9JX.cdr"
+	.GetPageSize PXSize&, PYSize& '得到页面大小
+	.FileImport BJ_File$, 1796, FALSE  '导入文件
+	.AlignToCenterOfPage 3, 1
+	.MoveObject 0, -(PYSize&/2+300000) '页面左下(3cm)定位
+	REM .ZoomToSelection
+	.Ungroup
 END WITHOBJECT
 END SUB
 
@@ -160,13 +160,13 @@ END SUB
 
 SUB WZQX '文字曲线
 WITHOBJECT DRAWOBJECT 
-.SELECTOBJECTOFTYPE 4
-.ConvertToCurves 
+	.SELECTOBJECTOFTYPE 4
+	.ConvertToCurves 
 END WITHOBJECT
 END SUB
 
 SUB Xgs2 '调用外部插件
-ShellExecute 0,0,"D:\Program Files\Corel\Graphics9\Draw\Scripts\Scripts\Xgs2.csb",0,0,0
+	ShellExecute 0,0,"D:\Program Files\Corel\Graphics9\Draw\Scripts\Scripts\Xgs2.csb",0,0,0
 END SUB
 
 SUB OPENBJ ' "隐藏功能：编辑标记文件" 
@@ -176,8 +176,8 @@ CurDir$ = GetCurrFolder()
 IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
 	CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
 ENDIF
-BJ_File$ = CurDir$+"\CD9JX.cdr"
-.FileOpen BJ_File$
+	BJ_File$ = CurDir$+"\CD9JX.cdr"
+	.FileOpen BJ_File$
 END WITHOBJECT
 END SUB
 
@@ -258,11 +258,14 @@ WITHOBJECT DRAWOBJECT
     	.SelectObjectOfCDRStaticID Id&
 
     	.GetPageSize PXSize&, PYSize& '得到页面大小
-	.AlignToCenterOfPage 3, 1
-	.MoveObject 0, -(PYSize&/2 + 0000) '页面左下(5mm)定位
-	
-'	.ZoomToSelection     ' 方便修改文件名
-'	.ZoomOut
+
+	IF PXSize& > PYSize& THEN         ' 如果页面是横
+		.AlignToCenterOfPage 3, 1
+		.MoveObject 0, -(PYSize&/2 - 23000) '页面左下(5mm)定位
+		.ZoomToSelection     ' 方便修改文件名
+		.ZoomOut		
+	ENDIF
+
 	.Ungroup                  ' 解散群组
 	.UnSelectAll
 END WITHOBJECT
@@ -326,20 +329,20 @@ IF J3D=3 THEN '选择确定
 		case 0
 		'正面变形
 WITHOBJECT DRAWOBJECT
-.StretchObject 0.951, 1, 0.937, 1, FALSE, FALSE, 1
-.SkewObject 0, 7000000, 1
+	.StretchObject 0.951, 1, 0.937, 1, FALSE, FALSE, 1
+	.SkewObject 0, 7000000, 1
 END WITHOBJECT
 		case 1
 '侧面变形
 WITHOBJECT DRAWOBJECT
-.StretchObject 0.468, 1, 0.937, 1, FALSE, FALSE, 3
-.SkewObject 0, -45000000, 3
+	.StretchObject 0.468, 1, 0.937, 1, FALSE, FALSE, 3
+	.SkewObject 0, -45000000, 3
 END WITHOBJECT
 		case 2
 '顶盖变形
 WITHOBJECT DRAWOBJECT
-.StretchObject 0.951, 1, 0.525, 1, FALSE, FALSE, 1
-.SkewObject 41700000, 7000000, 1
+	.StretchObject 0.951, 1, 0.525, 1, FALSE, FALSE, 1
+	.SkewObject 41700000, 7000000, 1
 END WITHOBJECT
 		case else
 		'没有选择操作
