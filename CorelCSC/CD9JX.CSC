@@ -13,26 +13,29 @@ DECLARE SUB SetPageSize
 DECLARE SUB COLORMARK
 DECLARE SUB CMYKMARK
 
+DECLARE FUNCTION CheckDrawDoc&()
 
 #define DRAWOBJECT "CorelDRAW.Automation.9"
 
 ' 找到当前目录程序
-CurDir$ = GetCurrFolder()
+GLOBAL  CurDir$ AS STRING
+ 	CurDir$ = GetCurrFolder()
 IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
-	' Make sure CurDir does not end with a backslash, since we
-	' will add one.
 	CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
 ENDIF
 
 BITMAP_LOGO$ = CurDir$+"\CD9JX.bmp"
 BITMAP_CD3D$ = CurDir$+"\CD3D.bmp"
 Help_File$ = CurDir$+"\CD9JX.txt"
+Help_File$ = CurDir$+"\CD9JX.txt"
 URLText$ = "sRGB.GoogleCode.com"
+
+' 设置状态栏文本
+Status1Txt$ = " 创建于2007年8月28日 By 蘭公子 更新于2012年9月12"
 
 XZ=0   ' 对话框选择功能
 
-
-BEGIN DIALOG Dialog1 257, 143, "  sRGB.GoogleCode.com CorelDRAW9精品工具箱 By 蘭公子"
+BEGIN DIALOG Dialog1 257, 153, "  sRGB.GoogleCode.com CorelDRAW9精品工具箱 By 蘭公子"
 	OPTIONGROUP XZ
 		OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
 		OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
@@ -46,6 +49,7 @@ BEGIN DIALOG Dialog1 257, 143, "  sRGB.GoogleCode.com CorelDRAW9精品工具箱 
 	IMAGE  179, 8, 67, 67, BITMAP_LOGO$
 	PUSHBUTTON  187, 115, 60, 22, "帮助说明"
 	TEXTBOX  173, 95, 77, 13, URLText$
+	STATUS Status1Txt$
 END DIALOG
 
 
@@ -83,10 +87,7 @@ END IF
 
 SUB BJWJ ' "快速导入个性标记文件"
 WITHOBJECT DRAWOBJECT
-CurDir$ = GetCurrFolder()
-IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
-	CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-ENDIF
+
 	BJ_File$ = CurDir$+"\CD9JX.cdr"
 	.GetPageSize PXSize&, PYSize& '得到页面大小
 	.FileImport BJ_File$, 1796, FALSE  '导入文件
@@ -166,16 +167,14 @@ END WITHOBJECT
 END SUB
 
 SUB Xgs2 '调用外部插件
-	ShellExecute 0,0,"D:\Program Files\Corel\Graphics9\Draw\Scripts\Scripts\Xgs2.csb",0,0,0
+
+	Xgs_File$ = CurDir$+"\Xgs2.csb"
+
+	ShellExecute 0,0, Xgs_File$ ,0,0,0
 END SUB
 
 SUB OPENBJ ' "隐藏功能：编辑标记文件" 
 WITHOBJECT DRAWOBJECT
-
-CurDir$ = GetCurrFolder()
-IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
-	CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-ENDIF
 	BJ_File$ = CurDir$+"\CD9JX.cdr"
 	.FileOpen BJ_File$
 END WITHOBJECT
@@ -184,14 +183,13 @@ END SUB
 
 SUB COLORMARK ' 导入颜色套准标记文件， 格式化MarkNameID&(5) 数组
 WITHOBJECT DRAWOBJECT
+
+	IF CheckDrawDoc()=1 THEN  STOP
+	
 	.SuppressPainting TRUE  ' 禁止屏幕更新
 
 	CALL SetPageSize    ' 按拼版物 设定页面大小
 
-    CurDir$ = GetCurrFolder()
-    IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
-        CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-    ENDIF
     BJ_File$ = CurDir$+"\ColorMark.cdr"
     .GetPageSize PXSize&, PYSize& '得到页面大小
     .FileImport BJ_File$, 1796, FALSE  '导入文件
@@ -278,6 +276,7 @@ REM  拼版工序--按物件设定页面大小  创建 2012年9月11日 By 蘭�
 
 WITHOBJECT  DRAWOBJECT
     .Group                  ' 群组
+    .Separate               ' 分离物件
     .GetSize XSize&, YSize& '得到物件大小
 
     ' 所选物件居中
@@ -296,8 +295,9 @@ WITHOBJECT  DRAWOBJECT
     .CreateRectangle YSize&/2, -XSize&/2, -YSize&/2, XSize&/2,   0   ' 相对于中心的 顶-左-下-右 四个坐标 画矩形
     .ApplyOutline 1500, 1, 0, 0, 100, 0, 0, -1, -1, FALSE, 2, 0, FALSE   ' 0.15mm轮廓线
 
-	.StoreColor 5020, 100, 100, 100, 100, 0, 0, 0, 0                     ' 拼版色
-	.SetOutlineColor                                                     ' 设置轮廓颜色
+	.StoreColor 5020, 100, 100, 100, 100, 0, 0, 0, 0            ' 拼版色
+	.SetOutlineColor                                            ' 设置轮廓颜色
+	.OrderToBack 										' 移到最下
 
 END WITHOBJECT
 
@@ -351,3 +351,24 @@ END IF
 
 
 END SUB
+
+
+
+
+'============== 检查 CorelDRAW 文档 ，是否选择物件 =======================
+FUNCTION CheckDrawDoc&()
+ret&=0
+WITHOBJECT DRAWOBJECT
+	IF NOT .IsDocument() THEN 
+		MessageBox "请打开文档再操作","请打开文件再操作",0
+		ret=1
+	END IF
+	IF ret=0 THEN
+		IF NOT .IsSelection() THEN 
+			MessageBox "当前文档没有物件选择，请选择拼版物件再使用工具!","请选择拼版物件",0
+			ret=1
+		END IF
+	ENDIF
+END WITHOBJECT
+CheckDrawDoc=ret
+END FUNCTION
