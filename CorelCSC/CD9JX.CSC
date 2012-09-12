@@ -32,7 +32,7 @@ URLText$ = "Http://sRGB.cz.cc"
 XZ=0   ' 对话框选择功能
 
 
-BEGIN DIALOG Dialog1 257, 143, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 蘭公子"
+BEGIN DIALOG Dialog1 257, 143, "Http://sRGB.GoogleCode.com CorelDRAW9精品工具箱 By 蘭公子"
 	OPTIONGROUP XZ
 		OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
 		OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
@@ -99,53 +99,62 @@ END SUB
 
 SUB JX4J ' "把角线放置到页面四角(请先选择角线)"
 WITHOBJECT DRAWOBJECT 
-Id&=.GetObjectID(0,TRUE,TRUE)
-.SelectObjectOfCDRStaticID Id&
-.GetSize XSize&, YSize& '得到物件大小
-.GetPageSize PXSize&, PYSize& '得到页面大小
-.SelectObjectOfCDRStaticID Id&
-.AlignToCenterOfPage 2, 1 '左上对齐到页面中心
-.MoveObject -PXSize&/2,  PYSize&/2 '左上移
-.DuplicateObject 0, 0
-.RotateObject -90000000, FALSE, 0, 0
-.AlignToCenterOfPage 1, 1
-.MoveObject  PXSize&/2,  PYSize&/2 '右上移
-.DuplicateObject 0, 0
-.RotateObject -180000000, FALSE, 0, 0
-.AlignToCenterOfPage 2, 2
-.MoveObject -PXSize&/2, -PYSize&/2 '左下移
-.DuplicateObject 0, 0
-.RotateObject 90000000, FALSE, 0, 0
-.AlignToCenterOfPage 1, 2
-.MoveObject  PXSize&/2, -PYSize&/2 '右下移
+	Id&=.GetObjectID(0,TRUE,TRUE)
+	.SelectObjectOfCDRStaticID Id&
+	.GetSize XSize&, YSize& '得到物件大小
+	.GetPageSize PXSize&, PYSize& '得到页面大小
+	
+	.SelectObjectOfCDRStaticID Id&
+	.AlignToCenterOfPage 2, 1 '左上对齐到页面中心
+	.MoveObject -PXSize&/2,  PYSize&/2 '左上移
+	.OrderToBack ' 移到最下
+	
+	.DuplicateObject 0, 0
+	.RotateObject -90000000, FALSE, 0, 0
+	.AlignToCenterOfPage 1, 1
+	.MoveObject  PXSize&/2,  PYSize&/2 '右上移
+	.OrderToBack ' 移到最下
+	
+	.DuplicateObject 0, 0
+	.RotateObject -180000000, FALSE, 0, 0
+	.AlignToCenterOfPage 2, 2
+	.MoveObject -PXSize&/2, -PYSize&/2 '左下移
+	.OrderToBack ' 移到最下
+	
+	.DuplicateObject 0, 0
+	.RotateObject 90000000, FALSE, 0, 0
+	.AlignToCenterOfPage 1, 2
+	.MoveObject  PXSize&/2, -PYSize&/2 '右下移
+	.OrderToBack ' 移到最下
+	
 END WITHOBJECT
 END SUB
 
 
 SUB ZX4B ' "把中线放置到页边中间(请先选择中线)"
 WITHOBJECT DRAWOBJECT 
-Id&=.GetObjectID(0,TRUE,TRUE)
-.SelectObjectOfCDRStaticID Id&
-.GetSize XSize&, YSize& '得到物件大小
-.GetPageSize PXSize&, PYSize& '得到页面大小
-.SelectObjectOfCDRStaticID Id&
-.AlignToCenterOfPage 3, 1 '上对齐到页面中心
-.MoveObject 0,  PYSize&/2 '上移
-
-.DuplicateObject 0, 0
-.RotateObject 180000000, FALSE, 0, 0
-.AlignToCenterOfPage 3, 2
-.MoveObject  0,  -PYSize&/2 '下移
-
-.DuplicateObject 0, 0
-.RotateObject -90000000, FALSE, 0, 0
-.AlignToCenterOfPage 2, 3
-.MoveObject -PXSize&/2, 0 '左移
-
-.DuplicateObject 0, 0
-.RotateObject 180000000, FALSE, 0, 0
-.AlignToCenterOfPage 1, 3
-.MoveObject  PXSize&/2, 0 '右移
+	Id&=.GetObjectID(0,TRUE,TRUE)
+	.SelectObjectOfCDRStaticID Id&
+	.GetSize XSize&, YSize& '得到物件大小
+	.GetPageSize PXSize&, PYSize& '得到页面大小
+	.SelectObjectOfCDRStaticID Id&
+	.AlignToCenterOfPage 3, 1 '上对齐到页面中心
+	.MoveObject 0,  PYSize&/2 '上移
+	
+	.DuplicateObject 0, 0
+	.RotateObject 180000000, FALSE, 0, 0
+	.AlignToCenterOfPage 3, 2
+	.MoveObject  0,  -PYSize&/2 '下移
+	
+	.DuplicateObject 0, 0
+	.RotateObject -90000000, FALSE, 0, 0
+	.AlignToCenterOfPage 2, 3
+	.MoveObject -PXSize&/2, 0 '左移
+	
+	.DuplicateObject 0, 0
+	.RotateObject 180000000, FALSE, 0, 0
+	.AlignToCenterOfPage 1, 3
+	.MoveObject  PXSize&/2, 0 '右移
 END WITHOBJECT
 END SUB
 
@@ -175,6 +184,7 @@ END SUB
 
 SUB COLORMARK ' 导入颜色套准标记文件， 格式化MarkNameID&(5) 数组
 WITHOBJECT DRAWOBJECT
+	.SuppressPainting TRUE  ' 禁止屏幕更新
 
 	CALL SetPageSize    ' 按拼版物 设定页面大小
 
@@ -237,7 +247,7 @@ WITHOBJECT DRAWOBJECT
 
 	NEXT ix
 
-
+	.ResumePainting 	' 恢复屏幕更新
 END WITHOBJECT
 END SUB
 
@@ -246,8 +256,15 @@ SUB CMYKMARK
 WITHOBJECT DRAWOBJECT
 	Id&=.GetObjectID(0,TRUE,TRUE)
     	.SelectObjectOfCDRStaticID Id&
-'	.ZoomToSelection
 
+    	.GetPageSize PXSize&, PYSize& '得到页面大小
+	.AlignToCenterOfPage 3, 1
+	.MoveObject 0, -(PYSize&/2 + 0000) '页面左下(5mm)定位
+	
+'	.ZoomToSelection     ' 方便修改文件名
+'	.ZoomOut
+	.Ungroup                  ' 解散群组
+	.UnSelectAll
 END WITHOBJECT
 END SUB
 
