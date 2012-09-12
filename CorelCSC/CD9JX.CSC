@@ -1,4 +1,4 @@
-REM 创建 2007年8月28日 By 蘭公子
+REM 创建 2007年8月28日 By 蘭公子  更新于2012年9月12日
 GLOBAL BITMAP_LOGO$ , Help_File$ , BJ_File$ ,BITMAP_CD3D$, URLText$
 
 DECLARE SUB ShellExecute LIB "shell32" (BYVAL hWnd&,BYVAL Operation&,BYVAL File$,BYVAL Parameters&,BYVAL Directory&,BYVAL Show&) ALIAS "ShellExecuteA"
@@ -10,6 +10,9 @@ DECLARE SUB Xgs2
 DECLARE SUB OPENBJ
 DECLARE SUB sRGB3D
 DECLARE SUB SetPageSize
+DECLARE SUB COLORMARK
+DECLARE SUB CMYKMARK
+
 
 #define DRAWOBJECT "CorelDRAW.Automation.9"
 
@@ -26,7 +29,7 @@ BITMAP_CD3D$ = CurDir$+"\CD3D.bmp"
 Help_File$ = CurDir$+"\CD9JX.txt"
 URLText$ = "Http://sRGB.cz.cc"
 
-XZ=0
+XZ=0   ' 对话框选择功能
 
 
 BEGIN DIALOG Dialog1 257, 143, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 蘭公子"
@@ -37,7 +40,7 @@ BEGIN DIALOG Dialog1 257, 143, "Http://sRGB.net.cn CorelDRAW9精品工具箱 By 
 		OPTIONBUTTON  11, 50, 150, 13, "把所有文本转曲线(不需要解散群组)"
 		OPTIONBUTTON  12, 65, 150, 13, "调用外部插件: 维思自动拼版7.0"
 		OPTIONBUTTON  12, 80, 153, 13, "CorelDRAW9 3D展示盒变形插件"
-		OPTIONBUTTON  12, 95, 153, 13, "拼版物件居中设定页面大小"		
+		OPTIONBUTTON  12, 95, 153, 13, "自动完成页面和色标套准标记"		
 	PUSHBUTTON  20, 115, 80, 22, "开始执行所选命令"
 	PUSHBUTTON  112, 115, 60, 22, "关闭"
 	IMAGE  179, 8, 67, 67, BITMAP_LOGO$
@@ -52,19 +55,19 @@ IF j=3 THEN '选择确定
  	SELECT CASE XZ
 
 		case 0
-		CALL  BJWJ
+			CALL  BJWJ
 		case 1
-		CALL  JX4J
+			CALL  JX4J
 		case 2
-		CALL  ZX4B
+			CALL  ZX4B
 		case 3
-		CALL  WZQX
+			CALL  WZQX
 		case 4
-		CALL  Xgs2
+			CALL  Xgs2
 		case 5
-		CALL sRGB3D
+			CALL sRGB3D
 		case 6
-		CALL SetPageSize
+			CALL COLORMARK
 		case else
 		'没有选择操作
 	END SELECT
@@ -166,6 +169,85 @@ IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
 ENDIF
 BJ_File$ = CurDir$+"\CD9JX.cdr"
 .FileOpen BJ_File$
+END WITHOBJECT
+END SUB
+
+
+SUB COLORMARK ' 导入颜色套准标记文件， 格式化MarkNameID&(5) 数组
+WITHOBJECT DRAWOBJECT
+
+	CALL SetPageSize    ' 按拼版物 设定页面大小
+
+    CurDir$ = GetCurrFolder()
+    IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
+        CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
+    ENDIF
+    BJ_File$ = CurDir$+"\ColorMark.cdr"
+    .GetPageSize PXSize&, PYSize& '得到页面大小
+    .FileImport BJ_File$, 1796, FALSE  '导入文件
+    .AlignToCenterOfPage 3, 1
+    .MoveObject 0, -(PYSize&/2+300000) '页面左下(3cm)定位
+    REM .ZoomToSelection
+    .Ungroup
+
+	DIM MarkNameID&(5)   ' 存储颜色套准标记Id号
+	.SelectAllObjects   ' 先全选，就会从最后导入的物件选择了
+
+	FOR ix = 1 TO 10 STEP 1	     ' 存储颜色套准标记 到 MarkNameID&(5) 数组中
+		.SelectNextObject 0
+		MarkName$ = .GetObjectData( "MarkName" )
+
+		IF MarkName$ = "CenterLine" THEN
+			MarkNameID&(1) = .GetObjectID(0,TRUE,TRUE)
+			.ClearObjectData ( "MarkName" )
+
+		ELSEIF 	MarkName$ = "TargetLine" THEN
+			MarkNameID&(2) = .GetObjectID(0,TRUE,TRUE)
+			.ClearObjectData ( "MarkName" )
+
+		ELSEIF 	MarkName$ = "ColorStrip" THEN
+			MarkNameID&(3) = .GetObjectID(0,TRUE,TRUE)
+			.ClearObjectData ( "MarkName" )
+
+		ELSEIF 	MarkName$ = "ColorMark" THEN
+			MarkNameID&(4) = .GetObjectID(0,TRUE,TRUE)
+			.ClearObjectData ( "MarkName" )
+
+		ENDIF
+
+	NEXT ix
+	
+
+	FOR ix = 1 TO 5 STEP 1
+		Id& =MarkNameID&(ix)
+		.SelectObjectOfCDRStaticID Id&
+
+     	SELECT CASE ix
+            case 1
+                CALL  ZX4B
+            case 2
+                CALL  JX4J
+            case 3
+                CALL  JX4J
+            case 4
+                CAll  CMYKMARK
+            case else
+            '没有操作
+        END SELECT
+
+	NEXT ix
+
+
+END WITHOBJECT
+END SUB
+
+
+SUB CMYKMARK
+WITHOBJECT DRAWOBJECT
+	Id&=.GetObjectID(0,TRUE,TRUE)
+    	.SelectObjectOfCDRStaticID Id&
+'	.ZoomToSelection
+
 END WITHOBJECT
 END SUB
 
