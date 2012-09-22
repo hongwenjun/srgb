@@ -97,7 +97,7 @@ print nPos
 '''14.翻转字符串'''
 #strrev( sStr1)
 sStr1 = 'abcdefg'
-sStr1 = sStr1[ : : - 1]         # 看不懂了
+sStr1 = sStr1[ : : - 1]         # 整个区间，-1表示到倒着的区间
 print sStr1
 
 '''15.查找字符串'''
