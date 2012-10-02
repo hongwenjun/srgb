@@ -1,9 +1,12 @@
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <regex>
 #include <stdio.h>
 #include <string.h>
+
 
 using namespace std;
 // StudentID  Score1  Score2  Score3  average
@@ -25,7 +28,10 @@ int main()
     vector<Student> verStudent;
 
     // cin 换成文件 就可以直接文件输入了，用cin要手工ctrl+z 结束输入
-    LoadStudentLib(cin , verStudent);
+    // LoadStudentLib(cin , verStudent);
+    ifstream file("Student.txt");
+    LoadStudentLib(file , verStudent);
+    file.close();
 
     vector<Student>::iterator first = verStudent.begin();
     vector<Student>::iterator last = verStudent.end();
@@ -38,9 +44,10 @@ int main()
     sort(first , last, averageCmp); // 按平局分排序
     PrintStudentList(verStudent);
 
+    cout << string(78 , '-') << endl;
+    PrintCerrLog();
     return 0;
 }
-
 
 
 void LoadStudentLib(istream& fs , vector<Student>& vs)
@@ -51,6 +58,11 @@ void LoadStudentLib(istream& fs , vector<Student>& vs)
     Student tmp;
     string line;
     while (getline(fs, line)) {
+        if (line[0] == '#' || (line.size() < 5)) { // #开头是注解行  行大小小于5的空行
+            fprintf(stderr, "line数据无效->%s\n" , line.c_str());
+            continue;
+        }
+
         sscanf(line.c_str(), "%s %d %d %d" , ID, &S1 , &S2 , &S3);
         Avg = (S1 + S2 + S3) / 3.0;
         strcpy(tmp.StudentID , ID);
