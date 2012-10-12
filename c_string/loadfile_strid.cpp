@@ -3,7 +3,7 @@
 #include <stdio.h>
 using namespace std;
 
-void loadfile_strid(FILE* in , char* ps_strid[7]);
+void loadfile_strid(FILE* in , char** ps_strid);
 
 int main()
 {
@@ -25,16 +25,19 @@ int main()
     loadfile_strid(in , ps_strid);
     fclose(in);
 
-    for (int i = 0 ; i != 7; i++)
-        cout << ps_strid[i] << endl;
+    auto it = ps_strid;     // auto 自动判别类型 char**
+    auto end = ps_strid + 7;
+    while (it != end)    // 迭代器遍历输出
+        cout << *it++ << endl;
+
     return 0;
 }
 
 
-void loadfile_strid(FILE* in , char* ps_strid[7])
+void loadfile_strid(FILE* in , char** ps_strid)
 {
     char strid[7][32] = { {0}, {0}, {0}, {0}, {0}, {0}, {0}};
-    fscanf(in , "%s %s %s %s %s %s %s" , strid[0], strid[1],
+    fscanf(in , "%s  %s  %s   %s  %s   %s  %s" , strid[0], strid[1],
            strid[2], strid[3], strid[4], strid[5], strid[6]);
 
     for (int i = 0 ; i != 7; i++) {
