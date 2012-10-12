@@ -36,19 +36,25 @@ int main()
 
 void loadfile_strid(FILE* in , char** ps_strid)
 {
-    char strid[7][32] = { {0}, {0}, {0}, {0}, {0}, {0}, {0}};
-    fscanf(in , "%s  %s  %s   %s  %s   %s  %s" , strid[0], strid[1],
-           strid[2], strid[3], strid[4], strid[5], strid[6]);
+    // 读取一行
+    char line[512] = {0};
+    fgets(line, 512, in);
 
-    for (int i = 0 ; i != 7; i++) {
-        //   ps_strid[i] = strid[i];  这样是错误的，因为strid，是函数临时分配，函数结束就没有了
-        strcpy(ps_strid[i] , strid[i]);  // ps_strid[i] 指针一定要有指向分配的空间的地址
+    int index = 0;
+    char* pch;
+
+    // 切割后，然后复制到指针指向分配的空间的地址
+    pch = strtok(line, " ,:;-");
+    while (pch != NULL) {
+        strcpy(ps_strid[index] , pch);
+        pch = strtok(NULL, " ,:;-");
+        index++;
     }
 }
 
 
-/*   filename:  strid.txt
+/*   filename:  strid.txt     分割符号 " ,:;-"
 
-Panzer   蘭公子二世   秦.狮王   似水無痕   kerou   H0rol4   GM
+   Panzer ,   蘭公子二世  : 秦.狮王  ;  似水無痕 -  kerou   H0rol4   GM
 
 */
