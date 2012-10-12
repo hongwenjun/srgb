@@ -3,16 +3,16 @@
 #include <stdio.h>
 using namespace std;
 
-int loadfile_strid(FILE* in , char** ps_strid , int max);
+typedef  char*  c_string ;
+int loadfile_strid(FILE* in , c_string* ps_strid , int max);
 
 int main()
 {
     char InstrumentID[7][32];
-    char* ppInstrumentID[7];
+    c_string ppInstrumentID[7];
     for (int i = 0; i != 7 ; ++i) {
         ppInstrumentID[i] = InstrumentID[i];
     }
-
 
     // 下面来实现从文件中读取配置
     FILE* in = fopen("strid.txt" , "r");
@@ -27,8 +27,8 @@ int main()
 
     readflag = loadfile_strid(in , ppInstrumentID , 5);
     if (readflag > 0) {
-        char ** it = ppInstrumentID;     // auto 自动判别类型 char**
-        char ** end = ppInstrumentID + 5;
+        c_string* it = ppInstrumentID;     // auto 自动判别类型 char**
+        c_string* end = ppInstrumentID + 5;
         while (it != end)    // 迭代器遍历输出
             cout << *it++ << endl;
     }
@@ -37,8 +37,8 @@ int main()
     return 0;
 }
 
-// 从配置文件 in 里读取数据，存放到char** ps_strid 指向空间，max是一行中数据数量
-int loadfile_strid(FILE* in , char** ps_strid , int max)
+// 从配置文件 in 里读取数据，存放到c_string* ps_strid 指向空间，max是一行中数据数量
+int loadfile_strid(FILE* in , c_string* ps_strid , int max)
 {
     // 读取一行
     char line[512] = {0};
