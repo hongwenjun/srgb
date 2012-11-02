@@ -1,0 +1,256 @@
+--------GCC 编译器设置-----------------
+-fexec-charset=gbk
+-finput-charset=UTF-8
+
+-------------GDB 设置----------------------------------------------------
+Load the python script when Debugger started in Codeblocks
+If you use the latest Codeblocks nightly build version(note, the official 10.05 version is not supported the feature) you can setting the debug like below 
+
+source $(TARGET_COMPILER_DIR)bin\stl.gdb
+source $(TARGET_COMPILER_DIR)bin\wx.gdb
+
+This will run the the two gdb file when gdb started. If you use official Codeblocks or nightlies, you need to specify the path of your MinGW, so it is some thing like:
+
+source D:\MinGW\bin\stl.gdb
+source D:\MinGW\bin\wx.gdb
+
+NOTE 2012-02-01 due to some synchronization bug in the Codeblocks, you need to group all the custom gdb scropts' content to one gdb script file, So, you should put only one line here:
+
+source $(TARGET_COMPILER_DIR)bin\cbgdb.gdb
+
+The mycustom.gdb contains all the gdb scripts' content. See the discussion on Codeblocks forum: Re: The 07 January 2012 build (7678) DEBUGGER BRANCH version is out.
+
+---------filename:  cbgdb.gdb----------------------------------
+python
+import sys
+sys.path.insert(0, '')
+#from libmy.test import register_my_printers
+#register_my_printers (None)
+from libstdcxx.v6.printers import register_libstdcxx_printers
+register_libstdcxx_printers (None)
+from libwx.v28.printers import register_libwx_printers
+register_libwx_printers (None)
+end
+
+set target-charset UTF-8
+set print elements 200
+
+#set auto-load-scripts no
+#set debugevents off
+#set print inferior-events on
+set backtrace filename-display absolute
+
+
+-------------更细脚本----------------------------------------------------
+R:\>svn co http://gcc.gnu.org/svn/gcc/trunk/libstdc++-v3/python/
+A    python\Makefile.in
+A    python\libstdcxx
+A    python\libstdcxx\__init__.py
+A    python\libstdcxx\v6
+A    python\libstdcxx\v6\__init__.py
+A    python\libstdcxx\v6\printers.py
+A    python\hook.in
+A    python\Makefile.am
+Checked out revision 193094.
+
+R:\svn co http://svn.wxwidgets.org/svn/wx/wxWidgets/trunk/misc/gdb/
+A    gdb\print.py
+Checked out revision 72864.
+
+
+---------测试代码--------------------
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    char a[] = "汉字";
+    string aaa = "123中文";
+    cout << aaa << endl;
+    return 0;
+}
+
+
+------------测试的几个命令----------------------------------
+set target-charset UTF-8
+set target-charset CP936
+
+n
+show charset
+p a
+p aaa
+whatis aaa
+
+-----------GDB记录--------------------------------
+构建以确保源文件是最新的
+选择目标: 
+Debug
+Adding source dir: R:\122\
+Adding source dir: R:\122\
+Adding file: R:\122\bin\Debug\122.exe
+Changing directory to: R:/122/.
+Set variable: PATH=.;D:\CodeBlocks\MinGW32\bin;D:\CodeBlocks\MinGW32;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\system32\wbem;C:\Python27;\\"C\Program Files\Java\jdk1.6.0_10\bin";C:\Program Files\CMake 2.8\bin
+
+[debug]Command-line: D:\CodeBlocks8488\MinGW32\bin\gdb.exe -nx -fullname  -quiet  -args R:/122/bin/Debug/122.exe
+[debug]Working dir : R:\122
+
+启动调试器: D:\CodeBlocks8488\MinGW32\bin\gdb.exe -nx -fullname  -quiet  -args R:/122/bin/Debug/122.exe
+完成
+
+[debug]> set prompt >>>>>>cb_gdb:
+[debug]Skip initializing the scripting!
+
+正在设置断点
+
+[debug]Reading symbols from R:\122\bin\Debug\122.exe...done.
+[debug](gdb) >>>>>>cb_gdb:
+[debug]> show version
+[debug]GNU gdb (GDB) 7.5.50.20120817-cvs
+[debug]Copyright (C) 2012 Free Software Foundation, Inc.
+[debug]License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+[debug]This is free software: you are free to change and redistribute it.
+[debug]There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+[debug]and "show warranty" for details.
+[debug]This GDB was configured as "mingw32".
+[debug]For bug reporting instructions, please see:
+[debug]<http://www.gnu.org/software/gdb/bugs/>.
+[debug]>>>>>>cb_gdb:
+[debug]> set confirm off
+
+调试器名称及版本: GNU gdb (GDB) 7.5.50.20120817-cvs
+
+[debug]>>>>>>cb_gdb:
+[debug]> set width 0
+[debug]>>>>>>cb_gdb:
+[debug]> set height 0
+[debug]>>>>>>cb_gdb:
+[debug]> set breakpoint pending on
+[debug]>>>>>>cb_gdb:
+[debug]> set print asm-demangle on
+[debug]>>>>>>cb_gdb:
+[debug]> set unwindonsignal on
+[debug]>>>>>>cb_gdb:
+[debug]> set print elements 0
+[debug]>>>>>>cb_gdb:
+[debug]> set new-console on
+[debug]>>>>>>cb_gdb:
+[debug]> set disassembly-flavor att
+[debug]>>>>>>cb_gdb:
+[debug]> catch throw
+[debug]Catchpoint 1 (throw)
+[debug]>>>>>>cb_gdb:
+[debug]> source D:\CodeBlocks\MinGW32\bin\cbgdb.gdb
+[debug]>>>>>>cb_gdb:
+[debug]> directory R:/122/
+[debug]Source directories searched: R:/122;$cdir;$cwd
+[debug]>>>>>>cb_gdb:
+[debug]> break "R:/122/main.cpp:7"
+[debug]Breakpoint 2 at 0x401379: file R:\122\main.cpp, line 7.
+[debug]>>>>>>cb_gdb:
+[debug]> run
+[debug]Starting program: R:\122\bin\Debug\122.exe 
+
+Child process PID: 5660
+
+[debug][New Thread 5660.0x122c]
+[debug]Breakpoint 2, main () at R:\122\main.cpp:7
+[debug]R:\122\main.cpp:7:62:beg:0x401379
+[debug]>>>>>>cb_gdb:
+
+At R:\122\main.cpp:7
+> n
+
+[debug]> n
+[debug]R:\122\main.cpp:8:88:beg:0x401384
+[debug]>>>>>>cb_gdb:
+
+R:\122\main.cpp:8:88:beg:0x401384
+At R:\122\main.cpp:8
+> n
+
+[debug]> n
+[debug]R:\122\main.cpp:9:119:beg:0x4013ba
+[debug]>>>>>>cb_gdb:
+
+R:\122\main.cpp:9:119:beg:0x4013ba
+At R:\122\main.cpp:9
+> show charset
+
+[debug]> show charset
+[debug]The host character set is "auto; currently CP936".
+[debug]The target character set is "UTF-8".
+[debug]The target wide character set is "auto; currently UTF-16".
+[debug]>>>>>>cb_gdb:
+
+The host character set is "auto; currently CP936".
+The target character set is "UTF-8".
+The target wide character set is "auto; currently UTF-16".
+> p a
+
+[debug]> p a
+[debug]$1 = "\272\272\327", <incomplete sequence \326>
+[debug]>>>>>>cb_gdb:
+
+$1 = "\272\272\327", <incomplete sequence \326>
+> p aaa
+
+[debug]> p aaa
+[debug]$2 = "123\326\320\316", <incomplete sequence \304>
+[debug]>>>>>>cb_gdb:
+
+$2 = "123\326\320\316", <incomplete sequence \304>
+> set target-charset UTF-8
+
+[debug]> set target-charset UTF-8
+[debug]>>>>>>cb_gdb:
+
+> set target-charset CP936
+
+[debug]> set target-charset CP936
+[debug]>>>>>>cb_gdb:
+
+> p a
+
+[debug]> p a
+[debug]$3 = 
+[debug]>>>>>>cb_gdb:
+
+$3 = 
+> p aaa
+
+[debug]> p aaa
+[debug]$4 = "123"
+[debug]>>>>>>cb_gdb:
+
+$4 = "123"
+> set target-charset UTF-8
+
+[debug]> set target-charset UTF-8
+[debug]>>>>>>cb_gdb:
+
+> p a
+
+[debug]> p a
+[debug]$5 = "\272\272\327", <incomplete sequence \326>
+[debug]>>>>>>cb_gdb:
+
+$5 = "\272\272\327", <incomplete sequence \326>
+> show charset
+
+[debug]> show charset
+[debug]The host character set is "auto; currently CP936".
+[debug]The target character set is "UTF-8".
+[debug]The target wide character set is "auto; currently UTF-16".
+[debug]>>>>>>cb_gdb:
+
+The host character set is "auto; currently CP936".
+The target character set is "UTF-8".
+The target wide character set is "auto; currently UTF-16".
+> set host-character UTF-8
+
+[debug]> set host-character UTF-8
+[debug]No symbol "host" in current context.
+[debug]>>>>>>cb_gdb:
+
+No symbol "host" in current context.
