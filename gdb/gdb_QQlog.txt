@@ -1,0 +1,58 @@
+--------GCC 编译器设置-----------------
+-fexec-charset=gbk
+-finput-charset=UTF-8
+
+
+cbgdb.gdb  是把 stl.gdb 和 wx.gdb和并一起
+添加了  set target-charset UTF-8
+这样把程序中 GBK 以 UTF-8输出
+
+[debug]> p aaa
+[debug]$1 = "123\326\320\316", <incomplete sequence \304>
+
+中文会输出成 \326\320\316 ;
+因为我测试的TDM-GCC 4.6.1 内码对应，不能输出中文，
+不对应，这样输出汉字的映射码也不错
+
+CB 中 Enable watch Scripts 不能勾选  <见图>
+
+asmwarrior(1521466624)  23:28:58
+以上是我的运行结果。我测试是用 gcc4.6.3， gdb——cvs最新版本。
+蘭公子二世<88888>  23:29:17
+gcc 版本有区别
+asmwarrior(1521466624)  23:29:17
+我试试gcc4.7看看，我感觉应该和gcc4.6.3是一样的结果，稍后告诉你。
+蘭公子二世<88888>  23:29:23
+我是 tdm-gcc 4.7.1
+kerou(515791438)  23:29:35
+好
+kerou(515791438)  23:30:09
+gdb用2012－08－17试试
+asmwarrior(1521466624)  23:30:27
+@澜公子：我测试了gcc4.7.2版本（这个是网上下载的，不是tdm的gcc），一切正常。所有中文显示都正常。
+
+
+
+asmwarrior(1521466624)  23:20:08
+蘭公子二世<88888>  23:18:19
+set target-charset UTF-8
+是不是要改成 set target-charset gbk
+回答：我不懂这块内容。你默认的cpp文件，是UTF8编码的。
+所以你在GCC编译的时候就不要再设置选项了。
+直接在gdb里面设置一下：set target-charset UTF-8 就可以了。别的我没有折腾过。
+
+
+asmwarrior(1521466624)  23:26:06
+我刚测试了-fexec-charset=gbk -finput-charset=UTF-8选项。测试代码是：
+
+asmwarrior(1521466624)  23:26:52
+我在gdb里面没有添加任何设置charset的语句。
+
+asmwarrior(1521466624)  23:30:27
+@澜公子：我测试了gcc4.7.2版本（这个是网上下载的，不是tdm的gcc），一切正常。所有中文显示都正常。
+
+asmwarrior(1521466624)  23:34:25
+蘭公子二世<88888>  23:30:46
+哪里可以下载
+回答：见： http://sourceforge.net/projects/mingwbuilds/
+
