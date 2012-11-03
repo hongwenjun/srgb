@@ -1,3 +1,169 @@
+测试正常的 最新GDB 版本
+http://qp-gcc.googlecode.com/files/gdb2012-10-25.zip
+需要的同学可以去下载。
+
+
+hongwenjun(蘭公子)(262235) 9:52:33 
+启动调试器: C:\CodeBlocks\build\gcc\bin\gdb.exe -nx -fullname  -quiet  -args R:/cpp/bf/bin/Debug/bf.exe
+完成
+[debug]ImportError: No module named site
+调试器结束，其状态码是1 
+
+asmwarrior(1521466624) 9:53:10 
+你这个好像是python不对，你电脑上装了python2.7.3没有？ 
+
+hongwenjun(蘭公子)(262235) 9:53:48 
+以前版本不用装的 
+xunxun<xunxun1982@gmail.com> 9:53:49 
+那样没法用  
+hongwenjun(蘭公子)(262235) 9:53:59 
+现在一定要装了吗 
+xunxun<xunxun1982@gmail.com> 9:54:05 
+你用的又不是我的版本  
+hongwenjun(蘭公子)(262235) 9:54:18 
+xunxun 的不用吗 
+asmwarrior(1521466624) 9:54:16 
+不装python也不要紧，你把python的dll和python本身自带的一大堆libs文件要copy到mingw/bin目录。 
+xunxun<xunxun1982@gmail.com> 9:54:21 
+我的版本不需要其他的  
+asmwarrior(1521466624) 9:54:32 
+这个好像都一样的吧（对xunxun说） 
+xunxun<xunxun1982@gmail.com> 9:54:36 
+我都打包好了  
+hongwenjun(蘭公子)(262235) 9:55:18 
+我试试，把  xunxun 的哪些复制过过去 
+hongwenjun(蘭公子)(262235) 9:55:50 
+C:\CodeBlocks\build\gcc45\bin\lib
+这个目录就可以了吧 
+asmwarrior(1521466624) 9:56:25 
+好像就这个Lib目录。 
+xunxun<xunxun1982@gmail.com> 10:01:44 
+一定要和dll放一起，否则找不到  
+
+
+
+asmwarrior(1521466624) 10:59:41 
+我刚发给你的是我大概在一个星期前编译的gdb，呵呵。 
+hongwenjun(蘭公子)(262235) 10:59:53 
+gdb2012-08-17.zip  不行 
+hongwenjun(蘭公子)(262235) 11:00:13 
+用asm 最新版本  gdb2012-10-25.zip
+就可以了 
+asmwarrior(1521466624) 11:00:28 
+哦，那我去更新一下吧，重新上传一个到google code里面。 
+asmwarrior(1521466624) 11:02:04 
+搞了半天，是大家用的gdb 不一样，哈哈。 
+
+hongwenjun(蘭公子)(262235) 10:36:11 
+    string aaa = "ABC中文ABC";
+    string bbb = "ABC\326\320\316\304ABC"; 
+hongwenjun(蘭公子)(262235) 10:36:48 
+aaa 和 bbb 如果 都是 GBK 就一样 
+asmwarrior(1521466624) 10:39:29 
+我是这么测试的，见下面的log 
+asmwarrior(1521466624) 10:39:31 
+[debug]> p /r aaa
+[debug]$3 = {static npos = <optimized out>, _M_dataplus = {<std::allocator<char>> = {<__gnu_cxx::new_allocator<char>> = {<No data fields>}, <No data fields>}, _M_p = 0x3e30c4 "中文"}}
+[debug]>>>>>>cb_gdb:
+
+$3 = {static npos = <optimized out>, _M_dataplus = {<std::allocator<char>> = {<__gnu_cxx::new_allocator<char>> = {<No data fields>}, <No data fields>}, _M_p = 0x3e30c4 "中文"}}
+> x/3uh 0x3e30c4
+
+[debug]> x/3uh 0x3e30c4
+[debug]0x3e30c4: 53462 50382 43776
+[debug]>>>>>>cb_gdb:
+
+0x3e30c4: 53462 50382 43776
+ 
+asmwarrior(1521466624) 10:40:29 
+注意看，在x命令后面，需要输入的是某个内存地址，我这里是0x3e30c4，这个地址是从 p / r aaa (注意，前面的反斜杠和r是连在一起的）得到的。 
+hongwenjun(蘭公子)(262235) 10:40:47 
+p /r aaa
+[debug]$5 = {static npos = <optimized out>, _M_dataplus = {<std::allocator<char>> = {<__gnu_cxx::new_allocator<char>> = {<No data fields>}, <No data fields>}, _M_p = 0x3e253c "ABCABC"}} 
+hongwenjun(蘭公子)(262235) 10:41:05 
+中间的  中文 没有了 
+asmwarrior(1521466624) 10:41:44 
+你不用管它，直接看0x3e253c开始的内存数据，最好是字节显示出来，这个是啥命令，我也不会。。。。。我刚才这个好像是双字节十进制显示，呵呵。 
+asmwarrior(1521466624) 10:41:48 
+我正在看资料呢。 
+hongwenjun(蘭公子)(262235) 10:41:54 
+> x/3uh 0x3e253c
+
+[debug]> x/3uh 0x3e253c
+[debug]0x3e253c: 16961 58435 44472
+[debug]>>>>>>cb_gdb:
+
+0x3e253c: 16961 58435 44472 
+asmwarrior(1521466624) 10:44:35 
+注意，下面的命令可输出连续15个字节的数据（16进制） 
+asmwarrior(1521466624) 10:44:37 
+[debug]> x/15xb 0x3e30c4
+[debug]0x3e30c4: 0xd6 0xd0 0xce 0xc4 0x00 0xab 0xab 0xab
+[debug]0x3e30cc: 0xab 0xab 0xab 0xab 0xab 0xfe 0xee
+[debug]>>>>>>cb_gdb:
+
+0x3e30c4: 0xd6 0xd0 0xce 0xc4 0x00 0xab 0xab 0xab
+0x3e30cc: 0xab 0xab 0xab 0xab 0xab 0xfe 0xee
+ 
+asmwarrior(1521466624) 10:44:52 
+你看一下应该就知道了，呵呵。 
+hongwenjun(蘭公子)(262235) 10:45:23 
+[debug]> x/15xb  0x3e253c
+[debug]0x3e253c: 0x41 0x42 0x43 0xe4 0xb8 0xad 0xe6 0x96
+[debug]0x3e2544: 0x87 0x41 0x42 0x43 0x00 0xab 0xab
+[debug]>>>>>>cb_gdb:
+
+0x3e253c: 0x41 0x42 0x43 0xe4 0xb8 0xad 0xe6 0x96
+0x3e2544: 0x87 0x41 0x42 0x43 0x00 0xab 0xab
+ 
+asmwarrior(1521466624) 10:45:52 
+0x41 0x42 0x43 这个应该是ABC吧。 
+hongwenjun(蘭公子)(262235) 10:46:11 
+00000000h: 41 42 43 D6 D0 CE C4 41 42 43                   ; ABC中文ABC 
+hongwenjun(蘭公子)(262235) 10:46:33 
+好像不对了 
+hongwenjun(蘭公子)(262235) 10:47:13 
+0xe4 0xb8 0xad 0xe6 0x96 0x87
+对应   D6 D0 CE C4 
+asmwarrior(1521466624) 10:47:24 
+中间这一堆：0xe4 0xb8 0xad 0xe6 0x96 0x87，这里有6个字节，用来表示“中文”两个字符。显然，这个地方编码用的是UTF8 
+hongwenjun(蘭公子)(262235) 10:48:07 
+asm 你能下载个 tdm 4.7.1 研究下吗 
+asmwarrior(1521466624) 10:48:49 
+你现在想让我怎么做，告诉我具体步骤。 
+asmwarrior(1521466624) 10:48:52 
+我帮你一下。 
+hongwenjun(蘭公子)(262235) 10:49:33 
+00000000h: 41 42 43 E4 B8 AD E6 96 87 41 42 43             ; ABC涓枃ABC 
+hongwenjun(蘭公子)(262235) 10:50:09 
+GBK 中文  utf-8 是  涓枃
+内码是  E4 B8 AD E6 96 87 
+hongwenjun(蘭公子)(262235) 10:50:35 
+但是前面 获取的数据是 
+0xe4 0xb8 0xad 0xe6 0x96 0x87 
+hongwenjun(蘭公子)(262235) 10:50:42 
+应该是正确的 
+asmwarrior(1521466624) 10:51:37 
+hongwenjun(蘭公子)(262235)  10:49:33
+00000000h: 41 42 43 E4 B8 AD E6 96 87 41 42 43             ; ABC涓枃ABC
+GBK 中文  utf-8 是  涓枃
+内码是  E4 B8 AD E6 96 87
+hongwenjun(蘭公子)(262235)  10:50:35
+但是前面 获取的数据是 
+0xe4 0xb8 0xad 0xe6 0x96 0x87
+应该是正确的
+
+回答：我看不懂你这些说的内容。 
+
+
+
+
+
+
+
+
+
+
 --------GCC 编译器设置-----------------
 -fexec-charset=gbk
 -finput-charset=UTF-8
