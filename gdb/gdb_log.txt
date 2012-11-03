@@ -1,0 +1,60 @@
+启动调试器: C:\CodeBlocks\build\gcc\bin\gdb.exe -nx -fullname  -quiet  -args R:/cpp/aaa/bin/Debug/aaa.exe
+
+[debug]> show version
+调试器名称及版本: GNU gdb (GDB) 7.5.50.20121024-cvs
+
+[debug]> set breakpoint pending on
+[debug]> source C:\CodeBlocks\build\gcc\bin\cbgdb.gdb
+[debug]> directory R:/cpp/aaa/
+[debug]> break "R:/cpp/aaa/main.cpp:9"
+[debug]Breakpoint 2 at 0x40137c: file R:\cpp\aaa\main.cpp, line 9.
+
+[debug]> run
+[debug]Starting program: R:\cpp\aaa\bin\Debug\aaa.exe 
+[debug]> next
+At R:\cpp\aaa\main.cpp:15
+
+[debug]> whatis aaa
+[debug]type = std::string
+[debug]> output aaa
+[debug]"ABC中文ABC"
+
+[debug]> whatis vs
+[debug]type = std::vector<std::basic_string< //……省略  > >
+[debug]> output vs
+[debug]std::vector of length 3, capacity 3 = {"ABC", "123", "中文测试"}
+
+[debug]> show charset
+[debug]The host character set is "auto; currently CP936".
+[debug]The target character set is "auto; currently CP936".
+[debug]The target wide character set is "auto; currently UTF-16".
+
+[debug]> set target-charset UTF-8
+[debug]> p aaa
+[debug]$1 = "ABC\326\320\316\304ABC"
+[debug]> p /r aaa
+[debug]$2 = {static npos = <optimized out>, //……省略 , _M_p = 0x3e253c "ABC\326\320\316\304ABC"}}
+
+[debug]> x/15xb 0x3e253c
+[debug]0x3e253c:	0x41	0x42	0x43	0xd6	0xd0	0xce	0xc4	0x41
+[debug]0x3e2544:	0x42	0x43	0x00	0xab	0xab	0xab	0xab
+
+[debug]> output aaa
+[debug]"ABC\326\320\316\304ABC"
+
+[debug]> output bbb
+[debug]"ABC\326\320\316\304ABC"
+[debug]> output vs
+[debug]std::vector of length 3, capacity 3 = {"ABC", "123", "\326\320\316\062\001\342\312", <incomplete sequence \324>}
+
+[debug]> set target-charset CP936
+
+[debug]> whatis aaa
+[debug]type = std::string
+[debug]> output aaa
+[debug]"ABC中文ABC"
+
+[debug]> output bbb
+[debug]"ABC中文ABC"
+[debug]> output vs
+[debug]std::vector of length 3, capacity 3 = {"ABC", "123", "中文测试"}
