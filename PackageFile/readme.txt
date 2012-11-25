@@ -1,44 +1,44 @@
-PkFile 1.00  Copyright (c) Hongwenjun(�m����)  2012-11-28
+PkFile 1.00  Copyright (c) Hongwenjun(蘭公子)  2012-11-28
 
-Usage: PkFile.exe  -p{���·��}   -o{����ļ�}   -e{����ʽ}
+Usage: PkFile.exe  -p{打包路径}   -o{输出文件}   -e{正则公式}
 
-ʾ ��: PkFile.exe  -pD:\�ҵ���Ƭ  -oD:\Temp\backup.tar  -e2012-11
-       ���Դ��ָ��Ŀ¼2012��11�½������޸ĵ��ļ�
+示 例: PkFile.exe  -pD:\我的照片  -oD:\Temp\backup.tar  -e2012-11
+       可以打包指定目录2012年11月建立或修改的文件
 
-ֱ���޸������ļ� PACKAGE_FILE.ini �е�PATH��REGEX �������ȼۿ���̨�������
+直接修改配置文件 PACKAGE_FILE.ini 中的PATH和REGEX 参数，等价控制台输入参数
 
-/***************** �͵�ʹ��˵���� ^_^ *****************/
+/***************** 就当使用说明吧 ^_^ *****************/
 
-Ϊʲôд������ߣ����������ʲô�ã�
+为什么写这个工具？这个工具有什么用？
 
-	����һ������Ŀ¼��2004��浵�����Ѿ���50GB�ˣ��ұ����ļ����ǱȽϺ��ˣ�
-���ļ����ľ���С���ٱ��档��һ��ͬ��˵�����Ĺ������������Ѿ���1TB���ˡ�
-�ұ�����ʹ��ͬ������˫�����ݣ�������ͬ��һ�Σ�����ʼǱ������͹�������
-ͬ��һ�Ρ����Ҹ����챸�������������Ҳ����á�
-	���Ծ��Լ�д��������������ߣ�Ϊ�Լ����񣬺Ϳ����õĵ��˷���
+	我有一个工作目录，2004年存档以来已经有50GB了，我保存文件算是比较好了，
+把文件做的尽量小了再保存。听一个同行说，他的工作数据现在已经有1TB多了。
+我本来是使用同步软件双机备份，几个月同步一次，家里笔记本半年多和工作电脑
+同步一次。想找个差异备份软件，好像找不到好。
+	所以就自己写了这个正则打包工具，为自己服务，和可能用的到人服务。
 
-�߸�ʾ������������� 2012��10�µ�12�����ݴ����һ��������U����ر���
-��������������������
-PkFile.exe  -pD:\����Ŀ¼  -oD:\Temp\backup.tar  -e2012-10
-PkFile.exe  -pD:\����Ŀ¼  -oD:\Temp\backup.tar  -e2012-11
-PkFile.exe  -pD:\����Ŀ¼  -oD:\Temp\backup.tar  -e2012-12
+具个示例操作：我想把 2012年10月到12月数据打包成一个包，用U盘异地备份
+连续输入以下三次命令
+PkFile.exe  -pD:\工作目录  -oD:\Temp\backup.tar  -e2012-10
+PkFile.exe  -pD:\工作目录  -oD:\Temp\backup.tar  -e2012-11
+PkFile.exe  -pD:\工作目录  -oD:\Temp\backup.tar  -e2012-12
 
-�ͻ�� 2012��10�µ�12�������µ��ļ������ backup.tar
-��Ϊ����һ�㶼���Ѿ�ѹ��������tarֻ������ٶ��ϻ��ܶ�
+就会把 2012年10月到12月三个月的文件打包到 backup.tar
+因为数据一般都是已经压缩过，用tar只打包，速度上会快很多
 
-���ڲ�ϰ�߿���̨�����ģ�ֻҪ 
-PACKAGE_FILE.ini ֻ������
-PATH  =   D:\����Ŀ¼ 
+对于不习惯控制台操作的，只要 
+PACKAGE_FILE.ini 只留三行
+PATH  =   D:\工作目录 
 REGEX =   2012-10
 PACKFILE = D:\Temp\backup.tar
-Ȼ��˫�� PkFile.exe �Ϳ��Ա�����
+然后双击 PkFile.exe 就可以备份了
 
 
 
-/*****************   PACKAGE_FILE.ini  �ļ�ʾ��   *************************
-;ֱ���޸������ļ� = PACKAGE_FILE.ini �е�PATH��REGEX �������ȼۿ���̨�������
+/*****************   PACKAGE_FILE.ini  文件示例   *************************
+;直接修改配置文件 = PACKAGE_FILE.ini 中的PATH和REGEX 参数，等价控制台输入参数
 [PACKAGE_FILE]
-PATH  =   D:\����Ŀ¼ 
+PATH  =   D:\工作目录 
 REGEX =   2012-10
 PACKFILE = D:\Temp\backup.tar
 ***************************************************************************/
