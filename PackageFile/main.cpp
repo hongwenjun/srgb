@@ -1,148 +1,55 @@
- #include <iostream>
-#include <string>
-#include <algorithm>
-#include <map>
-#include <fstream>
-#include <cstdio>
-#include <cctype>
-#include <regex>
-#include <windows.h>
+ /*
+** Copyright (C) Http://sRGB.GoogleCode.com All rights reserved.
+*/
 
-using namespace std;
-
-// 简单的文件属性结构
-struct F_STRUCT {
-    char date[16];
-    char time[16];
-    char size[255];
-    char name[255];
-};
-
-// 全局变量
-char ConfigFile[MAX_PATH] = {0};
-char AppPath[MAX_PATH] = {0};
-string Path_Argv;
-string Reg_Argv;
-
-// 删除字符串前后空白
-string strTrim(string& str)
-{
-    str = str.substr(str.find_first_not_of("\t \n"));
-    str = str.substr(0, str.find_last_not_of("\t \n") + 1);
-    return str;
-}
-
-// 读取和保存配置
-void LoadConfigFile()
-{
-    string line;
-    fstream file(ConfigFile , fstream::in);
-
-    while (getline(file , line)) {
-
-        // 跳过没有'='号 和 有';' 的注解行
-        if (line.find('=') == string::npos)
-            continue ;
-        line = strTrim(line);
-        if (line[0] == ';')
-            continue ;
-
-        // 获得路径和正则公式( 截取 = 符号之后，删除空白)
-        if (line.find("PATH") != string::npos) {
-            line = line.substr(line.find('=') + 1);
-            Path_Argv = strTrim(line);
-
-        } else if (line.find("REGEX") != string::npos) {
-            line = line.substr(line.find('=') + 1);
-            Reg_Argv = strTrim(line);
-        }
-    }
-    file.close();
-}
-
-/*****************   PACKAGE_FILE.ini  文件示例   *************************
-;PkFile 1.00  Copyright (c) Hongwenjun(蘭公子)  2012-11-28
-;
-;Usage: PkFile.exe	-p{打包路径}  -e{正则公式}
-;
-;示 例：PkFile.exe	-pD:\我的照片 -e2012-11
-; 	    可以打包指定目录2012年11月建立或修改的文件
-
-;直接修改配置文件 = PACKAGE_FILE.ini 中的PATH和REGEX 参数，等价控制台输入参数
-[PACKAGE_FILE]
-PATH  =   D:\我的照片\测试目录
-  ;  PATH  =   D:\我的照片\测试目录
-
-REGEX =     2005-\d\d-\d\d
- ;  REGEX =     2005-\d\d-\d\d
-
-***************************************************************************/
-
-
-
-// 检查一个文件是否存在
-BOOL IsFileExist(LPCTSTR lpFileName)
-{
-    WIN32_FIND_DATA fd = {0};
-    HANDLE hFind = FindFirstFile(lpFileName, &fd);
-    if (hFind != INVALID_HANDLE_VALUE) {
-        FindClose(hFind);
-    }
-    return ((hFind != INVALID_HANDLE_VALUE) && !(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
-}
-
-// 功能 获得当前路径
-char* GetAppDir(char* szPath)
-{
-    char* ret = szPath;
-    GetModuleFileName(NULL, szPath, MAX_PATH); // 得到当前执行文件的文件名（包含路径）
-    *(strrchr(szPath , '\\')) = '\0';   // 删除文件名，只留下目录
-    return ret;
-}
+#include "pk_pch.h"
+#include "pkfile.h"
+#include <direct.h>
 
 /** TODO (hongwenjun#1#): 现在不能处理文件名重名问题
 实现了读取配置文件INI，识别注释语句
 */
 
+// 使用全局变量
+extern string Path_Argv;
+extern string Reg_Argv;
+extern string Packfile_Argv;
+
 int main(int argc , char* argv[])
 {
+    if (88 == initial_arg(argc , argv))
+        return 88;
 
-    GetAppDir(ConfigFile);
-    strcat(ConfigFile, "\\PACKAGE_FILE.ini");
-    if (IsFileExist(ConfigFile))
-        LoadConfigFile();
+    char AppPath[MAX_PATH] = {0};
+    GetAppDir(AppPath);
 
-    printf("%s\n", ConfigFile);
-    // 输入文件   D:\\名片\\date.txt   D:\\名片\\file.txt
-    // DIR . /S /AA /TW >\date.txt  和  DIR . /S /AA /B >\file.txt
-    ifstream datefile("\\date.txt ");
-    ifstream pathfile("\\file.txt ");
-    ofstream listfile("\\listfile.txt");
+    string date_txt = string(AppPath) + "\\date.txt";
+    string file_txt = string(AppPath) + "\\file.txt";
+    string listfile_txt = string(AppPath) + "\\listfile.txt";
+    string pkcmd;
 
-    for (int i = 1 ; i != argc; ++i) {
-        const char* parg = argv[i];
-        if (*parg == '-') {
-            switch (* (parg + 1)) {
-            case 'p':
-                Path_Argv = string(parg + 2);  // 扫描路径参数
-                break;
-
-            case 'e':
-                Reg_Argv = string(parg + 2);  ;  // 正则参数
-                break;
-            default:
-                break;
-            }
-        }
+    if (_chdir(Path_Argv.c_str())) {
+        printf("无法找到的目录: %s\n\a\n\n", Path_Argv.c_str());
+        print_help();
+        if (argc == 1) cin.get();
+        return -1;
+    } else {
+        printf("正在扫描目录: %s\n", Path_Argv.c_str() );
+        // DIR . /S /AA /TW >\date.txt  和  DIR . /S /AA /B >\file.txt   调用系统获得数据输入文件
+        pkcmd = string("DIR . /S /AA /TW > ") + date_txt;
+        system(pkcmd.c_str());
+        pkcmd = string("DIR . /S /AA /B > ") + file_txt;
+        system(pkcmd.c_str());
     }
-    printf("%s\n%s\n", Path_Argv.data() , Reg_Argv.data()) ; // app.exe -pD:\CodeBlocks -e\w+\.dll
+
+    ifstream datefile(date_txt.c_str());
+    ifstream pathfile(file_txt.c_str());
+    ofstream listfile(listfile_txt.c_str());
 
     string readline;    // 读取每行，然后使用正则搜索匹配
     smatch m;
     regex e(Reg_Argv);
     regex re("(\\w\\:\\\\)(.*\\\\([^\\\\]+))");  // 公式(\w\:\\)(.*\\([^\\]+)) 匹配 D:\名片\89届初中毕业生通讯录.cdr
-
-
 
     F_STRUCT d_file ;  // 简单的文件属性结构
 
@@ -167,13 +74,25 @@ int main(int argc , char* argv[])
         }
     }
     for (auto it = mss_date.begin() ; it != mss_date.end(); ++it) {
-        // cout << mss_path[it->second] << endl;
+        //   cout << it->second << "\t" << mss_path[it->second] << endl;
         listfile << mss_path[it->second] << endl;  // 输出结果
     }
 
     datefile.close();  pathfile.close();   listfile.close();
-    system("pause");
-//    system("7z a -ttar -r -scsWIN \\backup.tar @\\listfile.txt"); // 调用7z命令行打包文件
+
+    // 调用7z命令行打包文件，
+    pkcmd = string("7z.exe a -scsWIN  ") + Packfile_Argv + " @" + listfile_txt;
+    if (IsFileExist((string(AppPath) + "\\res\\7z.exe").c_str()))
+        pkcmd = string(AppPath) + "\\res\\" + pkcmd;
+
+    _chdir("\\"); system("COLOR F9");
+    if (system(pkcmd.c_str()) != 0) {
+        cout << "调用打包命令:\t" << pkcmd << endl
+             << "失败！请检查软件目录下是否有 7z.exe \n";
+    }
+    print_help();
+    remove(date_txt.c_str()); remove(file_txt.c_str()); remove(listfile_txt.c_str());
+    if (argc == 1) cin.get();
     return 0;
 
 }
