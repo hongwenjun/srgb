@@ -48,14 +48,37 @@ char* csTrim(char* cs)
     return ret;
 }
 
+char* csTrim_v2(char* cs)
+{
+    char* ret = cs;
+    char* pc = new char[strlen(cs) + 1];
+
+    int pos = strspn(cs , "\t \n");     // 查找非空白处pos
+    strcpy(pc , cs + pos);
+
+    char* end = pc;
+    while (*end++)     // 找到字符串末位的'\0'，
+        ;              // 因为上面 end++，实际指针在 '\0'的后一个
+    end -= 2;          // 所以退2格，回到字符串最后一个字母
+
+    while (*end == ' ' || *end == '\t' ||  *end == '\n') {
+        *end-- = '\0';
+    }
+    strcpy(cs , pc);
+
+    delete[] pc;
+    return ret;
+}
 
 
-// strcspn strspn strpbrk
+
+
+
 int main()
 {
     string str = " \t \n  你好世界!  \t \n ";
     char cs[] =  " \t \n  你好世界!  \t \n ";
 
-    cout << strTrim(str)  << csTrim(cs) << endl;
+    cout << strTrim(str)  << csTrim_v2(cs) << endl;
     return 0;
 }
