@@ -1,4 +1,4 @@
-﻿/*
+ /*
 ** Copyright (C) Http://sRGB.GoogleCode.com All rights reserved.
 */
 #include "pkfile.h"
@@ -205,8 +205,8 @@ void find_path(const char* lp_path)
     HANDLE hFile;  // windows对文件的操作首先要得到一个文件句柄
     FILETIME ft;  SYSTEMTIME st; // 文件时间 和 系统时间
     WIN32_FIND_DATAA wfd;  // WIN32_FIND_DATAA 是windows定义的查找文件的结构
-    char sz_path[256] = {0};
-    char buf[256] = {0};
+    char sz_path[1024] = {0};
+    char buf[1024] = {0};
     strcpy(sz_path, lp_path);
     strcat(sz_path, "\\*.*");
     hFile = FindFirstFile(sz_path, &wfd);  // FindFirstFile函数查找一个文件，sz_path是要查找的文件名，可以是全路径或相对路径，也可以写通配符，如“c:/*.*”
