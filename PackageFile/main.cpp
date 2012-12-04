@@ -1,4 +1,4 @@
- /*
+﻿/*
 ** Copyright (C) Http://sRGB.GoogleCode.com All rights reserved.
 */
 
@@ -14,6 +14,10 @@
 extern string Path_Argv;
 extern string Reg_Argv;
 extern string Packfile_Argv;
+extern bool  Direct_Datelog_Flag;
+extern bool  Delete_Datelog_Flag;
+extern bool  Test_List_Flag ;
+
 
 int main(int argc , char* argv[])
 {
@@ -33,8 +37,8 @@ int main(int argc , char* argv[])
         print_help();
         if (argc == 1) cin.get();
         return -1;
-    } else {
-        printf("正在扫描目录: %s\n", Path_Argv.c_str() );
+    } else if (!Direct_Datelog_Flag) {
+        printf("正在扫描目录: %s\n", Path_Argv.c_str());
         // DIR . /S /AA /TW >\date.txt  和  DIR . /S /AA /B >\file.txt   调用系统获得数据输入文件
         pkcmd = string("DIR . /S /AA /TW > ") + date_txt;
         system(pkcmd.c_str());
@@ -55,6 +59,7 @@ int main(int argc , char* argv[])
 
     map<string, string> mss_date;
     map<string, string> mss_path;
+    map<string, string> mss_list;
 
     while (getline(datefile , readline)) {
 
@@ -74,16 +79,20 @@ int main(int argc , char* argv[])
         }
     }
     for (auto it = mss_date.begin() ; it != mss_date.end(); ++it) {
-        //   cout << it->second << "\t" << mss_path[it->second] << endl;
-        listfile << mss_path[it->second] << endl;  // 输出结果
+        //   cout << << "\t" << mss_path[it->second] << endl;
+        mss_list.insert(make_pair(mss_path[it->second] , it->second));  // 结果存到容器，删除重复，目前还无法处理同名文件
     }
+    for (auto it = mss_list.begin() ; it != mss_list.end(); ++it)
+        listfile << it->first << endl;  // 输出结果
 
     datefile.close();  pathfile.close();   listfile.close();
 
     // 调用7z命令行打包文件，
     pkcmd = string("7z.exe a -scsWIN  ") + Packfile_Argv + " @" + listfile_txt;
+
     if (IsFileExist((string(AppPath) + "\\res\\7z.exe").c_str()))
         pkcmd = string(AppPath) + "\\res\\" + pkcmd;
+    if (Test_List_Flag) pkcmd = string("TYPE ") + listfile_txt;   // 只是显示 listfiel.txt, 不打包文件
 
     _chdir("\\"); system("COLOR F9");
     if (system(pkcmd.c_str()) != 0) {
@@ -91,7 +100,9 @@ int main(int argc , char* argv[])
              << "失败！请检查软件目录下是否有 7z.exe \n";
     }
     print_help();
-    remove(date_txt.c_str()); remove(file_txt.c_str()); remove(listfile_txt.c_str());
+    if (Delete_Datelog_Flag) {
+        remove(date_txt.c_str()); remove(file_txt.c_str()); remove(listfile_txt.c_str());
+    }
     if (argc == 1) cin.get();
     return 0;
 

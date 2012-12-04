@@ -10,6 +10,9 @@ char ConfigFile[MAX_PATH] = {0};
 string Path_Argv;
 string Reg_Argv;
 string Packfile_Argv;
+bool  Direct_Datelog_Flag = false;
+bool  Delete_Datelog_Flag = false;
+bool  Test_List_Flag = false;
 
 
 // 删除字符串前后空白
@@ -47,6 +50,12 @@ void LoadConfigFile()
         } else if (line.find("PACKFILE") != string::npos) {
             line = line.substr(line.find('=') + 1);
             Packfile_Argv = strTrim(line);
+
+        } else if (line.find("DIRECTDATE") != string::npos) {
+            line = line.substr(line.find('=') + 1);
+            // 如果有date.txt ,不用每次扫描目录,如果更新了,手工删除date.txt
+            char df_path[MAX_PATH] = {0}; GetAppDir(df_path); strcat(df_path , "\\date.txt");
+            Direct_Datelog_Flag = (strTrim(line) == "1") && (IsFileExist(df_path));
         }
     }
     file.close();
@@ -55,10 +64,10 @@ void LoadConfigFile()
 /*****************   PACKAGE_FILE.ini  文件示例   *************************
 ;PkFile 1.00  Copyright (c) Hongwenjun(蘭公子)  2012-11-28
 ;
-;Usage: PkFile.exe	-p{打包路径}  -e{正则公式}
+;Usage: PkFile.exe  -p{打包路径}  -e{正则公式}
 ;
-;示 例：PkFile.exe	-pD:\我的照片 -e2012-11
-; 	    可以打包指定目录2012年11月建立或修改的文件
+;示 例：PkFile.exe   -pD:\我的照片 -e2012-11
+;       可以打包指定目录2012年11月建立或修改的文件
 
 ;直接修改配置文件 = PACKAGE_FILE.ini 中的PATH和REGEX 参数，等价控制台输入参数
 [PACKAGE_FILE]
@@ -83,10 +92,12 @@ void print_help()
 {
     printf("%s\n",
            "PkFile 1.00  Copyright (c) Hongwenjun(蘭公子)  2012-11-28\n\n"
-           "Usage: PkFile.exe  -p{打包路径}   -o{输出文件}   -e{正则公式}\n\n"
+           "Usage: PkFile.exe  -p{打包路径}   -o{输出文件}   -e{正则公式}  [-d -l] \n"
+           "       使用 -d 命令行开关，重新扫描目录，完成后删除扫描记录\n\n"
            "示 例: PkFile.exe  -pD:\\我的照片  -oD:\\Temp\\backup.tar  -e2012-11\n"
            "       可以打包指定目录2012年11月建立或修改的文件\n\n"
-           "直接修改配置文件 PACKAGE_FILE.ini 中的PATH和REGEX 参数，等价控制台输入参数\n\n");
+           "直接修改配置文件 PACKAGE_FILE.ini 中的PATH和REGEX 参数，等价控制台输入参数\n"
+           "PACKFILE 和 DIRECTDATE 等详细见示例文件 PACKAGE_FILE.ini \n\n");
 }
 
 // 参数初始化
@@ -102,17 +113,24 @@ int initial_arg(int argc , char* argv[])
         const char* parg = argv[i];
         if (*parg == '-') {
             switch (* (parg + 1)) {
-            case 'p':
+            case 'p': case 'P':
                 Path_Argv = string(parg + 2);  // 扫描路径参数
                 break;
-            case 'e':
+            case 'e': case 'E':
                 Reg_Argv = string(parg + 2);   // 正则参数
                 break;
-            case 'o':
+            case 'o': case 'O':
                 Packfile_Argv = string(parg + 2);   // 输出文件参数
                 break;
 
-            case 'h':
+            case 'd': case 'D':
+                Direct_Datelog_Flag = false;  // 重新扫描目录
+                Delete_Datelog_Flag = true;   // 完成后删除扫描记录 date.txt
+                break;
+            case 'l': case 'L':
+                Test_List_Flag = true;   // 只是显示 listfiel.txt, 不打包文件
+                break;
+            case 'h': case 'H':
                 print_help();  // 调用帮助
                 return 88;
                 break;
