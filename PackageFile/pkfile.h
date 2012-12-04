@@ -9,10 +9,10 @@
 // 简单的文件属性结构
 struct F_STRUCT {
     char date[16];
-    char time[16];
-    char size[255];
-    char name[255];
-    char path[255];
+    char time[12];
+    size_t size;
+    char name[MAX_PATH];
+    char path[MAX_PATH];
 };
 
 // 参数初始化
@@ -37,10 +37,10 @@ BOOL IsFileExist(LPCTSTR lpFileName);
 char* GetAppDir(char* szPath);
 
 
-// 搜索lp_path目录包括子目录所有文件名，保存到输出out_file_name
-void find_path_save_file(const char* lp_path , const char* out_file_name) ;
+// 搜索lp_path目录包括子目录所有文件名，保存到输出out_file_name ; 返回打印的记录数
+int find_path_save_file(const char* lp_path , const char* out_file_name) ;
 // 遍历搜索目录
-void find_path(const char* lp_path);
+int find_path(const char* lp_path);
 
 #endif // PKFILE_H_INCLUDED
 

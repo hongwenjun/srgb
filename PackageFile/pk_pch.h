@@ -5,6 +5,7 @@
 ** Copyright (C) Http://sRGB.GoogleCode.com All rights reserved.
 */
 
+
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -15,8 +16,13 @@
 #include <regex>
 #include <windows.h>
 
-using namespace std;
-
-
+using std::string;
+using std::fstream;
+using std::ifstream;
+using std::ofstream;
+using std::regex;
+using std::endl;
+using std::smatch;
+using std::map;
 
 #endif // PK_PCH_H_INCLUDED
