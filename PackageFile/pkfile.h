@@ -12,6 +12,7 @@ struct F_STRUCT {
     char time[16];
     char size[255];
     char name[255];
+    char path[255];
 };
 
 // 参数初始化
@@ -19,6 +20,9 @@ int initial_arg(int argc , char* argv[]);
 
 // 删除字符串前后空白
 string strTrim(string& str);
+// 删除字符串前后空白
+char* csTrim(char* cs);
+
 
 // 读取和保存配置
 void LoadConfigFile();
@@ -33,6 +37,10 @@ BOOL IsFileExist(LPCTSTR lpFileName);
 char* GetAppDir(char* szPath);
 
 
+// 搜索lp_path目录包括子目录所有文件名，保存到输出out_file_name
+void find_path_save_file(const char* lp_path , const char* out_file_name) ;
+// 遍历搜索目录
+void find_path(const char* lp_path);
 
 #endif // PKFILE_H_INCLUDED
 
