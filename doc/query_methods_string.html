@@ -1,0 +1,545 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="GENERATOR" content="Quadralay WebWorks AutoMap 2003 Platinum Edition for FrameMaker 8.5.4286.3" />
+    <meta name="TEMPLATEBASE" content="Draw VBA" />
+    <meta name="LASTUPDATED" content="12/04/07 09:49:34" />
+    <title>What query methods are supported for strings?</title>
+    <link rel="StyleSheet" href="document.css" type="text/css" />
+    <link rel="StyleSheet" href="Mycatalog.css" type="text/css" />
+  </head>
+
+  <body>
+<table border="0">
+      <tr>
+        <td width="23">
+<a href="query_methods_double.html">
+      <img alt="Previous Document" border="0" src="images/prev.gif" width="18" height="18" />
+    </a>
+        </td>
+        <td width="23">
+<a href="query_methods_shape.html">
+      <img alt="Next Document" border="0" src="images/next.gif" width="18" height="18" />
+    </a>
+      </tr>
+    </table>
+<a name="wp1048225"> </a><h4 class="pHeading3">
+What query methods are supported for strings?
+</h4>
+<a name="wp1048474"> </a><p class="pBody">
+All common query methods (see the section <a  href="What_are_the_available_query_methods.html#wp1047930">&#147;What common query methods are supported?&#148;</a>) are supported for strings.
+</p>
+<a name="wp1048475"> </a><p class="pBody">
+The following query methods are also supported for strings:
+</p>
+<a name="wp1046001"> </a><p class="pAnchorTable">
+</p><div align="left">
+<table cellpadding="6">
+  <caption></caption>
+  <tr align="left" valign="top">    <th><a name="wp1045714"> </a><div class="pCellHeading">
+Method
+</div>
+</th>
+    <th><a name="wp1045716"> </a><div class="pCellHeading">
+Description
+</div>
+</th>
+    <th><a name="wp1045718"> </a><div class="pCellHeading">
+Example
+</div>
+</th>
+    <th><a name="wp1045720"> </a><div class="pCellHeading">
+Result
+</div>
+</th>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045722"> </a><div class="pCellBody">
+<b class="cBold">string.Length()</b>
+</div>
+</td>
+    <td><a name="wp1045724"> </a><div class="pCellBody">
+Returns the length of the string
+</div>
+</td>
+    <td><a name="wp1045726"> </a><div class="pCellBody">
+<code class="cCode">&#39;test&#39;.length</code>
+</div>
+</td>
+    <td><a name="wp1045728"> </a><div class="pCellBody">
+<b class="cBold">4</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045730"> </a><div class="pCellBody">
+<b class="cBold">string.Empty()</b>
+</div>
+</td>
+    <td><a name="wp1045732"> </a><div class="pCellBody">
+Returns <b class="cBold">True</b> if the string is empty
+</div>
+</td>
+    <td><a name="wp1045734"> </a><div class="pCellBody">
+<code class="cCode">&#39;test&#39;.empty</code>
+</div>
+</td>
+    <td><a name="wp1045736"> </a><div class="pCellBody">
+<b class="cBold">False</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045738"> </a><div class="pCellBody">
+<b class="cBold">string.ToUpper()</b>
+</div>
+</td>
+    <td><a name="wp1045740"> </a><div class="pCellBody">
+Converts the string to uppercase
+</div>
+</td>
+    <td><a name="wp1045742"> </a><div class="pCellBody">
+<code class="cCode">&#39;test&#39;.ToUpper</code>
+</div>
+</td>
+    <td><a name="wp1045744"> </a><div class="pCellBody">
+<b class="cBold">&#39;TEST&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045746"> </a><div class="pCellBody">
+<b class="cBold">string.ToLower()</b>
+</div>
+</td>
+    <td><a name="wp1045748"> </a><div class="pCellBody">
+Converts the string to lowercase
+</div>
+</td>
+    <td><a name="wp1045750"> </a><div class="pCellBody">
+<code class="cCode">&#39;TEST&#39;.ToLower</code>
+</div>
+</td>
+    <td><a name="wp1045752"> </a><div class="pCellBody">
+<b class="cBold">&#39;test&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045754"> </a><div class="pCellBody">
+<b class="cBold">string.ToTitle()</b>
+</div>
+</td>
+    <td><a name="wp1045756"> </a><div class="pCellBody">
+Converts the string to title case
+</div>
+</td>
+    <td><a name="wp1045758"> </a><div class="pCellBody">
+<code class="cCode">&#39;TEST&#39;.ToTitle</code>
+</div>
+</td>
+    <td><a name="wp1045760"> </a><div class="pCellBody">
+<b class="cBold">&#39;Test&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045762"> </a><div class="pCellBody">
+<b class="cBold">string.CharCode()</b>
+</div>
+</td>
+    <td><a name="wp1045764"> </a><div class="pCellBody">
+Gets the Unicode character code of the first string character
+</div>
+</td>
+    <td><a name="wp1045766"> </a><div class="pCellBody">
+<code class="cCode">&#39;Test&#39;.CharCode</code>
+</div>
+</td>
+    <td><a name="wp1045768"> </a><div class="pCellBody">
+<b class="cBold">84</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045770"> </a><div class="pCellBody">
+<b class="cBold">string.SubStr(int, [int])</b>
+</div>
+</td>
+    <td><a name="wp1045772"> </a><div class="pCellBody">
+Gets a substring of a string. The first parameter is a zero-based index of the first character to include in the substring. The second optional parameter is the length of the substring to retrieve. If it is omitted, the whole remainder of the string is returned.
+</div>
+</td>
+    <td><a name="wp1045774"> </a><div class="pCellBody">
+<code class="cCode">&#39;Hello World&#39;.SubStr(6)</code>
+</div>
+</td>
+    <td><a name="wp1045776"> </a><div class="pCellBody">
+<b class="cBold">&#39;World&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045778"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045780"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045782"> </a><div class="pCellBody">
+<code class="cCode">&#39;Hello World&#39;.SubStr(6,3)</code>
+</div>
+</td>
+    <td><a name="wp1045784"> </a><div class="pCellBody">
+<b class="cBold">&#39;Wor&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045786"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045788"> </a><div class="pCellBody">
+The first index can be negative, to specify the index from the end of the string.
+</div>
+</td>
+    <td><a name="wp1045790"> </a><div class="pCellBody">
+<code class="cCode">&#39;This is a test&#39;.SubStr(-4)</code>
+</div>
+</td>
+    <td><a name="wp1045792"> </a><div class="pCellBody">
+<b class="cBold">&#39;test&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045794"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045796"> </a><div class="pCellBody">
+If the last parameter is negative, it indicates the last character from the end of the string.
+</div>
+</td>
+    <td><a name="wp1045798"> </a><div class="pCellBody">
+<code class="cCode">&#39;Some words&#39;.SubStr(5, -1)</code>
+</div>
+</td>
+    <td><a name="wp1045800"> </a><div class="pCellBody">
+<b class="cBold">&#39;word&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045802"> </a><div class="pCellBody">
+<b class="cBold">string.Delete(int, [int])</b>
+</div>
+</td>
+    <td><a name="wp1045804"> </a><div class="pCellBody">
+Removes the specified characters from the string. The meaning of the parameters is the same as those of <b class="cBold">SubStr</b> function.
+</div>
+</td>
+    <td><a name="wp1045806"> </a><div class="pCellBody">
+<code class="cCode">&#39;abcdefg&#39;.Delete(2, 3)</code>
+</div>
+</td>
+    <td><a name="wp1045808"> </a><div class="pCellBody">
+<b class="cBold">&#39;abfg&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045810"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045812"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045814"> </a><div class="pCellBody">
+<code class="cCode">&#39;abcdefg&#39;.Delete(-2)</code>
+</div>
+</td>
+    <td><a name="wp1045816"> </a><div class="pCellBody">
+<b class="cBold">&#39;abcdeg&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045818"> </a><div class="pCellBody">
+<b class="cBold">string.Trim([string])</b>
+</div>
+</td>
+    <td><a name="wp1045820"> </a><div class="pCellBody">
+Removes the specified characters from the beginning and end of the string. If the optional string parameter is omitted, then space (code 32) and tab (code 9) characters are removed.
+</div>
+</td>
+    <td><a name="wp1045822"> </a><div class="pCellBody">
+<code class="cCode">&#39;    test    &#39;.trim()</code>
+</div>
+</td>
+    <td><a name="wp1045824"> </a><div class="pCellBody">
+<b class="cBold">&#39;test&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045826"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045828"> </a><div class="pCellBody">
+&#160;
+</div>
+</td>
+    <td><a name="wp1045830"> </a><div class="pCellBody">
+<code class="cCode">&#39;aaaaatestbbbccc&#39;.trim(&#39;abc&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045832"> </a><div class="pCellBody">
+<b class="cBold">&#39;test&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045834"> </a><div class="pCellBody">
+<b class="cBold">string.LTrim([string])</b>
+</div>
+</td>
+    <td><a name="wp1045836"> </a><div class="pCellBody">
+Similar to the <b class="cBold">Trim</b> function, but removes the characters only from the beginning of the string
+</div>
+</td>
+    <td><a name="wp1045838"> </a><div class="pCellBody">
+<code class="cCode">&#39;    test    &#39;.trim()</code>
+</div>
+</td>
+    <td><a name="wp1045840"> </a><div class="pCellBody">
+<b class="cBold">&#39;test    &#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045842"> </a><div class="pCellBody">
+<b class="cBold">string.RTrim([string])</b>
+</div>
+</td>
+    <td><a name="wp1045844"> </a><div class="pCellBody">
+Similar to the <b class="cBold">Trim</b> function, but removes the characters only from the end of the string
+</div>
+</td>
+    <td><a name="wp1045846"> </a><div class="pCellBody">
+<code class="cCode">&#39;    test    &#39;.trim()</code>
+</div>
+</td>
+    <td><a name="wp1045848"> </a><div class="pCellBody">
+<b class="cBold">&#39;    test&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045850"> </a><div class="pCellBody">
+<b class="cBold">string.Repeat(int)</b>
+</div>
+</td>
+    <td><a name="wp1045852"> </a><div class="pCellBody">
+Repeats the string the specified number of times
+</div>
+</td>
+    <td><a name="wp1045854"> </a><div class="pCellBody">
+<code class="cCode">&#39;test&#39;.repeat(3)</code>
+</div>
+</td>
+    <td><a name="wp1045856"> </a><div class="pCellBody">
+<b class="cBold">&#39;testtesttest&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045858"> </a><div class="pCellBody">
+<b class="cBold">string.StartsWith(string)</b>
+</div>
+</td>
+    <td><a name="wp1045860"> </a><div class="pCellBody">
+Returns <b class="cBold">True</b> if the string starts with the specified string
+</div>
+</td>
+    <td><a name="wp1045862"> </a><div class="pCellBody">
+<code class="cCode">&#39;Apple&#39;.StartsWith(&#39;A&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045864"> </a><div class="pCellBody">
+<b class="cBold">True</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045866"> </a><div class="pCellBody">
+<b class="cBold">string.EndsWith(string)</b>
+</div>
+</td>
+    <td><a name="wp1045868"> </a><div class="pCellBody">
+Returns <b class="cBold">True</b> if the string ends with the specified string
+</div>
+</td>
+    <td><a name="wp1045870"> </a><div class="pCellBody">
+<code class="cCode">&#39;Cooking&#39;.EndsWith(&#39;ing&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045872"> </a><div class="pCellBody">
+<b class="cBold">True</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045874"> </a><div class="pCellBody">
+<b class="cBold">string.Contains(string)</b>
+</div>
+</td>
+    <td><a name="wp1045876"> </a><div class="pCellBody">
+Returns <b class="cBold">True</b> if the string contains the specified string
+</div>
+</td>
+    <td><a name="wp1045878"> </a><div class="pCellBody">
+<code class="cCode">&#39;Peaceful world&#39;.Contains(&#39;Peace&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045880"> </a><div class="pCellBody">
+<b class="cBold">True</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045882"> </a><div class="pCellBody">
+<b class="cBold">string.Replace(string, string)</b>
+</div>
+</td>
+    <td><a name="wp1045884"> </a><div class="pCellBody">
+Replaces all instances of the search substring (the first parameter) with the replacement string (the second parameter)
+</div>
+</td>
+    <td><a name="wp1045886"> </a><div class="pCellBody">
+<code class="cCode">&#39;green pen, blue pen&#39;.Replace(&#39;pen&#39;, &#39;pencil&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045888"> </a><div class="pCellBody">
+<b class="cBold">&#39;green pencil, blue pencil&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045890"> </a><div class="pCellBody">
+<b class="cBold">string.Split(string)</b>
+</div>
+</td>
+    <td><a name="wp1045892"> </a><div class="pCellBody">
+Splits the string delimited with the specified characters into an array of strings
+</div>
+</td>
+    <td><a name="wp1045894"> </a><div class="pCellBody">
+<code class="cCode">&#39;Design&lt;-&gt;Implementation&lt;-&gt;Testing&#39;.Split(&#39;&lt;-&gt;&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045896"> </a><div class="pCellBody">
+<b class="cBold">array(&#39;Design&#39;, &#39;Implementation&#39;, &#39;Testing&#39;)</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045898"> </a><div class="pCellBody">
+<b class="cBold">string.CharAt(int)</b>
+</div>
+</td>
+    <td><a name="wp1045900"> </a><div class="pCellBody">
+Gets the character at the given index in the string. The index is zero-based.
+</div>
+</td>
+    <td><a name="wp1045902"> </a><div class="pCellBody">
+<code class="cCode">&#39;Test&#39;.CharAt(1)</code>
+</div>
+</td>
+    <td><a name="wp1045904"> </a><div class="pCellBody">
+<b class="cBold">&#39;e&#39;</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045906"> </a><div class="pCellBody">
+<b class="cBold">string.CharCodeAt(int)</b>
+</div>
+</td>
+    <td><a name="wp1045908"> </a><div class="pCellBody">
+Gets the Unicode character code of the character at the given index. The index is zero-based.
+</div>
+</td>
+    <td><a name="wp1045910"> </a><div class="pCellBody">
+<code class="cCode">&#39;ABCD&#39;.CharCodeAt(3)</code>
+</div>
+</td>
+    <td><a name="wp1045912"> </a><div class="pCellBody">
+<b class="cBold">68</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045914"> </a><div class="pCellBody">
+<b class="cBold">string.IndexOf(string)</b>
+</div>
+</td>
+    <td><a name="wp1045916"> </a><div class="pCellBody">
+Finds a substring and returns the character index of its first occurrence. If it is not found, <b class="cBold">-1</b> is returned.
+</div>
+</td>
+    <td><a name="wp1045918"> </a><div class="pCellBody">
+<code class="cCode">&#39;this is a test&#39;.IndexOf(&#39;is&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045920"> </a><div class="pCellBody">
+<b class="cBold">2</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045922"> </a><div class="pCellBody">
+<b class="cBold">string.LastIndexOf(string)</b>
+</div>
+</td>
+    <td><a name="wp1045924"> </a><div class="pCellBody">
+Finds a substring and returns the character index of its last occurrence. If it is not found, <b class="cBold">-1</b> is returned.
+</div>
+</td>
+    <td><a name="wp1045926"> </a><div class="pCellBody">
+<code class="cCode">&#39;this is a test&#39;.LastIndexOf(&#39;is&#39;)</code>
+</div>
+</td>
+    <td><a name="wp1045928"> </a><div class="pCellBody">
+<b class="cBold">5</b>
+</div>
+</td>
+</tr>
+  <tr align="left" valign="top">    <td><a name="wp1045930"> </a><div class="pCellBody">
+<b class="cBold">string.ToCharArray()</b>
+</div>
+</td>
+    <td><a name="wp1045932"> </a><div class="pCellBody">
+Converts the string into an array of characters
+</div>
+</td>
+    <td><a name="wp1045934"> </a><div class="pCellBody">
+<code class="cCode">&#39;abc&#39;.ToCharArray</code>
+</div>
+</td>
+    <td><a name="wp1045936"> </a><div class="pCellBody">
+<b class="cBold">array(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)</b>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<p class="pAnchorTable">
+</p>
+<p class="Body"></p>
+<table border="0">
+      <tr>
+        <td width="23">
+<a href="query_methods_double.html">
+      <img alt="Previous Document" border="0" src="images/prev.gif" width="18" height="18" />
+    </a>
+        </td>
+        <td width="23">
+<a href="query_methods_shape.html">
+      <img alt="Next Document" border="0" src="images/next.gif" width="18" height="18" />
+    </a>
+         </td>
+		      <td width="23" >
+		          <a href="#Top">
+		            <img SRC="images/BtnBacktoTop.gif" ALT="Back to Top" border="0" height="18" width="18" />
+		          </a>
+		      </td>
+      </tr>
+    </table>
+<p></p>
+<p class="pBody">Copyright 2007 Corel Corporation. All rights reserved.</p>
+  </body>
+</html>
