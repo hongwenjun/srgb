@@ -5,6 +5,7 @@
 #include "corel_thumbnail.h"
 
 
+
 void helpinfo(const char* exefile)
 {
     printf("\nCorelDRAW 缩略图转成PNG图片和检测文档版本工具\n"
@@ -12,6 +13,9 @@ void helpinfo(const char* exefile)
            "Usage: %s  <CorelDRAW文件.cdr>  [SavePngFile]\n" , exefile);
 }
 
+
+// 读RIFF_CDR_TYPE 文件头和软件版本号
+RIFF_CDR_TYPE cdr_riff ;
 
 int main(int argc, char* argv[])
 {
@@ -34,6 +38,7 @@ int main(int argc, char* argv[])
 
     }
 
+    printf("%d\t%d\t%d\n", sizeof(cdr_riff), cdr_riff.version, cdr_riff.cb);
 
     return 0;
 }
