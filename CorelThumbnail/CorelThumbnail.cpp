@@ -84,6 +84,9 @@ int main(int argc , char* argv[])
 
         disp_buf[0] = 'B';
         disp_buf[1] = 'M';
+        disp_buf[10] = 0x36;   // 图像工具建立的BMP文件，256色索引
+        disp_buf[11] = 0x04;   // 这里好像都是 0x3604 ，强制填，，临时解决了
+
 
         size_t* bmpsize = (size_t*)(disp_buf + 2);
         *bmpsize = raw_size + 10;
