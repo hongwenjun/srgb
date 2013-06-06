@@ -1,4 +1,4 @@
- /*
+﻿/*
 ** Copyright (C) http://srgb.googlecode.com  All rights reserved.
 */
 #include <iostream>
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
     }
 
-    printf("%d\t%d\t%d\n", sizeof(cdr_riff), cdr_riff.version, cdr_riff.cb);
+    printf("CorelDRAW文件:  %s\n文件版本 Ver %d\n文件大小 %d 字节\n ", argv[1] , cdr_riff.version /100 , cdr_riff.cb+8);
 
     return 0;
 }

@@ -115,9 +115,6 @@ bool zip_extract_onefile(const char* zip_filename, const char* filename , const 
 
 
 
-
-
-
 bool cdr_extract_bmp(const char* cdr_filename, const char* bmp_filename)
 {
     if (! IsFileExist(cdr_filename))
@@ -134,8 +131,6 @@ bool cdr_extract_bmp(const char* cdr_filename, const char* bmp_filename)
 
     if (version <= 1300)
         ret = cdr_riff_disp2bmp(cdr_filename, bmp_filename);
-
-
 
     return ret;
 
@@ -163,7 +158,6 @@ bool cdr_thumbnail_png(const char* cdr_filename, const char* png_filename)
 
     CImage image;  //  bmp 转换 png ，需要CImage类，头文件  atlimage.h
     image.Load(bmp_filename);
-
     image.Save(png_filename);
 
    if (remove(bmp_filename) != 0)

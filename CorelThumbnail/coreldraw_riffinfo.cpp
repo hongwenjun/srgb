@@ -1,4 +1,4 @@
- #include "coreldraw_riffinfo.h"
+﻿#include "coreldraw_riffinfo.h"
 
 
 
@@ -18,9 +18,16 @@ int get_cdrfile_version(const char* cdr_filename)
 
     fread(&cdr_riff , 1 , sizeof(cdr_riff) , cdr_pfile);
 
-    if ('PK' == FCC(cdr_riff.riff << 16))
-        return 1400;     // 不能识别版本和高于 X3版本 返回 1400
-    printf("%d\t%d\t%d\n", sizeof(cdr_riff), cdr_riff.version, cdr_riff.cb);
+    if ('PK' == FCC(cdr_riff.riff << 16)){
+       fseek(cdr_pfile,0,SEEK_END);
+       cdr_riff.cb = ftell(cdr_pfile) -8;
+       cdr_riff.version = 1400;
+
+       printf("CDR文件版本X4或者以上，暂时没有去写区分程序，所以不能精确识别!\n\a");
+        }
+
+ //   printf("%d\t%d\t%d\n", sizeof(cdr_riff), cdr_riff.version, cdr_riff.cb);
+
     fclose(cdr_pfile);
     return cdr_riff.version;
 }
