@@ -1,9 +1,9 @@
-﻿#include <iostream>
+ #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>>
 #include <atlenc.h>
-#include <stdio.h>.h>
+#include <stdio.h>
 
 // 获得编码后的数据长度
 #define getDecodeLength Base64EncodeGetRequiredLength
