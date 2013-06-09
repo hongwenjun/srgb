@@ -1,4 +1,4 @@
-﻿#include "AdobeThumbnail.h"
+ #include "AdobeThumbnail.h"
 #include "atpch.h"
 #include <regex>
 #include <iterator>
@@ -13,7 +13,7 @@ int AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
         return -1 ;     // 文件不存在
 
     char* pch = NULL;
-    const char* flag = "<xmpGImg:image>";
+    const char* flag = "xmpGImg:image";  // AI 和 Indd 稍微不同
 
     /// ************* 获取 ID或者AI文档 的预览图 **************** ///
     FILE* adobe_file = fopen(adobe_filename, "rb");
@@ -36,7 +36,7 @@ int AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
 
     string Base64_str(pch);
 
-    regex ex("\\<xmpGImg:image\\>|\\<\\/xmpGImg:image\\>");
+    regex ex("xmpGImg:image\\>|\\<\\/xmpGImg:image\\>|xmpGImg:image=\"");
     regex en("&#xA;");
     // 正则删除 xmpGImg 标记和 转意换行替换回来
     Base64_str = regex_replace(Base64_str, ex, string(""));
