@@ -134,4 +134,10 @@ Arial"/>
 endstream
 endobj
 
+
+
+ 
+ https://github.com/jmue/exiv2
+ https://github.com/jmue/exiv2/blob/a2e75c176fe9228d967eee02181446d5fba93eab/src/preview.cpp
+ 
 #endif
