@@ -44,10 +44,92 @@
 		</Compiler>
 		<Unit filename="AdobeThumbnail.cpp" />
 		<Unit filename="AdobeThumbnail.h" />
+		<Unit filename="AdoeFileXML.h" />
 		<Unit filename="Thumb_ico.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="ZLib/adler32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/compress.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/crc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/crc32.h" />
+		<Unit filename="ZLib/crypt.h" />
+		<Unit filename="ZLib/deflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/deflate.h" />
+		<Unit filename="ZLib/gzclose.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/gzguts.h" />
+		<Unit filename="ZLib/gzlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/gzread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/gzwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/infback.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/inffast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/inffast.h" />
+		<Unit filename="ZLib/inffixed.h" />
+		<Unit filename="ZLib/inflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/inflate.h" />
+		<Unit filename="ZLib/inftrees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/inftrees.h" />
+		<Unit filename="ZLib/ioapi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/ioapi.h" />
+		<Unit filename="ZLib/iowin32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/iowin32.h" />
+		<Unit filename="ZLib/mztools.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/mztools.h" />
+		<Unit filename="ZLib/trees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/trees.h" />
+		<Unit filename="ZLib/uncompr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/unzip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/unzip.h" />
+		<Unit filename="ZLib/zconf.h" />
+		<Unit filename="ZLib/zip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/zip.h" />
+		<Unit filename="ZLib/zlib.h" />
+		<Unit filename="ZLib/zutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ZLib/zutil.h" />
 		<Unit filename="atpch.h" />
+		<Unit filename="corel_thumbnail.cpp" />
+		<Unit filename="corel_thumbnail.h" />
+		<Unit filename="coreldraw_riffinfo.cpp" />
+		<Unit filename="coreldraw_riffinfo.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="otherapi.cpp" />
 		<Unit filename="otherapi.h" />

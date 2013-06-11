@@ -1,0 +1,468 @@
+# depslib dependency file v1.0
+1370957989 source:f:\adobethumbnail\adobethumbnail.cpp
+	"AdobeThumbnail.h"
+	"atpch.h"
+	<regex>
+	<iterator>
+
+1370948651 f:\adobethumbnail\adobethumbnail.h
+	<iostream>
+	<sstream>
+	<fstream>
+	<string>
+	<regex>
+	<atlenc.h>
+
+1370954029 f:\adobethumbnail\atpch.h
+	"AdobeThumbnail.h"
+	"corel_thumbnail.h"
+	"otherapi.h"
+
+1370948651 f:\adobethumbnail\otherapi.h
+	<windows.h>
+	<stdio.h>
+
+1370950573 source:f:\adobethumbnail\thumb_ico.rc
+	<windows.h>
+	<commctrl.h>
+	<richedit.h>
+	"resource.h"
+
+1370950573 f:\adobethumbnail\resource.h
+
+1370948652 source:f:\adobethumbnail\corel_thumbnail.cpp
+	"corel_thumbnail.h"
+	<atlimage.h>
+
+1370948652 f:\adobethumbnail\corel_thumbnail.h
+	<windows.h>
+	"coreldraw_riffinfo.h"
+	"otherapi.h"
+	"ZLib/zip.h"
+	"ZLib/unzip.h"
+
+1370954208 f:\adobethumbnail\coreldraw_riffinfo.h
+	<windows.h>
+	<stdio.h>
+
+1370948652 f:\adobethumbnail\zlib\zip.h
+	"zlib.h"
+	"ioapi.h"
+	"bzlib.h"
+
+1370948652 f:\adobethumbnail\zlib\zlib.h
+	"zconf.h"
+
+1370948652 f:\adobethumbnail\zlib\zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stdarg.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
+
+1370948652 f:\adobethumbnail\zlib\ioapi.h
+	<stdio.h>
+	<stdlib.h>
+	"zlib.h"
+	<stdint.h>
+	"mz64conf.h"
+	"stdint.h"
+
+1370948652 f:\adobethumbnail\zlib\unzip.h
+	"zlib.h"
+	"ioapi.h"
+	"bzlib.h"
+
+1370953195 source:f:\adobethumbnail\coreldraw_riffinfo.cpp
+
+1370953014 source:f:\adobethumbnail\main.cpp
+	<string.h>
+
+1370952011 source:f:\adobethumbnail\otherapi.cpp
+	"otherapi.h"
+
+1370948652 source:f:\adobethumbnail\zlib\adler32.c
+	"zutil.h"
+
+1370948652 f:\adobethumbnail\zlib\zutil.h
+	"zlib.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<alloc.h>
+	<malloc.h>
+	<malloc.h>
+	<unix.h>
+	<stdio.h>
+
+1370948652 source:f:\adobethumbnail\zlib\compress.c
+	"zlib.h"
+
+1370948652 source:f:\adobethumbnail\zlib\crc32.c
+	<stdio.h>
+	"zutil.h"
+	"crc32.h"
+
+1370948652 f:\adobethumbnail\zlib\crc32.h
+
+1370948652 source:f:\adobethumbnail\zlib\deflate.c
+	"deflate.h"
+
+1370948652 f:\adobethumbnail\zlib\deflate.h
+	"zutil.h"
+
+1370948652 source:f:\adobethumbnail\zlib\gzclose.c
+	"gzguts.h"
+
+1370948652 f:\adobethumbnail\zlib\gzguts.h
+	<stdio.h>
+	"zlib.h"
+	<string.h>
+	<stdlib.h>
+	<limits.h>
+	<fcntl.h>
+	<stddef.h>
+	<io.h>
+	<windows.h>
+	<errno.h>
+
+1370948652 source:f:\adobethumbnail\zlib\gzlib.c
+	"gzguts.h"
+
+1370948652 source:f:\adobethumbnail\zlib\gzread.c
+	"gzguts.h"
+
+1370948652 source:f:\adobethumbnail\zlib\gzwrite.c
+	"gzguts.h"
+	<stdarg.h>
+
+1370948652 source:f:\adobethumbnail\zlib\infback.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+	"inffixed.h"
+
+1370948652 f:\adobethumbnail\zlib\inftrees.h
+
+1370948652 f:\adobethumbnail\zlib\inflate.h
+
+1370948652 f:\adobethumbnail\zlib\inffast.h
+
+1370948652 f:\adobethumbnail\zlib\inffixed.h
+
+1370948652 source:f:\adobethumbnail\zlib\inffast.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+
+1370948652 source:f:\adobethumbnail\zlib\inflate.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+	"inffixed.h"
+	<stdio.h>
+
+1370948652 source:f:\adobethumbnail\zlib\inftrees.c
+	"zutil.h"
+	"inftrees.h"
+
+1370948652 source:f:\adobethumbnail\zlib\ioapi.c
+	"ioapi.h"
+
+1370948652 source:f:\adobethumbnail\zlib\iowin32.c
+	<stdlib.h>
+	"zlib.h"
+	"ioapi.h"
+	"iowin32.h"
+
+1370948652 f:\adobethumbnail\zlib\iowin32.h
+	<windows.h>
+
+1370948652 source:f:\adobethumbnail\zlib\mztools.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"zlib.h"
+	"unzip.h"
+
+1370948652 source:f:\adobethumbnail\zlib\trees.c
+	"deflate.h"
+	<ctype.h>
+	"trees.h"
+	<stdio.h>
+
+1370948652 f:\adobethumbnail\zlib\trees.h
+
+1370948652 source:f:\adobethumbnail\zlib\uncompr.c
+	"zlib.h"
+
+1370948652 source:f:\adobethumbnail\zlib\unzip.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"zlib.h"
+	"unzip.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<errno.h>
+	"crypt.h"
+
+1370948652 f:\adobethumbnail\zlib\crypt.h
+
+1370948652 source:f:\adobethumbnail\zlib\zip.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"zlib.h"
+	"zip.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<errno.h>
+	"crypt.h"
+
+1370948652 source:f:\adobethumbnail\zlib\zutil.c
+	"zutil.h"
+	"gzguts.h"
+
+1370966065 source:c:\adobethumbnail\corel_thumbnail.cpp
+	"corel_thumbnail.h"
+	<regex>
+	<string>
+	<atlimage.h>
+
+1370948652 c:\adobethumbnail\corel_thumbnail.h
+	<windows.h>
+	"coreldraw_riffinfo.h"
+	"otherapi.h"
+	"ZLib/zip.h"
+	"ZLib/unzip.h"
+
+1370954208 c:\adobethumbnail\coreldraw_riffinfo.h
+	<windows.h>
+	<stdio.h>
+
+1370948651 c:\adobethumbnail\otherapi.h
+	<windows.h>
+	<stdio.h>
+
+1370948652 c:\adobethumbnail\zlib\zip.h
+	"zlib.h"
+	"ioapi.h"
+	"bzlib.h"
+
+1370948652 c:\adobethumbnail\zlib\zlib.h
+	"zconf.h"
+
+1370948652 c:\adobethumbnail\zlib\zconf.h
+	<windows.h>
+	<limits.h>
+	<sys/types.h>
+	<stdarg.h>
+	<stddef.h>
+	<unistd.h>
+	<unixio.h>
+
+1370948652 c:\adobethumbnail\zlib\ioapi.h
+	<stdio.h>
+	<stdlib.h>
+	"zlib.h"
+	<stdint.h>
+	"mz64conf.h"
+	"stdint.h"
+
+1370948652 c:\adobethumbnail\zlib\unzip.h
+	"zlib.h"
+	"ioapi.h"
+	"bzlib.h"
+
+1370953195 source:c:\adobethumbnail\coreldraw_riffinfo.cpp
+
+1370953014 source:c:\adobethumbnail\main.cpp
+	<string.h>
+
+1370952011 source:c:\adobethumbnail\otherapi.cpp
+	"otherapi.h"
+
+1370950573 source:c:\adobethumbnail\thumb_ico.rc
+	<windows.h>
+	<commctrl.h>
+	<richedit.h>
+	"resource.h"
+
+1370950573 c:\adobethumbnail\resource.h
+
+1370948652 source:c:\adobethumbnail\zlib\adler32.c
+	"zutil.h"
+
+1370948652 c:\adobethumbnail\zlib\zutil.h
+	"zlib.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<alloc.h>
+	<malloc.h>
+	<malloc.h>
+	<unix.h>
+	<stdio.h>
+
+1370948652 source:c:\adobethumbnail\zlib\compress.c
+	"zlib.h"
+
+1370948652 source:c:\adobethumbnail\zlib\crc32.c
+	<stdio.h>
+	"zutil.h"
+	"crc32.h"
+
+1370948652 c:\adobethumbnail\zlib\crc32.h
+
+1370948652 source:c:\adobethumbnail\zlib\deflate.c
+	"deflate.h"
+
+1370948652 c:\adobethumbnail\zlib\deflate.h
+	"zutil.h"
+
+1370948652 source:c:\adobethumbnail\zlib\gzclose.c
+	"gzguts.h"
+
+1370948652 c:\adobethumbnail\zlib\gzguts.h
+	<stdio.h>
+	"zlib.h"
+	<string.h>
+	<stdlib.h>
+	<limits.h>
+	<fcntl.h>
+	<stddef.h>
+	<io.h>
+	<windows.h>
+	<errno.h>
+
+1370948652 source:c:\adobethumbnail\zlib\gzlib.c
+	"gzguts.h"
+
+1370948652 source:c:\adobethumbnail\zlib\gzread.c
+	"gzguts.h"
+
+1370948652 source:c:\adobethumbnail\zlib\gzwrite.c
+	"gzguts.h"
+	<stdarg.h>
+
+1370948652 source:c:\adobethumbnail\zlib\infback.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+	"inffixed.h"
+
+1370948652 c:\adobethumbnail\zlib\inftrees.h
+
+1370948652 c:\adobethumbnail\zlib\inflate.h
+
+1370948652 c:\adobethumbnail\zlib\inffast.h
+
+1370948652 c:\adobethumbnail\zlib\inffixed.h
+
+1370948652 source:c:\adobethumbnail\zlib\inffast.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+
+1370948652 source:c:\adobethumbnail\zlib\inflate.c
+	"zutil.h"
+	"inftrees.h"
+	"inflate.h"
+	"inffast.h"
+	"inffixed.h"
+	<stdio.h>
+
+1370948652 source:c:\adobethumbnail\zlib\inftrees.c
+	"zutil.h"
+	"inftrees.h"
+
+1370948652 source:c:\adobethumbnail\zlib\ioapi.c
+	"ioapi.h"
+
+1370948652 source:c:\adobethumbnail\zlib\iowin32.c
+	<stdlib.h>
+	"zlib.h"
+	"ioapi.h"
+	"iowin32.h"
+
+1370948652 c:\adobethumbnail\zlib\iowin32.h
+	<windows.h>
+
+1370948652 source:c:\adobethumbnail\zlib\mztools.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"zlib.h"
+	"unzip.h"
+
+1370948652 source:c:\adobethumbnail\zlib\trees.c
+	"deflate.h"
+	<ctype.h>
+	"trees.h"
+	<stdio.h>
+
+1370948652 c:\adobethumbnail\zlib\trees.h
+
+1370948652 source:c:\adobethumbnail\zlib\uncompr.c
+	"zlib.h"
+
+1370948652 source:c:\adobethumbnail\zlib\unzip.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"zlib.h"
+	"unzip.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<errno.h>
+	"crypt.h"
+
+1370948652 c:\adobethumbnail\zlib\crypt.h
+
+1370948652 source:c:\adobethumbnail\zlib\zip.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	"zlib.h"
+	"zip.h"
+	<stddef.h>
+	<string.h>
+	<stdlib.h>
+	<errno.h>
+	"crypt.h"
+
+1370948652 source:c:\adobethumbnail\zlib\zutil.c
+	"zutil.h"
+	"gzguts.h"
+
+1370965343 source:c:\adobethumbnail\adobethumbnail.cpp
+	"AdobeThumbnail.h"
+	"atpch.h"
+	<regex>
+
+1370948651 c:\adobethumbnail\adobethumbnail.h
+	<iostream>
+	<sstream>
+	<fstream>
+	<string>
+	<regex>
+	<atlenc.h>
+
+1370954029 c:\adobethumbnail\atpch.h
+	"AdobeThumbnail.h"
+	"corel_thumbnail.h"
+	"otherapi.h"
+
