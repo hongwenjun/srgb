@@ -1,4 +1,4 @@
-﻿#include "AdobeThumbnail.h"
+ #include "AdobeThumbnail.h"
 #include "atpch.h"
 #include <regex>
 #include <iterator>
@@ -24,7 +24,7 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
 
 
     char* pch = NULL;
-    const char* flag = "xmpGImg:image";  // AI 和 Indd 稍微不同
+    const char* flag = "pGImg:image";  // AI 和 Indd 稍微不同
 
     /// ************* 获取 ID或者AI文档 的预览图 **************** ///
     FILE* adobe_file = fopen(adobe_filename, "rb");
@@ -45,7 +45,7 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
 //        00000000h: 06 06 ED F5 D8 1D 46 E5 BD 31 EF E7 FE 74 B7 1D ; ..眭?F褰1镧?
 //        00000010h: 44 4F 43 55 4D 45 4E 54 01 70 0F 00 00 05 00 00 ; DOCUMENT.p......
         if (0xF5ED0606 == *(DWORD*)filebuf) { // indd 文件开头好像都这样
-            fseek(adobe_file, bufsize, SEEK_END);
+            fseek(adobe_file, -bufsize, SEEK_END);
             fread(filebuf, 1, bufsize, adobe_file);
 //           cout << "indd 文件格式!\n";
         }
@@ -65,7 +65,7 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
     strtok(pch, "\r\n");
     string Base64_str(pch);
 
-    regex ex("xmpGImg:image\\>|<\\/xmpGImg:image\\>|xmpGImg:image=\"");
+    regex ex("pGImg:image\\>|<\\/x\\wpGImg:image\\>|x\\wpGImg:image=\"");
     regex en("&#xA;");
     // 正则删除 xmpGImg 标记和 转意换行替换回来
     Base64_str = regex_replace(Base64_str, ex, string(""));
