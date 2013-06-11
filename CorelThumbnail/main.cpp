@@ -8,8 +8,8 @@
 
 void helpinfo(const char* exefile)
 {
-    printf("\nCorelDRAW 缩略图转成PNG图片和检测文档版本工具\n"
-           "(C) 版权所有 2013.06 Hongwenjun (蘭公子)\n\n"
+    printf("\nCorelDRAW 缩略图转成PNG图片 cdr文档版本信息 V1.0\n"
+           "(C) 版权所有 2013.06 Hongwenjun (蘭公子)  http://srgb.googlecode.com \n\n"
            "Usage: %s  <CorelDRAW文件.cdr>  [SavePngFile]\n" , exefile);
 }
 

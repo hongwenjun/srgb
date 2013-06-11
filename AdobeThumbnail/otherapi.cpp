@@ -69,3 +69,4 @@ char* memfind(const char* buf, const char* tofind, size_t len)
 
     return ((char*)NULL);
 }
+
