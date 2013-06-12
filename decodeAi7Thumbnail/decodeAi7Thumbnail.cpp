@@ -3,6 +3,9 @@
 #include <string>
 #include <windows.h>>
 #include <stdio.h>
+#include <algorithm>
+#include <vector>
+
 
 using namespace std;
 
@@ -99,8 +102,9 @@ string decodeAi7Thumbnail(const string& src)
     return string(reinterpret_cast<const char*>(dest.data()), static_cast<long>(dest.size()));
 }
 
+
 // Create a PNM image from raw RGB data.
-string makePnm(uint32_t width, uint32_t height, const string& rgb)
+string makeBmp(uint32_t width, uint32_t height, const string& rgb)
 {
     const long expectedSize = static_cast<long>(width * height * 3);
     if (rgb.size() != expectedSize) {
@@ -110,7 +114,7 @@ string makePnm(uint32_t width, uint32_t height, const string& rgb)
     const std::string header = "P6\n" + toString(width) + " " + toString(height) + "\n255\n";
     const char* headerBytes = header.data();
 
-    string dest(static_cast<long>(header.size() + rgb.size()) ,'\0' );
+    string dest(static_cast<long>(header.size() + rgb.size()) , '\0');
     std::copy(headerBytes, headerBytes + header.size(), dest.begin());
     std::copy(rgb.data(), rgb.data() + rgb.size(), dest.begin() + header.size());
     return dest;
@@ -120,10 +124,10 @@ string makePnm(uint32_t width, uint32_t height, const string& rgb)
 int main()
 {
 
-            //    %%BoundingBox: 34 -926 571 5
-            //    %%HiResBoundingBox: 34.4028 -925.2773 570.8535 4.88623
-            //    %AI7_Thumbnail: 76 128 8
-            //    %%BeginData: 14580 Hex Bytes
+    //    %%BoundingBox: 34 -926 571 5
+    //    %%HiResBoundingBox: 34.4028 -925.2773 570.8535 4.88623
+    //    %AI7_Thumbnail: 76 128 8
+    //    %%BeginData: 14580 Hex Bytes
     string hexs = "%0000330000660000990000CC0033000033330033660033990033CC0033FF\n\r"
                   "%0066000066330066660066990066CC0066FF009900009933009966009999\n\r"
                   "%0099CC0099FF00CC0000CC3300CC6600CC9900CCCC00CCFF00FF3300FF66\n\r"
@@ -358,19 +362,35 @@ int main()
                   "%82A783A8A7FDFCFFFDFCFFFDFCFFFDFCFFFDFCFFFD8EFFFF\n\r";
 
     string str = decodeHex((BYTE*)hexs.c_str() , hexs.size());
-    string rgb = decodeAi7Thumbnail(str);
-    string pnm = makePnm(76,128,rgb);
+    string bgr = decodeAi7Thumbnail(str);
+    // string pnm = makeBmp(76, 128, bgr);
     cout << hexs.size() << endl;
-    cout << str.size() << endl;
-    FILE* pFile;
-    pFile = fopen("myfile.pnm" , "wb");
-    fwrite(pnm.c_str() , 1 , pnm.size(), pFile);
-    fclose(pFile);
+    cout << bgr.size() << endl;
+
+    BITMAPFILEHEADER bmph = {0x4D42, 54 , 0, 0, 54 };   // 14字节
+    BITMAPINFOHEADER bmpinf = {40, 76, 128, 1, 24, 0 , 0, 0, 0, 0, 0    }; // 40字节
+
+    bmph.bfSize += bgr.size();
+ //   bmpinf.biWidth  = x;
+ //   bmpinf.biHeight = y;
+
+
+    FILE* bmpfile;
+    bmpfile = fopen("bgr.bmp" , "wb");
+
+    fwrite(&bmph , 1, 14,   bmpfile);
+    fwrite(&bmpinf , 1, 40,   bmpfile);
+
+    // 由于前面解码的数据是RGB标准数据，而BMP存储为BGR顺序
+    // 由于BMP写文件最下面先读写，要翻转
+    for (int i = 0 ; i < bgr.size() ; i += 3) {
+        swap(bgr[i] , bgr[i + 2]);
+    }
+    int x = 76; int y = 128;
+    const char* px = bgr.c_str();
+    for (int i = y  ; i > 0 ; i--) {
+        fwrite(px + 3 * i * x  , 1 , 3 * x, bmpfile);
+    }
+
     return 0;
 }
-
-
-
-
-
-
