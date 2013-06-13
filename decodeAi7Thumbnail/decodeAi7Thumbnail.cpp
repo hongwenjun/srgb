@@ -4,7 +4,7 @@
 #include <windows.h>>
 #include <stdio.h>
 #include <algorithm>
-#include <vector>
+
 
 
 using namespace std;
@@ -21,8 +21,6 @@ std::string toString(const T& arg)
 // Decode a Hex string.
 string decodeHex(const byte* src, long srcSize)
 {
-
-
 //    00000030h: 00 01 02 03 04 05 06 07 08 09 10 10 10 10 10 10 ;
 //    00000040h: 10 0D 0A 0B 0C 0D 0E 0F 10 10 10 10 10 10 10 10 ;
 //    00000050h: 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 ;
@@ -34,7 +32,6 @@ string decodeHex(const byte* src, long srcSize)
     for (byte i = 0; i < 10; i++) decodeHexTable[static_cast<byte>('0') + i] = i;
     for (byte i = 0; i < 6; i++) decodeHexTable[static_cast<byte>('A') + i] = i + 10;
     for (byte i = 0; i < 6; i++) decodeHexTable[static_cast<byte>('a') + i] = i + 10;
-
 
     // calculate dest size
     long validSrcSize = 0;
@@ -104,7 +101,7 @@ string decodeAi7Thumbnail(const string& src)
 
 
 // Create a PNM image from raw RGB data.
-string makeBmp(uint32_t width, uint32_t height, const string& rgb)
+string makeBmp(size_t width, size_t height, const string& rgb)
 {
     const long expectedSize = static_cast<long>(width * height * 3);
     if (rgb.size() != expectedSize) {
@@ -120,6 +117,35 @@ string makeBmp(uint32_t width, uint32_t height, const string& rgb)
     return dest;
 }
 
+bool rgb_makeBmp_tofile(string& rgb, size_t width, size_t height, const char* bmpfilename)
+{
+    const long expectedSize = static_cast<long>(width * height * 3);
+    FILE* bmpfile = fopen(bmpfilename , "wb");
+    if ((rgb.size() != expectedSize) || (bmpfile == NULL)) {
+        fclose(bmpfile);
+        return false;
+    }
+
+    // BMP格式文件头
+    BITMAPFILEHEADER bmph = {0x4D42, 54 , 0, 0, 54 };   // 14字节 'BM' 文件头
+    BITMAPINFOHEADER bmpinf = {40, width, height, 1, 24, 0 , 0, 0, 0, 0, 0    }; // 40字节
+    bmph.bfSize += rgb.size();
+
+    fwrite(&bmph , 1, sizeof(bmph), bmpfile);
+    fwrite(&bmpinf , 1, sizeof(bmpinf), bmpfile);
+
+    // 由于前面解码的数据是RGB标准数据，而BMP存储为BGR顺序
+    // 由于BMP写文件最下面先读写，要翻转
+    for (size_t i = 0 ; i <= rgb.size() ; i += 3) {
+        std::swap(rgb[i] , rgb[i + 2]);
+    }
+    const char* px = rgb.c_str();
+    for (size_t i = height  ; i > 0 ; i--) {
+        fwrite(px + 3 * i * width  , 1 , 3 * width, bmpfile);
+    }
+    fclose(bmpfile);
+    return true;
+}
 
 int main()
 {
@@ -362,35 +388,17 @@ int main()
                   "%82A783A8A7FDFCFFFDFCFFFDFCFFFDFCFFFDFCFFFD8EFFFF\n\r";
 
     string str = decodeHex((BYTE*)hexs.c_str() , hexs.size());
-    string bgr = decodeAi7Thumbnail(str);
-    // string pnm = makeBmp(76, 128, bgr);
+    string srgb = decodeAi7Thumbnail(str);
+    string pnm = makeBmp(76, 128, srgb);
+    FILE* pnmfile = fopen("ai7thumb.pnm" , "wb");
+    fwrite(pnm.c_str() , 1, pnm.size(), pnmfile);
+    fclose(pnmfile);
+
     cout << hexs.size() << endl;
-    cout << bgr.size() << endl;
+    cout << srgb.size() << endl;
 
-    BITMAPFILEHEADER bmph = {0x4D42, 54 , 0, 0, 54 };   // 14字节
-    BITMAPINFOHEADER bmpinf = {40, 76, 128, 1, 24, 0 , 0, 0, 0, 0, 0    }; // 40字节
-
-    bmph.bfSize += bgr.size();
- //   bmpinf.biWidth  = x;
- //   bmpinf.biHeight = y;
-
-
-    FILE* bmpfile;
-    bmpfile = fopen("bgr.bmp" , "wb");
-
-    fwrite(&bmph , 1, 14,   bmpfile);
-    fwrite(&bmpinf , 1, 40,   bmpfile);
-
-    // 由于前面解码的数据是RGB标准数据，而BMP存储为BGR顺序
-    // 由于BMP写文件最下面先读写，要翻转
-    for (int i = 0 ; i < bgr.size() ; i += 3) {
-        swap(bgr[i] , bgr[i + 2]);
-    }
-    int x = 76; int y = 128;
-    const char* px = bgr.c_str();
-    for (int i = y  ; i > 0 ; i--) {
-        fwrite(px + 3 * i * x  , 1 , 3 * x, bmpfile);
-    }
+    // RGB 数据写bmp文件
+    rgb_makeBmp_tofile(srgb, 76, 128, "ai7thumb.bmp");
 
     return 0;
 }
