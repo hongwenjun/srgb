@@ -9,6 +9,8 @@
 #define CASESENSITIVITY (0)
 #define WRITEBUFFERSIZE (8192)
 
+using std::string;
+
 bool zip_extract_currentfile(unzFile uf, LPCTSTR save_filename)
 {
     char szFilePathA[MAX_PATH];
@@ -140,11 +142,10 @@ bool cdr_extract_bmp(const char* cdr_filename, const char* bmp_filename)
 
 bool cdr_thumbnail_png(const char* cdr_filename, const char* png_filename)
 {
-    using namespace std;
 
     string file_ext(cdr_filename);
     string rs = "(.+)(\\.(?:cdr|CDR|Cdr|CDr|cdR))";  // 正则字符串，exp开始的单词
-    regex expression(rs);                   // 字符串传递给构造函数，建立正则表达式
+    std::regex expression(rs);                   // 字符串传递给构造函数，建立正则表达式
     bool ret = regex_match(file_ext, expression);
     if (!ret) {
         //      cout << "文件格式不对!\n";

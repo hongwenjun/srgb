@@ -2,6 +2,15 @@
 
 
 
+
+// 已经合并到 https://code.google.com/p/srgb/source/browse/AdobeThumbnail 
+
+
+
+
+
+
+
 // 00000000h: 52 49 46 46 C4 AE 00 00 43 44 72 39 76 72 73 6E ; RIFF漠..CDr9vrsn
 // 00000010h: 02 00 00 00 84 03 44 49 53 50 2C 28 00 00 08 00 ; ...._DISP__....
 

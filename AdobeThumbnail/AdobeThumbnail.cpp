@@ -1,18 +1,15 @@
-#include "AdobeThumbnail.h"
+﻿#include "AdobeThumbnail.h"
 #include "atpch.h"
 #include <regex>
-
 
 #define MBsize 1024*1024
 
 bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
 {
-    using namespace std;
-
     string file_ext(adobe_filename);
     string rs = "(.+)(\\.(?:ai|AI|indd|INDD|Indd|eps|EPS|Eps))";  // 正则字符串，exp开始的单词
-    regex expression(rs);                   // 字符串传递给构造函数，建立正则表达式
-    bool ret = regex_match(file_ext, expression);
+    std::regex expression(rs);                   // 字符串传递给构造函数，建立正则表达式
+    bool ret = std::regex_match(file_ext, expression);
     if (!ret) {
         //      cout << "文件格式不对!\n";
         return ret ;
@@ -29,20 +26,21 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
     FILE* adobe_file = fopen(adobe_filename, "rb");
     size_t file_size = get_fileSize(adobe_filename); // 获得文件大小
 
-    size_t bufsize = 2 * MBsize;        // AI 和EPS 预览图在开头，INDD文件在末位
+    size_t bufsize = 1 * MBsize;        // AI 和EPS 预览图在开头，INDD文件在末位
     char* filebuf = new char[bufsize];  // 文件读到缓冲
 
     //  文件小于2M 整个文件读，否则遍历读最后2M
     if (file_size < bufsize) {
-        fread(filebuf, 1, file_size, adobe_file);
+        bufsize = file_size;
+        fread(filebuf, 1, bufsize, adobe_file);
         if (0xF5ED0606 == *(DWORD*)filebuf) { // indd 文件开头好像都这样
-            pch = memfind(filebuf, flag , file_size);   // INDD 可能不只一个预览图
+            pch = memfind(filebuf, flag , bufsize);   // INDD 可能不只一个预览图
             if ((pch != NULL))
                 while ((pch != NULL) && (strlen(pch) < 10 * 1024))
-                    pch = memfind(pch + 1, flag , file_size - (pch - filebuf));
+                    pch = memfind(pch + 1, flag , bufsize - (pch - filebuf));
 
         } else
-            pch = memfind(filebuf, flag , file_size);
+            pch = memfind(filebuf, flag , bufsize);
 
     } else {
         fread(filebuf, 1, bufsize, adobe_file);
@@ -63,6 +61,31 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
     // 读取文件结束，关闭
     fclose(adobe_file);
 
+    if (pch == NULL) {
+        flag = "%AI7_Thumbnail:";
+        size_t width, height, bitCount, Hexsize;
+        char AI7_Thumbnail[64]; char BeginData[64]; char Hex_Bytes[64];
+
+        pch = memfind(filebuf, flag , bufsize);
+        // 检测到AI低版本预览图标记
+        if (pch != NULL) {
+            sscanf(pch, "%s %d %d %d\n%s %d %s\n", AI7_Thumbnail, &width, &height, &bitCount , BeginData, &Hexsize , Hex_Bytes);
+
+            pch = memfind(filebuf, "Hex Bytes" , bufsize);
+        }
+
+        if (pch != NULL) {  // 解码 AI7_Thumbnail 为 图片
+            char savepng_filename[MAX_PATH];    // 源图是 BMP，保存png 失真少一点
+            strncpy(savepng_filename , savejpeg_filename, strlen(savejpeg_filename) - 4);
+            strcat(savepng_filename, ".png");
+
+            string AI7Thumb(pch + 10 , Hexsize + 1);
+            decode_Ai7Thumb_toPng(AI7Thumb , width, height , savepng_filename);
+            delete[] filebuf; // 释放文件缓冲
+            return true;
+        }
+    };
+
     if (pch == NULL)   ret = false;
     if (!ret) {  // 没有找到，返回前
         delete[] filebuf; // 释放文件缓冲
@@ -73,14 +96,16 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
     strtok(pch, "\r\n");
     string Base64_str(pch);
 
-    regex ex("pGImg:image>|<\\/x\\wpGImg:image>|pGImg:image=\"");
-    regex en("&#xA;");
+    std::regex ex("pGImg:image>|<\\/x\\wpGImg:image>|pGImg:image=\"");
+    std::regex en("&#xA;");
     // 正则删除 xmpGImg 标记和 转意换行替换回来
-    Base64_str = regex_replace(Base64_str, ex, string(""));
-    Base64_str = regex_replace(Base64_str, en, string("\n"));
+    Base64_str = std::regex_replace(Base64_str, ex, string(""));
+    Base64_str = std::regex_replace(Base64_str, en, string("\n"));
 
-    //  cout << adobe_filename << "  xmpGImg:image标记偏移: " << pch - filebuf << endl;
-/// =============================== 测试解码一个Base64 的JPEG文件 ==============================////
+#if(AITEST)
+        printf( "pGImg:image标记偏移: %d 在文件%s\n" , pch - filebuf , adobe_filename);
+#endif
+/// =============================== 解码一个Base64 的JPEG文件 ==============================////
 
     int b64len = Base64_str.size();
     int jpglen = fromBase64_Decode(Base64_str.c_str() , b64len , filebuf , b64len);

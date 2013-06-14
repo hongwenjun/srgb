@@ -130,6 +130,8 @@
 		<Unit filename="corel_thumbnail.h" />
 		<Unit filename="coreldraw_riffinfo.cpp" />
 		<Unit filename="coreldraw_riffinfo.h" />
+		<Unit filename="deAi7Thumb.cpp" />
+		<Unit filename="deAi7Thumb.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="otherapi.cpp" />
 		<Unit filename="otherapi.h" />

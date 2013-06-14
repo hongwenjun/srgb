@@ -1,404 +1,172 @@
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <windows.h>>
-#include <stdio.h>
-#include <algorithm>
-#include <vector>
+
+// 已经合并到 https://code.google.com/p/srgb/source/browse/AdobeThumbnail 
+
+
+
+/*
+** Copyright (C) http://srgb.googlecode.com  All rights reserved.
+*/
+
+#include "corel_thumbnail.h"
 #include <atlimage.h>
+#define CASESENSITIVITY (0)
+#define WRITEBUFFERSIZE (8192)
 
-using namespace std;
-
-//! Utility function to convert the argument of any type to a string
-template<typename T>
-std::string toString(const T& arg)
+bool zip_extract_currentfile(unzFile uf, LPCTSTR save_filename)
 {
-    std::ostringstream os;
-    os << arg;
-    return os.str();
-}
+    char szFilePathA[MAX_PATH];
 
-// Decode a Hex string.
-string decodeHex(const byte* src, long srcSize)
-{
-
-
-//    00000030h: 00 01 02 03 04 05 06 07 08 09 10 10 10 10 10 10 ;
-//    00000040h: 10 0D 0A 0B 0C 0D 0E 0F 10 10 10 10 10 10 10 10 ;
-//    00000050h: 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 ;
-//    00000060h: 10 10 0D 0A 0B 0C 0D 0E 0F 10 10 10 10 10 10 10 ;
-    // create decoding table
-    byte invalid = 16;
-    byte decodeHexTable[256];
-    for (long i = 0; i < 256; i++) decodeHexTable[i] = invalid;
-    for (byte i = 0; i < 10; i++) decodeHexTable[static_cast<byte>('0') + i] = i;
-    for (byte i = 0; i < 6; i++) decodeHexTable[static_cast<byte>('A') + i] = i + 10;
-    for (byte i = 0; i < 6; i++) decodeHexTable[static_cast<byte>('a') + i] = i + 10;
-
-
-    // calculate dest size
-    long validSrcSize = 0;
-    for (long srcPos = 0; srcPos < srcSize; srcPos++) {
-        if (decodeHexTable[src[srcPos]] != invalid) validSrcSize++;
-    }
-    const long destSize = validSrcSize / 2;
-
-    // allocate dest buffer
-    string dest(destSize, '\0');
-
-    // decode
-    for (long srcPos = 0, destPos = 0; destPos < destSize; destPos++) {
-        byte buffer = 0;
-        for (int bufferPos = 1; bufferPos >= 0 && srcPos < srcSize; srcPos++) {
-            byte srcValue = decodeHexTable[src[srcPos]];
-            if (srcValue == invalid) continue;
-            buffer |= srcValue << (bufferPos * 4);
-            bufferPos--;
-        }
-        dest[destPos] = buffer;
+    // 对于每个内部文件，可用 unzGetCurrentFileInfo64 来查内部文件名
+    unz_file_info64 FileInfo;
+    if (unzGetCurrentFileInfo64(uf, &FileInfo, szFilePathA, sizeof(szFilePathA), NULL, 0, NULL, 0) != UNZ_OK) {
+        return false;
     }
 
-    return dest;
-}
+//    printf("%s", szFilePathA);  // 在压缩文件中的 文件名
 
-
-// Decode an Illustrator thumbnail that follows after %AI7_Thumbnail.
-string decodeAi7Thumbnail(const string& src)
-{
-    const byte* colorTable = (BYTE*)src.c_str();
-    const long colorTableSize = 256 * 3;
-    if (src.size() < colorTableSize) {
-//  Invalid size of AI7 thumbnail:  src.size()
-        return string();
+    // 对于非目录的内部文件，用 unzOpenCurrentFile打开
+    if (unzOpenCurrentFile(uf) != UNZ_OK) {
+        return false;
     }
-    const byte* imageData = (BYTE*)src.c_str() + colorTableSize;
-    const long imageDataSize = src.size() - colorTableSize;
-    const bool rle = (imageDataSize >= 3 && imageData[0] == 'R' && imageData[1] == 'L' && imageData[2] == 'E');
-    std::string dest;
-    for (long i = rle ? 3 : 0; i < imageDataSize;) {
-        byte num = 1;
-        byte value = imageData[i++];
-        if (rle && value == 0xFD) {
-            if (i >= imageDataSize) {
-//  Unexpected end of image data at AI7 thumbnail.
-                return string();
-            }
-            value = imageData[i++];
-            if (value != 0xFD) {
-                if (i >= imageDataSize) {
 
-//  Unexpected end of image data at AI7 thumbnail
+    HANDLE hFile = CreateFile(save_filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
 
-                    return string();
-                }
-                num = value;
-                value = imageData[i++];
+    if (hFile == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+
+    // 然后 unzReadCurrentFile 读取文件内容，写入到真实文件中。
+    // unzReadCurrentFile 返回 0 表示文件读取结束然后 unzReadCurrentFile 读取文件内容，写入到真实文件中。
+    // unzReadCurrentFile 返回 0 表示文件读取结束
+
+    char byBuffer[WRITEBUFFERSIZE];
+    while (true) {
+        int err = unzReadCurrentFile(uf, byBuffer, WRITEBUFFERSIZE);
+
+        if (err < 0) {
+            return false;
+        } else if (err == 0) {
+            break;
+        } else {
+            DWORD dwWritten = 0;
+
+            if (!WriteFile(hFile, byBuffer, (DWORD)err, &dwWritten, NULL) || dwWritten != (DWORD)err) {
+                return false;
             }
         }
-        for (; num != 0; num--) {
-            dest.append(reinterpret_cast<const char*>(colorTable + (3 * value)), 3);
-        }
     }
-    return string(reinterpret_cast<const char*>(dest.data()), static_cast<long>(dest.size()));
+
+    CloseHandle(hFile);
+    return true;
 }
 
 
-// Create a PNM image from raw RGB data.
-string makeBmp(int width, int height, const string& rgb)
+
+bool zip_extract_onefile(const char* zip_filename, const char* filename , const char* save_filename)
 {
-    const long expectedSize = static_cast<long>(width * height * 3);
-    if (rgb.size() != expectedSize) {
-        return string();
+    // 解压先使用 zipOpen64 来打开一个 ZIP 文件
+    unzFile uf = unzOpen64(zip_filename);
+
+//    // 需要先使用 unzGetGlobalInfo64 来取得该文件的一些信息，来了解这个压缩包里一共包含了多少个文件，等等。
+//    unz_global_info64 gi;
+//
+//    if (unzGetGlobalInfo64(uf, &gi) != UNZ_OK) {
+//        return false;
+//    }
+
+    // 尝试zip文件中找到该文件szFileName。
+    int err = UNZ_OK;
+    if (unzLocateFile(uf, filename, CASESENSITIVITY) != UNZ_OK) {
+        printf("file %s not found in the zipfile\n", filename);
+        return false;
     }
 
-    const std::string header = "P6\n" + toString(width) + " " + toString(height) + "\n255\n";
-    const char* headerBytes = header.data();
+    if (!zip_extract_currentfile(uf, save_filename)) {
+        return false;
+    }
 
-    string dest(static_cast<long>(header.size() + rgb.size()) , '\0');
-    std::copy(headerBytes, headerBytes + header.size(), dest.begin());
-    std::copy(rgb.data(), rgb.data() + rgb.size(), dest.begin() + header.size());
-    return dest;
+    unzClose(uf);
+    return true;
 }
 
 
-int main()
+// 查阅: http://www.cppblog.com/Streamlet/archive/2013/05/12/127368.html
+
+/*  相关 API
+ * 压缩相关：
+ * zipOpen64   zipClose    zipOpenNewFileInZip zipCloseFileInZip   zipWriteInFileInZip
+ *
+ * 解压相关：
+ * unzOpen64   unzClose    unzGetGlobalInfo64  unzGoToNextFile
+ * unzGetCurrentFileInfo64 unzOpenCurrentFile  unzCloseCurrentFile unzReadCurrentFile
+ *
+ * 首先是压缩操作。使用 zipOpen64 来打开/创建一个 ZIP 文件，然后开始遍历要被放到压缩包中去的文件。
+ * 针对每个文件，先调用一次 zipOpenNewFileInZip，然后开始读原始文件数据，使用 zipWriteInFileInZip 来写入到 ZIP 文件中去。
+ * zipOpenNewFileInZip 的第三个参数是一个 zip_fileinfo 结构，该结构数据可全部置零，其中 dosDate 可用于填入一个时间（LastModificationTime）。
+ * 它的第二个参数是 ZIP 中的文件名，若要保持目录结构，该参数中可以保留路径，如 foo/bar.txt。
+ *
+ * 解压操作稍微复杂一点点。打开一个 ZIP 文件后，需要先使用 unzGetGlobalInfo64 来取得该文件的一些信息，来了解这个压缩包里一共包含了多少个文件，等等。
+ * 目前我们用得着的就是这个文件数目。然后开始遍历 ZIP 中的文件，初始时自动会定位在第一个文件，以后处理完一个后用 unzGoToNextFile 来跳到下一个文件。
+ * 对于每个内部文件，可用 unzGetCurrentFileInfo64 来查内部文件名。这个文件名和刚才 zipOpenNewFileInZip 的第二个参数是一样的形式，所以有可能包含路径。
+ * 也有可能会以路径分隔符（/）结尾，表明这是个目录项（其实压缩操作的时候也可以针对目录写入这样的内部文件，上面没有做）。所以接下来要根据情况创建（多级）目录。
+ * unzGetCurrentFileInfo64 的第三个参数是 unz_file_info64 结构，其中也有一项包含了 dosDate 信息，可以还原文件时间。
+ * 对于非目录的内部文件，用 unzOpenCurrentFile，打开，然后 unzReadCurrentFile 读取文件内容，写入到真实文件中。unzReadCurrentFile 返回 0 表示文件读取结束。
+ *
+ */
+
+
+
+
+
+
+bool cdr_extract_bmp(const char* cdr_filename, const char* bmp_filename)
 {
+    if (! IsFileExist(cdr_filename))
+        return false ;
 
-    //    %%BoundingBox: 34 -926 571 5
-    //    %%HiResBoundingBox: 34.4028 -925.2773 570.8535 4.88623
-    //    %AI7_Thumbnail: 76 128 8
-    //    %%BeginData: 14580 Hex Bytes
-    string hexs = "%0000330000660000990000CC0033000033330033660033990033CC0033FF\n\r"
-                  "%0066000066330066660066990066CC0066FF009900009933009966009999\n\r"
-                  "%0099CC0099FF00CC0000CC3300CC6600CC9900CCCC00CCFF00FF3300FF66\n\r"
-                  "%00FF9900FFCC3300003300333300663300993300CC3300FF333300333333\n\r"
-                  "%3333663333993333CC3333FF3366003366333366663366993366CC3366FF\n\r"
-                  "%3399003399333399663399993399CC3399FF33CC0033CC3333CC6633CC99\n\r"
-                  "%33CCCC33CCFF33FF0033FF3333FF6633FF9933FFCC33FFFF660000660033\n\r"
-                  "%6600666600996600CC6600FF6633006633336633666633996633CC6633FF\n\r"
-                  "%6666006666336666666666996666CC6666FF669900669933669966669999\n\r"
-                  "%6699CC6699FF66CC0066CC3366CC6666CC9966CCCC66CCFF66FF0066FF33\n\r"
-                  "%66FF6666FF9966FFCC66FFFF9900009900339900669900999900CC9900FF\n\r"
-                  "%9933009933339933669933999933CC9933FF996600996633996666996699\n\r"
-                  "%9966CC9966FF9999009999339999669999999999CC9999FF99CC0099CC33\n\r"
-                  "%99CC6699CC9999CCCC99CCFF99FF0099FF3399FF6699FF9999FFCC99FFFF\n\r"
-                  "%CC0000CC0033CC0066CC0099CC00CCCC00FFCC3300CC3333CC3366CC3399\n\r"
-                  "%CC33CCCC33FFCC6600CC6633CC6666CC6699CC66CCCC66FFCC9900CC9933\n\r"
-                  "%CC9966CC9999CC99CCCC99FFCCCC00CCCC33CCCC66CCCC99CCCCCCCCCCFF\n\r"
-                  "%CCFF00CCFF33CCFF66CCFF99CCFFCCCCFFFFFF0033FF0066FF0099FF00CC\n\r"
-                  "%FF3300FF3333FF3366FF3399FF33CCFF33FFFF6600FF6633FF6666FF6699\n\r"
-                  "%FF66CCFF66FFFF9900FF9933FF9966FF9999FF99CCFF99FFFFCC00FFCC33\n\r"
-                  "%FFCC66FFCC99FFCCCCFFCCFFFFFF33FFFF66FFFF99FFFFCC110000001100\n\r"
-                  "%000011111111220000002200000022222222440000004400000044444444\n\r"
-                  "%550000005500000055555555770000007700000077777777880000008800\n\r"
-                  "%000088888888AA000000AA000000AAAAAAAABB000000BB000000BBBBBBBB\n\r"
-                  "%DD000000DD000000DDDDDDDDEE000000EE000000EEEEEEEE0000000000FF\n\r"
-                  "%00FF0000FFFFFF0000FF00FFFFFF00FFFFFF\n\r"
-                  "%524C45FDFCFFFDFCFFFD9DFF7E59287EA8FD1EFFA1A19A9A759A76A1A1CA\n\r"
-                  "%FD1AFFA8A85952FD05060728537DA8AFFD16FFA8C299996F9A939A6F9A6F\n\r"
-                  "%706F9BA1FD15FFA88453280606062806070607282F2807065359A8A8FD11\n\r"
-                  "%FFCF99996E9993996F996F996F9A6F764B7070A1A8FD0FFF7D7D27280006\n\r"
-                  "%01FD040628272E2728060706070607062F527EA8FFA8FD0BFFC9999999BB\n\r"
-                  "%99BB939A757C575833333358577C4C77A8FFFF83A8FD07FF7D5306060106\n\r"
-                  "%052E0C3411343333335E33582E53282F062F2F59282F072F2F7E84FD09FF\n\r"
-                  "%A09299939992BB997B33111133515751572D3311332D5857570BA8FD04FF\n\r"
-                  "%5228000600060006010C335D33572D120C0C0B3333332D582E522E570C07\n\r"
-                  "%070D0707070D07537DFD05FFC3939999BB99BB7557111133A0999A6F9A70\n\r"
-                  "%76707C3333113411117CFFFFFFA84B210600FD04063433330C2F06282828\n\r"
-                  "%0607060D2E33113433331158292F070D070D07537CA7FD04FFA16E999399\n\r"
-                  "%92BB74111111519993996F996F766F706F762D3311331158FD04FF4B4444\n\r"
-                  "%27000606331134060601FD040628060606280C33113311330B2F282F060D\n\r"
-                  "%287CA4FEA7FFFFFFCA939A99BB99BB7B1211347BBB939A999A6F9A709A70\n\r"
-                  "%767076513A333433FD04FFA14468446F2758113406060607060706072852\n\r"
-                  "%28520607063433333334070D075352C7FEFEA5FD04FF9993939993997411\n\r"
-                  "%111151BB939993996F9A6F9A6F766F764C702D331133A8FFFFFFA8444468\n\r"
-                  "%447B11330C0606060106062828280607062F28280C331133330D287CA4A5\n\r"
-                  "%C6FEC6A6FFFFFFA19A999993BB75331134339993BB9999939A6F9A6F9A70\n\r"
-                  "%7670764C76333411A7FD04FF4A6844741134336F27280628282E06070607\n\r"
-                  "%0607060D062E2E3433337CC7FEC7A5FEFEFEA7FFFFFF9A6F999399753311\n\r"
-                  "%33119F929993996F996F9A6F766F7670704C704C52111158FD04FF754468\n\r"
-                  "%5011117B68684A4C050601FD0406070607060706072D3311A4A4FE9FA5C6\n\r"
-                  "%FEA4A8FFFFCA6F9A999A937C1133115899BB999A999A939A6F9A709A7076\n\r"
-                  "%70774C774C581158FD04FF7D446E3311347468688D6F6F4B2F0607060D06\n\r"
-                  "%07060D062E51A511347AFEC6A6A4FEFECCA8FFFFA16F6F9A937511331111\n\r"
-                  "%759993996F996F996F9A6F766F7670704C764C4C2E330BA8FFFFFFA82074\n\r"
-                  "%113311746868686F8C8C6E5206060607060728767AC69E571180A4FE9FFE\n\r"
-                  "%C6FEA6FFFFFFA16F9A6F9A573311343399939A999A6F9A6F9A6F9A707670\n\r"
-                  "%7670764C774C533334A7FD04FF4B501233336E68688C6E938C8D8C994C07\n\r"
-                  "%06284B9E9EC6C09F7B127AFEC6A6C6FEA4A7FFFFFF6F766F947533113311\n\r"
-                  "%5793996F996F996F9A6F766F7670704C704C4C4C4D4C581183FD04FF4B51\n\r"
-                  "%0B33116E6868686F6EFD058C6F4B6E9E989E9EC67A9F7AC6C6C79FFE9F7B\n\r"
-                  "%7DFFFFFF9A709A6F7C11333334759A939A999A6F9A709A709A707670774C\n\r"
-                  "%774C774C4D285353FD04FFA14A343334748C688C6E998C8D8CB58CB5749E\n\r"
-                  "%989E9EC6C69F9EFEC6FEA4A6A0C7A4FD04FF6F766F7633331133119A6F9A\n\r"
-                  "%6F9A6F766F766F766F7670704C764C4C4C4D284D2253FD04FF7D75113311\n\r"
-                  "%57688C686F6EFD048CB09275989E989E9EC67BA4A4C6C67C7BFEC6A6A8FF\n\r"
-                  "%FFFF76709A7633113411576F9A6F9A6F9A70766F76707670764C764C774C\n\r"
-                  "%4D4C53282953FD05FF753311341175688D6E6F8C8D8C8D8C93759898C09E\n\r"
-                  "%C09E9FC6C69EA07BFEC6FEA7FD04FF70706F7C1133113351706F766F766F\n\r"
-                  "%766F704B764C704C704C4C4C4D284D284D2877FD04FFA8762D1111331175\n\r"
-                  "%448C6E8C688C8C8C92759898989E9E9E7AC67B9FA4A5C6FEA4A8FD04FF77\n\r"
-                  "%707657333334117C709A7076709A7076707670764C774C774C774C532853\n\r"
-                  "%29297EFD05FF7C7511343334117C6F758C8D8CB08CB5759898C09EC69E7C\n\r"
-                  "%7BA5C6CC9FFEC6CCA8FD04FF77704C571133113351706F7670706F767070\n\r"
-                  "%4C764C704C704C4C4C4D284D282906A8FD05FFA84A57113311331134516F\n\r"
-                  "%688C8C8C9275989898C09E7B51C6C6C69EA5C6FE7CFD05FFCA4C76333433\n\r"
-                  "%331176707670767076707670764C774C774C534C4D285328292853FD06FF\n\r"
-                  "%A84B4B3311343333113457758CB08C93749898C0749F7B9FC6C6C6A5A4FE\n\r"
-                  "%7BA1FD05FFA8774C33113311334B704C704C764C704C70FD064C284D284D\n\r"
-                  "%2829280753FD07FF4B444B570B3311331133115774938C75989E74759E9F\n\r"
-                  "%9EC6A4C69FA57BA5A7FD06FF7D5233343333337670764C7770764C774C77\n\r"
-                  "%4C774C534C534C4D2853292907FD08FFA1686E4B7C331211343333113433\n\r"
-                  "%7B7499749F9EC69FA5C6FEC67C7BFEC6CFFD07FF5233113311334C704C70\n\r"
-                  "%4C76FD074C4D4C4D284D282928290154FD08FFA168686826755033113311\n\r"
-                  "%3311331133509E989E9E9F9EC6A4A075FEC6A6A8FD07FFA8113311343376\n\r"
-                  "%4C774C764C774C534C534C4D4C534C4D284D2929062FA9FD09FF4A68686F\n\r"
-                  "%4A6F6E7B1134113311341111117B9EC075C79EA09FA5C6FEA6FD08FF8333\n\r"
-                  "%11331133FD0A4C284D284D284D2829282906077EFD0AFF7644684A6E686F\n\r"
-                  "%6E7550331111113311330B337A9F747BA4A59EFEA4A8FD08FFAE11333334\n\r"
-                  "%33534C534C534C534C534C534C4D2853294D282F29297EFD0CFF7C686F6E\n\r"
-                  "%8D68756FB0929F3334113333341112579FC6FE9FC7A4A8FD09FFA7331133\n\r"
-                  "%11334C4D284D4C4D284D284D284D282928292829062978FD0EFF7C446E68\n\r"
-                  "%8C68516F8C8C92743311331133111133A4A49F7BA8FD0AFFAE1134333333\n\r"
-                  "%534C4D28534C4D2853284D284D2929282907297EFD10FFA14B8C688D6F99\n\r"
-                  "%6F938C93757B33331134333311A47CA8FD0BFFA7330B3311332829282928\n\r"
-                  "%4D282928292829282906070153A8FD12FFA84A8C68758C936F938C756E75\n\r"
-                  "%5711113311112DA8FD0CFFCF3334333333CFA25328292829282929290629\n\r"
-                  "%072953A9FD16FF6F8D6F938CB5759A7475749E7A34333333347CFD0CFFA8\n\r"
-                  "%331133111183FFFFA87753292928292953537EA8FD19FF6F6F6E8C8CB06F\n\r"
-                  "%4B6E9E989E7A1111331133A7FD0CFF5733113411A7FD28FF52938C8D8CB5\n\r"
-                  "%759898C09E7B7C3433331183FD0CFF58113311117CFD29FF76928C8C9275\n\r"
-                  "%9898989E7DFF5711111133FD0CFF823433341182FD2AFFA1938CB5759898\n\r"
-                  "%9FA8FFFFCF11331134AEFD0BFFA71133113333FD16FFA757AEFD04FFA882\n\r"
-                  "%57FD0BFFA1938C757475A8FFFFFFA85811330BCFFD0BFFA83411331134A8\n\r"
-                  "%FD15FF5812A7FD05FF3334A8FD0BFFA8764A9FA8FD05FF58343333A8FD0C\n\r"
-                  "%FF571111330BA7FD14FFA8330BCFFD05FF580B83FD0CFFA87CA8FD06FF7C\n\r"
-                  "%0B3311AEFD0CFFA71133333458FD14FFAE1182FD06FF7C1257FD15FF5834\n\r"
-                  "%3333A8FD0CFFA83311331133A8FD13FF571183FD06FFA70B33A7FD13FFCF\n\r"
-                  "%57113333FD0EFF7C34333311A7FD12FFA71257FD07FFA7331182FD13FFCF\n\r"
-                  "%33331182FD0EFFCF0B33111133FD12FF570BA8FD07FFCF33330BA7FD12FF\n\r"
-                  "%8311111183FD0FFFA71133333483FD10FF831182FD09FF58113433FD12FF\n\r"
-                  "%82113457FD11FF8211331133A7FD0EFFA71133A8FD09FF5711111157FD10\n\r"
-                  "%FFA8113311A8FD06FFA8FD0BFF8211331134A8FD0CFF8311345252A8A87D\n\r"
-                  "%A8A8FFA8FFA8821133113458FFA8FFA8FFA8FFA8FFA8FFAFFFA8FF573311\n\r"
-                  "%83A8FFA8A87DA87D522752A8FD08FFA8820B330B337CFD09FFA85E0B3327\n\r"
-                  "%27525227FD08521111330B11337C4B52525227FD0552275233110B58FD05\n\r"
-                  "%527D27525227F87DFD0AFFA7333411343383A7CFA8CFA8A8583411585227\n\r"
-                  "%7D7D274B5252527D527D527D11331158333411587C7D527D527D527D7C7C\n\r"
-                  "%3312337D527D527D4B7D522727A87D2752FD0BFFCF7C3311110B11113311\n\r"
-                  "%3311113383A87D527D52A87D847DA87DA883A87D3311827D837C58111133\n\r"
-                  "%58577C585833331133338384A883A883A87DA88384527D527DFD0DFFA8AE\n\r"
-                  "%7C5E33583333338283FFFFFFA87D277D848484AE848484AE8484578384AE\n\r"
-                  "%84AE8484585E333311343333338383AE848A8484838A848483848452277D\n\r"
-                  "%FD13FFA8FFCFFD06FFA8205252848383588358835883838483A884848384\n\r"
-                  "%8484838483848384838484A88384838483848384838483A8525227FFFFFF\n\r"
-                  "%CFCAFD17FFA87C7C5833333334333311343333335E588383AE84AE84AE84\n\r"
-                  "%AE84AE84AE84AE84AE84AE84AE84AE84AE84AE847D7D52FFCABB8CB08CC2\n\r"
-                  "%CAFD12FFA757331111113311331133113311331133113311335783848483\n\r"
-                  "%A8838483A8838483A8838483A8838483A8838483A8522752FFBC8CC2C3C2\n\r"
-                  "%8CB0A0FD0FFF835E11331134333311343333113433331134333311343333\n\r"
-                  "%115E83AE84AE84A884AE84A884AE84A884AE84A884AE8484847D527DFF93\n\r"
-                  "%B09AC9A0C399FC8CC9FD0CFF57110B331133113311331133113311331133\n\r"
-                  "%11331133113311330B335884838483848384838483848384838483848384\n\r"
-                  "%8384525252FFC98CB08CB08CBBBBBC8CC2FD09FFCF331211343333333433\n\r"
-                  "%33333433333334333333343333333433333334333458AE84AE84AE84AE84\n\r"
-                  "%AE84AE84AE84AE84AE84AE847D527DFFFFBB8CFC8CB08CFC92BB8CBBCAFD\n\r"
-                  "%06FFAE333311331133113311331133113311331133113311331133113311\n\r"
-                  "%331133111158AE848483A8838483A8838483A8838483A88384525252FFFF\n\r"
-                  "%C98D8CB58CB08CB08CB58CB5C9CAC3C9C3CA333333343333113433331134\n\r"
-                  "%3333113433331134333311343333113433331134333358AE84A884AE84A8\n\r"
-                  "%84AE84A884AE84A884AE847D527DFFFFFF93FD048CB08CFC8C8C8CFC99C2\n\r"
-                  "%99C250111133113311331133113311331133113311331133113311331133\n\r"
-                  "%11331133113311338384838483848384838483848384838483A8525252FF\n\r"
-                  "%FFFFC98C8D8CB58CB08CB08C8C8CBC93B0993A3333333433333334333333\n\r"
-                  "%3433333334333333343333333433333334333333343333118384AE84AE84\n\r"
-                  "%AE84AE84AE84AE84AE84AE847D527DFFFFFFA8928C8C8CB08CFC8C8C68FC\n\r"
-                  "%8CB08C7B1133113311331133113311331133113311331133113311331133\n\r"
-                  "%1133113311331133113357AE848483A8838483A8838483A8838483A85252\n\r"
-                  "%52FD04FF6F8D8C8D8CB08CB08C8D8CB08CBB333311343333113433331134\n\r"
-                  "%33331134575E588358581134333311343333113433331134115883AE84A8\n\r"
-                  "%84AE84A884AE84A884AE8484847D527DFD04FF99688C8CFC8CB08C8C688C\n\r"
-                  "%8C8C7411113311331133113311331133115883A8848484A8838333331133\n\r"
-                  "%113311331133113311331183838483848384838483848384838483845252\n\r"
-                  "%52FD04FF93B08CB58CB08CB08C936E68687B113333343333333433333334\n\r"
-                  "%118384AE84AE84AE84AE8483333333343333333433333334333383AE84AE\n\r"
-                  "%84AE84AE84AE84AE84AE84AE847D527DFFFFFFCA8C8CB58CFC8CB08C6FA1\n\r"
-                  "%FFA18C2D3311331133113311331133117B7C8483A8838483A88384835811\n\r"
-                  "%3311331133113311331133118384A8838483A8838483A8838483A8838452\n\r"
-                  "%527DFFFFFFC28CB08CB08CB06970A2FFFFC38C3311341111113411331134\n\r"
-                  "%111274B5848484AE84A884AE84AE573433331134333311343333113483AE\n\r"
-                  "%84AE84A884AE84A884AE84A884AE847D517DFFFFFF8C8C8CFC9293454CA8\n\r"
-                  "%FFFFCA8C92507B507B507557582D517B7B50988CA7848483848384838484\n\r"
-                  "%580B33113311331133113311331183848483848384838483848384838483\n\r"
-                  "%A8525252FFFFC9B08CBB99944677FD04FF928D8C8D93FF9A8D686F6F7746\n\r"
-                  "%70BCC28CB0A08A84AE84AE84AE84A8333433333334333333343333115E84\n\r"
-                  "%AE84AE84AE84AE84AE84AE84AE84AE847D277DFFFFC28CC2994621A2FFFF\n\r"
-                  "%FFC98C8C8CB093CAFFFFC993686868764C4676C28C99848483A8848484AE\n\r"
-                  "%583311331133113311331133113357AE848483A8838483A8838483A88384\n\r"
-                  "%83A8525252FFFFC2BC70464CFD04FFC28CB08CBBC3FD05FFCA8D8C8C68C3\n\r"
-                  "%774670C299AE84AE84AE84845834333311343333113433331134338384AE\n\r"
-                  "%84A884AE84A884AE84A884AE8484847D527DFFFFC2694C7DFFFFFFA0B58C\n\r"
-                  "%FC99CAFD08FF8C8C8C686ECF524C45BB5983588258583311113311331133\n\r"
-                  "%1133113311330B58848483848384838483848384838483848384525252FF\n\r"
-                  "%FFCAC9CBFFFFC993B092C9CFFD09FFC9B08CB08C92A77D767DA783113311\n\r"
-                  "%341133333433333334333333343333115E84AE84AE84AE84AE84AE84AE84\n\r"
-                  "%AE84AE84AE847D527DFD05FFCABB8CFCA0FD0CFFBB8CFC8C8C99FF527D7D\n\r"
-                  "%84583311331133113311331133113311331133115883AE838483A8838483\n\r"
-                  "%A8838483A8838483A8838452527DFD05FFBB8CB5C9FD0CFFC38CB08C8D93\n\r"
-                  "%FFFF7D527D848211343333113433331134333311343333338384AE84AE84\n\r"
-                  "%A884AE84A884AE84A884AE84A884AE847D4B7DFD04FFC28CFCA0FD0CFFCA\n\r"
-                  "%8CFC8CFC93FFFFFF527D59A8583311331133113311331133113311331133\n\r"
-                  "%338384848384838483848384838483848384838483A8525252FD04FFB5B0\n\r"
-                  "%8CCAFD0CFFB5B08CB093FFFFFFAF7D527D84821134333333343333333433\n\r"
-                  "%33333433333334338284AE84AE84AE84AE84AE84AE84AE84AE84AE847D27\n\r"
-                  "%7DFFFFFFCAB58CFCA0FD0BFFA0B08CFC8CCAFD04FF527D7DAE5833113311\n\r"
-                  "%331133113311331133113311331133115883A8838483A8838483A8838483\n\r"
-                  "%A8838483A8525252FD04FF8CB08CBBFD0BFFB58CB08CBBFD04FFA87D527D\n\r"
-                  "%84821133113433331134333311343333113433331134115E84AE84A884AE\n\r"
-                  "%84A884AE84A884AE8484847D527DFFFFFFCAB08CB08CC9FD09FFC38CFC8C\n\r"
-                  "%B0C3FD05FF527D7D84583311330B33113311331133113311331133113311\n\r"
-                  "%33118384848384838483848384838483848384525252FD04FF93B08CB093\n\r"
-                  "%FD09FFB5B08CB0B5FD05FFA87D7D7D8484FD048358581134333333343333\n\r"
-                  "%333433333334333457AE84AE84AE84AE84AE84AE84AE84AE847D527DFD04\n\r"
-                  "%FFBC8CB08CFCA0FD07FFA1B08CFC8CC2FD06FF527D7D8483AE848484AE83\n\r"
-                  "%83333311331133113311331133113311337DAE838483A8838483A8838483\n\r"
-                  "%A88384525252FD04FFC3B08CB08CB5CAFD06FFC28CB08CB0C3FD05FFA87D\n\r"
-                  "%527D84A884AE84A884AE84843334333311343333113433331134118384AE\n\r"
-                  "%84A884AE84A884AE84A884AE847D517DFD05FF8CFC8CB08CC2FD04FFA8FF\n\r"
-                  "%928C8CB08CCAA9FFCFFFA8FF527D58848384838483848384845E0B331133\n\r"
-                  "%11331133113311331133588483848384838483848384838483A8525252FD\n\r"
-                  "%05FFC28CB08CB08CFD04FF82335733583357335E3358335E337D528484AE\n\r"
-                  "%84AE84AE84AE84AE8334333333343333333433333334115E84AE84AE84AE\n\r"
-                  "%84AE84AE84AE84AE847D527DFD05FFCAFC8CB08CFC99FFFFFF5711113311\n\r"
-                  "%33113311331133111158525284838483A8838483A8848333331133113311\n\r"
-                  "%33113311331133338483A8838483A8838483A8838483A8522752FD06FFC2\n\r"
-                  "%B08CB08CB0C9FFFF8311343333113433331134333311827D7D83AE84A884\n\r"
-                  "%AE84A884AE8333113433331134333311343333115E84AE84AE84A884AE84\n\r"
-                  "%A884AE8484847D7D52A8FD06FF8CFC8CB08CBBFFFF821111331133113311\n\r"
-                  "%3311331111335252848384838483848384845E1133113311331133113311\n\r"
-                  "%33111158A88384838483848384838483848384525252FD07FFC38CB08CB0\n\r"
-                  "%8CFFFFAE1134333333343333333433333334587D84AE848483AE848484AE\n\r"
-                  "%33333334333333343333333433331183848483AE848483AE848483AE8484\n\r"
-                  "%8452277DFD07FFCAB58CC29AFCA0FFA83311331133113311331133113311\n\r"
-                  "%3358A87D847DA87DA88484333311331133113311331133113311337DA883\n\r"
-                  "%A87DA883A883A883A87DA88384277D527DFD07FFC2B0C3FF93BBFFCA5733\n\r"
-                  "%1134333311343333113433331134577C5252527D527D5733113433331134\n\r"
-                  "%3333113433331134577D52765276527D527D527D5252522727A87D2752FD\n\r"
-                  "%07FFC98CCAFFCA92FFA19911331133113311331133113311330B11113333\n\r"
-                  "%5833330B3311331133113311331133113311330B7C275227522752275227\n\r"
-                  "%522727525227525226F8A8FD07FFC9BBFFFFFFC9FFCF8C57113433333334\n\r"
-                  "%333333343333333433331134113411343333333433333334333333343333\n\r"
-                  "%1134A8FFA8FFA8FFA8FFA8FFA8FFAFA87DFF7D522752A8FD07FFCAC3FD05\n\r"
-                  "%FFCAB0751111331133113311331133113311331133113311331133113311\n\r"
-                  "%33113311331133113311117CFD11FFA8FD0AFFCFFD07FF93CA5811113433\n\r"
-                  "%331134333311343333113433331134333311343333113433331134333333\n\r"
-                  "%3457FD25FFC3A7FF33111133113311331133113311331133113311331133\n\r"
-                  "%11331133113311331133111133CFFD29FF33343333333433333334333333\n\r"
-                  "%3433333334333333343333333433333334331233FD2CFF57111133113311\n\r"
-                  "%331133113311331133113311331133113311331133111158FD2EFF833411\n\r"
-                  "%33113433331134333311343333113433331134333311341158A7FD30FFA8\n\r"
-                  "%8333110B1111330B33113311331133113311330B11113357A7FD35FFA8A7\n\r"
-                  "%5858113411121134111211341133335E82A8A8FD3AFFCFA883A783825882\n\r"
-                  "%82A783A8A7FDFCFFFDFCFFFDFCFFFDFCFFFDFCFFFD8EFFFF\n\r";
+    bool ret = false;
 
-    string str = decodeHex((BYTE*)hexs.c_str() , hexs.size());
-    string bgr = decodeAi7Thumbnail(str);
-    // string pnm = makeBmp(76, 128, bgr);
-    cout << hexs.size() << endl;
-    cout << bgr.size() << endl;
+    int version = get_cdrfile_version(cdr_filename);
 
-    BITMAPFILEHEADER bmph = {0x4D42, 54 , 0, 0, 54 };   // 14字节
-    BITMAPINFOHEADER bmpinf = {40, 76, 128, 1, 24, 0 , 0, 0, 0, 0, 0    }; // 40字节
+ //   printf("\n%d\n", version);
 
-    bmph.bfSize += bgr.size();
-//   bmpinf.biWidth  = x;
-//   bmpinf.biHeight = y;
+    if (version >= 1400)
+        ret = zip_extract_onefile(cdr_filename, "metadata/thumbnails/thumbnail.bmp", bmp_filename);
 
+    if (version <= 1300)
+        ret = cdr_riff_disp2bmp(cdr_filename, bmp_filename);
 
-    FILE* bmpfile;
-    bmpfile = fopen("bgr.bmp" , "wb");
+    return ret;
 
-    fwrite(&bmph , 1, 14,   bmpfile);
-    fwrite(&bmpinf , 1, 40,   bmpfile);
+}
 
-    // 由于前面解码的数据是RGB标准数据，而BMP存储为BGR顺序
-    // 由于BMP写文件最下面先读写，要翻转
-//    for (int i = 0 ; i < bgr.size() ; i += 3) {
-//        swap(bgr[i] , bgr[i + 2]);
-//    }
-//    int x = 76; int y = 128;
-//    const char* px = bgr.c_str();
-//    for (int i = y  ; i > 0 ; i--) {
-//        fwrite(px + 3 * i * x  , 1 , 3 * x, bmpfile);
-//    }
+bool cdr_thumbnail_png(const char* cdr_filename, const char* png_filename)
+{
+    char bmp_filename[MAX_PATH] = {0};
 
-    reverse(bgr.begin() , bgr.end());  // 现在获得的BMP是镜像的
-    fwrite(bgr.c_str() , 1 , bgr.size(), bmpfile);
+    if (png_filename == NULL) {
+        char tmp_filename[MAX_PATH] = {0};
+        png_filename = tmp_filename;
+        strcpy(tmp_filename , cdr_filename);
+        strcpy(strrchr(tmp_filename, '.') , ".png");
+    }
 
-    fclose(bmpfile);
+    strcpy(bmp_filename , png_filename);
+    strcpy(strrchr(bmp_filename, '.') , ".bmp");
+
+//    printf("%s\t\%s\n", bmp_filename , png_filename);
+    bool ret =  cdr_extract_bmp(cdr_filename , bmp_filename);
+
+    if (!ret)
+        return false ;
+
     CImage image;  //  bmp 转换 png ，需要CImage类，头文件  atlimage.h
-    image.Load("bgr.bmp");
-    image.Save("bgr.png");
+    image.Load(bmp_filename);
+    image.Save(png_filename);
 
-    return 0;
+   if (remove(bmp_filename) != 0)
+        perror("Error deleting file");
+
+    return ret;
 }

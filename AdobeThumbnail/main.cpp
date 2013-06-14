@@ -1,6 +1,5 @@
 ﻿#include "atpch.h"
 #include <string.h>
-using namespace std;
 
 const char* version_info = "\nsRGB.googlecode.com   sRGB色彩联盟, 给你的工作增光添彩!\n\n"
                            "Adobe AI EPS INDD 缩略图收集工具  版权所有 2013.06 Hongwenjun (蘭公子)\n"
@@ -68,7 +67,7 @@ bool everything_thumbnail(const char* adobe_corel_filename , const char* save_th
            "输入您的关键字: ");
 
     string es_cmd;
-    getline(cin , es_cmd);
+    getline(std::cin , es_cmd);
 
     char es_exe_file[MAX_PATH] = {0};
     strcpy(es_exe_file, app_path);
@@ -84,7 +83,7 @@ bool everything_thumbnail(const char* adobe_corel_filename , const char* save_th
         string filename_line;
         string filename_out;
 
-        ifstream infile("filelist.txt");
+        std::ifstream infile("filelist.txt");
         while (getline(infile, filename_line)) {
             adobe_corel_filename = filename_line.c_str();
             strcpy(tmp_filename , GetFileBaseName(adobe_corel_filename));
@@ -94,11 +93,14 @@ bool everything_thumbnail(const char* adobe_corel_filename , const char* save_th
             // AI EPS INDD 文件导出缩略图
             bool ret = AdobeThumbnail(adobe_corel_filename , save_thumbs_file);
 
-            if (!ret)   // CorelDRAW CDR 文件导出缩略图
-                ret = cdr_thumbnail_png(adobe_corel_filename, save_thumbs_file);
+            if (!ret) { // CorelDRAW CDR 文件导出缩略图
+                char savepng_filename[MAX_PATH] = {0};   // 源图是 BMP，保存png 失真少一点
+                strncpy(savepng_filename , save_thumbs_file, strlen(save_thumbs_file) - 4);
+                strcat(savepng_filename, ".png");
+                ret = cdr_thumbnail_png(adobe_corel_filename, savepng_filename);
+            }
 
-            if (ret)
-                putchar('.');
+            if (ret)  putchar('.');
         }
     } else {
         printf("\a全盘搜索模式需要调用软件: Everything\n\n请看使用说明 第5行.\n\n");
