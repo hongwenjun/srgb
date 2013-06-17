@@ -1,4 +1,4 @@
-﻿#include "coreldraw_riffinfo.h"
+ #include "coreldraw_riffinfo.h"
 
 
 
@@ -82,7 +82,7 @@ bool cdr_riff_disp2bmp(const char* cdr_filename, const char* bmp_filename)
         bmp_dispfile = fopen(bmp_filename , "wb");
         fwrite(bmp_buf, 1, raw_size + 10, bmp_dispfile);
         fclose(bmp_dispfile);
-        delete[] cdr_pfile;
+        delete[] bmp_buf;
 
     } else
         return false;
