@@ -1,24 +1,24 @@
-#include "GuIDF.h"
+ï»¿#include "GuIDF.h"
 
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-    XInitXCGUI(); // ³õÊ¼»¯
+    XInitXCGUI(); // åˆå§‹åŒ–
     extern char ConfigFile[MAX_PATH];
     GetAppDir(ConfigFile);
     strcat(ConfigFile, "/GuiDF.ini");
     if (IsFileExist(ConfigFile))
         LoadConfigFile();
 
-    HWINDOW hWindow = XWnd_CreateWindow(0, 0, 380, 280, L"¼ì²â´ò°üAdobeÎÄµµ×ÖÌå¹¤¾ß(C)2012.01Ìm¹«×Ó"); // ´´½¨´°¿Ú
+    HWINDOW hWindow = XWnd_CreateWindow(0, 0, 380, 280, L"æ£€æµ‹æ‰“åŒ…Adobeæ–‡æ¡£å­—ä½“(C)2012.05 è˜­å…¬å­"); // åˆ›å»ºçª—å£
     if (hWindow) {
-        // ÉèÖÃÍ¼±ê
+        // è®¾ç½®å›¾æ ‡
         HICON logo_hIcon = LoadIcon(hInstance, (LPCTSTR)LOGO_ICON);
         XWnd_SetIcon(hWindow, logo_hIcon, false);
-        InitXC_Window(hWindow); // ´°¿Ú²¼¾Ö
+        InitXC_Window(hWindow); // çª—å£å¸ƒå±€
 
-        XWnd_ShowWindow(hWindow, SW_SHOW); //ÏÔÊ¾´°¿Ú
-        XRunXCGUI(); //ÔËĞĞ
+        XWnd_ShowWindow(hWindow, SW_SHOW); //æ˜¾ç¤ºçª—å£
+        XRunXCGUI(); //è¿è¡Œ
     }
     return 0;
 }

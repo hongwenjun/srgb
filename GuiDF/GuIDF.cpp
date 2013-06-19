@@ -1,4 +1,4 @@
-#include "GuIDF.h"
+﻿#include "GuIDF.h"
 
 // 全局变量
 char ConfigFile[MAX_PATH] = {0};
@@ -54,7 +54,7 @@ char* GetAppDir(char* szPath)
 // 窗口布局
 void InitXC_Window(HWINDOW& hWindow)
 {
-    XWnd_SetImage(hWindow, XImage_LoadFile(L"GuiBG.png")); // 设置窗口背景图片
+    XWnd_SetImage(hWindow, XImage_LoadFile(L"GuiBG.dll")); // 设置窗口背景图片
 
     HELE hStatic = XStatic_Create(7, 10, 390, 18, L"用法: IDFonts.exe  InDesign_Doc.indd  [SaveFontPath]", hWindow);
     //创建静态文本元素
@@ -64,8 +64,8 @@ void InitXC_Window(HWINDOW& hWindow)
     appEdit = XEdit_Create(5, 30, 270, 22, hWindow);
     docEdit = XEdit_Create(5, 60, 270, 22, hWindow);
     fontEdit = XEdit_Create(5, 90, 270, 22, hWindow);
-    XEle_SetBkTransparent(appEdit, true);
 
+    // 读取配置到文本框
     XEdit_SetText(appEdit, appFile);
     XEdit_SetText(docEdit, docFile);
     XEdit_SetText(fontEdit, fontPath);
@@ -75,18 +75,18 @@ void InitXC_Window(HWINDOW& hWindow)
     XEle_EnableToolTips(appButton, true);       //启用工具提示
     XEle_SetToolTips(appButton, L"选择IDFonts.exe程序位置"); //设置工具提示内容
 
-    HELE docButton = XBtn_Create(282, 60, 78, 22, L"InDesign文件", hWindow);
+    HELE docButton = XBtn_Create(282, 60, 78, 22, L"选Adobe文件", hWindow);
     XEle_EnableToolTips(docButton, true);
-    XEle_SetToolTips(docButton, L"选择一个AdobeInDesign文件");
+    XEle_SetToolTips(docButton, L"选择一个Adobe文档文件");
 
     HELE fontButton = XBtn_Create(282, 90, 78, 22, L"字体打包目录", hWindow);
     XEle_EnableToolTips(fontButton, true);
     XEle_SetToolTips(fontButton, L"选择字体打包保存的目录");
 
-    HELE runButton = XBtn_Create(230, 130, 100, 50, L"开始执行", hWindow);
+    HELE runButton = XBtn_Create(180, 205, 90, 32, L"开始执行", hWindow);
     XEle_EnableToolTips(runButton, true);
     XEle_SetToolTips(runButton, L"开始执行字体打包任务");
-    HELE closeButton = XBtn_Create(230, 200, 100, 30, L"保存关闭", hWindow);
+    HELE closeButton = XBtn_Create(280, 205, 78, 32, L"保存关闭", hWindow);
 
     // 注册按钮事件
     XEle_RegisterEvent(appButton, XE_BNCLICK, appBtnClick);
@@ -128,6 +128,11 @@ bool CALLBACK fontBtnClick(HELE hEle, HELE hEventEle)
 
 bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle)
 {
+     // 文本框回写配置
+    XEdit_GetText(appEdit, appFile, MAX_PATH);
+    XEdit_GetText(docEdit, docFile, MAX_PATH);
+    XEdit_GetText(fontEdit, fontPath, MAX_PATH);
+
     char cmdline[2 * MAX_PATH] = {0};
     char buf[MAX_PATH] = {0};
     char* ps = WCHARTochar(buf, appFile);
@@ -145,14 +150,24 @@ bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle)
     strcat(cmdline, ps);
     strcat(cmdline, "\" ");
 
+  // MessageBoxA(NULL, cmdline, "Debug", MB_OKCANCEL);
+
     execute_command(cmdline);
-    return false;
+
+    ShellExecute(NULL,"open","使用字体报告.txt",NULL,NULL,SW_SHOW);
+
+    return true;
 }
 
 bool CALLBACK closeBtnClick(HELE hEle, HELE hEventEle)
 {
+    // 文本框回写配置
+    XEdit_GetText(appEdit, appFile, MAX_PATH);
+    XEdit_GetText(docEdit, docFile, MAX_PATH);
+    XEdit_GetText(fontEdit, fontPath, MAX_PATH);
+
     SaveConfigFile();
-    PostQuitMessage(0);
+    ExitProcess(0);
     return true;
 }
 
@@ -223,7 +238,7 @@ int   GetFilePath(HWND hWnd, char* szFile)
     // use the contents of szFile to initialize itself.
     ofn.lpstrFile[0] = '\0';
     ofn.nMaxFile = 260; // 本来sizeof(szFile);
-    ofn.lpstrFilter = "Adobe InDesign 文档\0*.indd\0Adobe Photoshop 文档\0*.psd\0Adobe Illustrator 文档\0*.ai\0IDFonts程序文件\0*.exe\0";
+    ofn.lpstrFilter = "Adobe文档(*.indd;*.psd;*.ai;*.pdf)\0*.indd;*.psd;*.ai;*.pdf\0IDFonts程序文件\0*.exe\0\0";
     ofn.nFilterIndex = 1;
     ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 0;

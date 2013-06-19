@@ -7,8 +7,8 @@
 		<Option compiler="msvc10" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\GuiIDF" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/GuiIDF" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="0" />
 				<Option compiler="msvc10" />
 				<Compiler>
@@ -20,18 +20,21 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\GuiIDF" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/Release/GuiIDF" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="msvc10" />
 				<Compiler>
-					<Add option="/Ox" />
+					<Add option="/Os" />
+					<Add option="/O2" />
+					<Add option="/O1" />
 					<Add option="/DNDEBUG" />
 				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="/W3" />
+			<Add option="/Zc:wchar_t-" />
 			<Add directory="$(#psdk.include)" />
 		</Compiler>
 		<Linker>
@@ -39,7 +42,6 @@
 			<Add library="user32" />
 			<Add library="kernel32" />
 			<Add library="XCGUI" />
-			<Add library="XCGUId" />
 			<Add library="shell32" />
 			<Add library="Setupapi" />
 			<Add library="AdvAPI32" />
