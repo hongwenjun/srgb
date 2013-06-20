@@ -1,4 +1,4 @@
-#ifndef GUIDF_H_INCLUDED
+﻿#ifndef GUIDF_H_INCLUDED
 #define GUIDF_H_INCLUDED
 
 #include <windows.h>
@@ -8,7 +8,12 @@
 #include <fstream>
 #include "xcgui.h"
 
+#pragma warning(disable: 4996)
+
+
 using namespace std;
+
+
 
 // 读取和保存配置
 void LoadConfigFile();

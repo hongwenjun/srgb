@@ -38,17 +38,24 @@ BOOL IsFileExist(LPCTSTR lpFileName)
     return ((hFind != INVALID_HANDLE_VALUE) && !(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 
+
 // 功能 获得当前路径
 char* GetAppDir(char* szPath)
 {
     char* ret = szPath;
-    int i;
     GetModuleFileName(NULL, szPath, MAX_PATH); // 得到当前执行文件的文件名（包含路径）
-    i = strlen(szPath);
-    while ((i > 0) && (szPath[i - 1] != '\\')) { // 删除文件名，只留下目录
-        szPath[--i] = 0;
-    }
+    *(strrchr(szPath , '\\')) = '\0';   // 删除文件名，只留下目录
     return ret;
+}
+
+// 文本框回写配置
+bool edit_text(void)
+{
+    XEdit_GetText(appEdit, appFile, MAX_PATH);
+    XEdit_GetText(docEdit, docFile, MAX_PATH);
+    XEdit_GetText(fontEdit, fontPath, MAX_PATH);
+
+    return true;
 }
 
 // 窗口布局
@@ -69,6 +76,8 @@ void InitXC_Window(HWINDOW& hWindow)
     XEdit_SetText(appEdit, appFile);
     XEdit_SetText(docEdit, docFile);
     XEdit_SetText(fontEdit, fontPath);
+
+    XEle_SetBkTransparent(appEdit, true); //设置背景透明
 
     // 工具提示按钮
     HELE appButton = XBtn_Create(282 , 30, 78, 22, L"IDFonts程序", hWindow);
@@ -128,33 +137,21 @@ bool CALLBACK fontBtnClick(HELE hEle, HELE hEventEle)
 
 bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle)
 {
-     // 文本框回写配置
-    XEdit_GetText(appEdit, appFile, MAX_PATH);
-    XEdit_GetText(docEdit, docFile, MAX_PATH);
-    XEdit_GetText(fontEdit, fontPath, MAX_PATH);
 
+    // 文本框回写配置
+    edit_text();
+
+    // 格式化命令行
+    wchar_t wbuf [2 * MAX_PATH] = {0};
     char cmdline[2 * MAX_PATH] = {0};
-    char buf[MAX_PATH] = {0};
-    char* ps = WCHARTochar(buf, appFile);
-    strcat(cmdline, "\"");
-    strcat(cmdline, ps);
-    strcat(cmdline, "\" ");
+    swprintf(wbuf, L"\"%s\" \"%s\" \"%s\"" , appFile, docFile, fontPath);
+    WCHARTochar(cmdline, wbuf);
 
-    ps = WCHARTochar(buf, docFile);
-    strcat(cmdline, "\"");
-    strcat(cmdline, ps);
-    strcat(cmdline, "\" ");
-
-    ps = WCHARTochar(buf, fontPath);
-    strcat(cmdline, "\"");
-    strcat(cmdline, ps);
-    strcat(cmdline, "\" ");
-
-  // MessageBoxA(NULL, cmdline, "Debug", MB_OKCANCEL);
-
+    // MessageBoxA(NULL, cmdline, "Debug", MB_OKCANCEL);
     execute_command(cmdline);
 
-    ShellExecute(NULL,"open","使用字体报告.txt",NULL,NULL,SW_SHOW);
+    // 打开记录文件
+    ShellExecute(NULL, "open", "使用字体报告.txt", NULL, NULL, SW_SHOW);
 
     return true;
 }
@@ -162,12 +159,10 @@ bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle)
 bool CALLBACK closeBtnClick(HELE hEle, HELE hEventEle)
 {
     // 文本框回写配置
-    XEdit_GetText(appEdit, appFile, MAX_PATH);
-    XEdit_GetText(docEdit, docFile, MAX_PATH);
-    XEdit_GetText(fontEdit, fontPath, MAX_PATH);
+    edit_text();
 
     SaveConfigFile();
-    ExitProcess(0);
+    ExitProcess(0); // 退出程序
     return true;
 }
 
@@ -195,8 +190,8 @@ int execute_command(char* cmdline)
     DWORD ret;
     GetExitCodeProcess(pi.hProcess, &ret);
     if (!ret) {
-        ::MessageBox(NULL, "检测打包Adobe文档字体工具执行完成!",
-                     "(C) 版权所有 2012.05 Hongwenjun (蘭公子)", MB_OKCANCEL);
+        MessageBoxA(NULL, "检测打包Adobe文档字体工具执行完成!",
+                    "(C) 版权所有 2012.05 Hongwenjun (蘭公子)", MB_OKCANCEL);
     }
     // Close process and thread handles.
     CloseHandle(pi.hProcess);
@@ -215,7 +210,7 @@ int   GetPath(HWND hWnd, char* pBuffer)
     bf.ulFlags = BIF_RETURNONLYFSDIRS;   //属性你可自己选择
     lpitem = SHBrowseForFolder(&bf);
     if (lpitem == NULL)  //如果没有选择路径则返回   0
-        return   0;
+        return  0;
 
     //如果选择了路径则复制路径,返回路径长度
 

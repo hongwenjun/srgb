@@ -26,7 +26,6 @@
 				<Option compiler="msvc10" />
 				<Compiler>
 					<Add option="/Os" />
-					<Add option="/O2" />
 					<Add option="/O1" />
 					<Add option="/DNDEBUG" />
 				</Compiler>
@@ -35,6 +34,7 @@
 		<Compiler>
 			<Add option="/W3" />
 			<Add option="/Zc:wchar_t-" />
+			<Add option="/EHsc" />
 			<Add directory="$(#psdk.include)" />
 		</Compiler>
 		<Linker>
