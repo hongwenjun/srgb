@@ -11,6 +11,7 @@
 
 // Adobe 文件提取 缩略图
 bool  AdobeThumbnail(const char* adobe_filename ,const char* savejpeg_filename );
+bool  AdobeThumbnail_W(const wchar_t* adobe_filename ,const wchar_t* savejpeg_filename );
 
 
 // 获得编码后的数据长度

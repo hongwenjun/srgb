@@ -71,4 +71,14 @@ char* memfind(const char* buf, const char* tofind, size_t len)
 }
 
 
-
+// 路径转宽字节
+wchar_t* charToWCHAR(wchar_t* wch, const char* czs)
+{
+    MultiByteToWideChar(CP_ACP, 0, czs, -1, wch, MAX_PATH); // czs 转换到宽字节wch
+    return wch;
+}
+char* WCHARTochar(char* czs , const wchar_t* wch)
+{
+    WideCharToMultiByte(CP_ACP, 0, wch, -1, czs, MAX_PATH , NULL, NULL);
+    return czs;
+}

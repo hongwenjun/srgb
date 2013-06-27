@@ -45,6 +45,7 @@
 		<Unit filename="AdobeThumbnail.cpp" />
 		<Unit filename="AdobeThumbnail.h" />
 		<Unit filename="AdoeFileXML.h" />
+		<Unit filename="ConsoleApp/main.cpp" />
 		<Unit filename="Thumb_ico.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
@@ -132,7 +133,6 @@
 		<Unit filename="coreldraw_riffinfo.h" />
 		<Unit filename="deAi7Thumb.cpp" />
 		<Unit filename="deAi7Thumb.h" />
-		<Unit filename="main.cpp" />
 		<Unit filename="otherapi.cpp" />
 		<Unit filename="otherapi.h" />
 		<Unit filename="resource.h" />

@@ -77,7 +77,7 @@ bool zip_extract_onefile(const char* zip_filename, const char* filename , const 
     // 尝试zip文件中找到该文件szFileName。
     int err = UNZ_OK;
     if (unzLocateFile(uf, filename, CASESENSITIVITY) != UNZ_OK) {
- //       printf("file %s not found in the zipfile\n", filename);
+//       printf("file %s not found in the zipfile\n", filename);
         return false;
     }
 
@@ -140,7 +140,7 @@ bool cdr_extract_bmp(const char* cdr_filename, const char* bmp_filename)
 
 }
 
-bool cdr_thumbnail_png(const char* cdr_filename, const char* png_filename)
+bool CorelThumbnail(const char* cdr_filename, const char* png_filename)
 {
 
     string file_ext(cdr_filename);
@@ -179,4 +179,15 @@ bool cdr_thumbnail_png(const char* cdr_filename, const char* png_filename)
 
     return ret;
 }
+
+bool CorelThumbnail_W(const wchar_t* cdr_filename, const wchar_t* png_filename)
+{
+    char fromfile[MAX_PATH] = {0};
+    char tofile[MAX_PATH] = {0};
+    WCHARTochar(fromfile, cdr_filename);
+    WCHARTochar(tofile, png_filename);
+    bool ret = CorelThumbnail(fromfile, tofile);
+    return ret;
+}
+
 

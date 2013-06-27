@@ -22,7 +22,8 @@ bool cdr_extract_bmp(const char* cdr_filename, const char* bmp_filename);
 
 // CorelDRAW文件 cdr_filename  的缩略图 ，转换成 PNG文件 png_filename
 // 如果 png_filename 为 NULL， 转换的PNG文件，基本名同 cdr_filename
-bool cdr_thumbnail_png(const char* cdr_filename, const char* png_filename);
+bool CorelThumbnail(const char* cdr_filename, const char* png_filename);
+bool CorelThumbnail_W(const wchar_t* cdr_filename, const wchar_t* png_filename);
 
 
 #endif // COREL_THUMBNAIL_H_INCLUDED

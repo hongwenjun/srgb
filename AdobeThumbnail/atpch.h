@@ -2,10 +2,6 @@
 #define ATPCH_H_INCLUDED
 
 
-
-
-
-
 #include "AdobeThumbnail.h"
 #include "corel_thumbnail.h"
 #include "otherapi.h"
@@ -15,6 +11,6 @@
 using std::string;
 
 
-#define AITEST 0
+// #define AITEST 0
 
 #endif // ATPCH_H_INCLUDED

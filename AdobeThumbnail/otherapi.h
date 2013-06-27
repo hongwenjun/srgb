@@ -22,7 +22,9 @@ size_t get_fileSize(const char* filename);
 // 内存匹配函数memfind
 char* memfind(const char* buf, const char* tofind, size_t len);
 
-
+// 路径转宽字节
+wchar_t* charToWCHAR(wchar_t* wch, const char* czs);
+char* WCHARTochar(char* czs , const wchar_t* wch);
 
 
 #endif // OTHERAPI_H_INCLUDED_COREL_THUMBNAIL
