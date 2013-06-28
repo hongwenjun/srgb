@@ -6,8 +6,7 @@
 // 00000010h: 02 00 00 00 84 03 44 49 53 50 2C 28 00 00 08 00 ; ...._DISP__....
 
 // 读RIFF_CDR_TYPE 文件头和软件版本号
-extern RIFF_CDR_TYPE cdr_riff;
-
+RIFF_CDR_TYPE cdr_riff ;
 
 // 获得 CorelDRAW X3文件 为止的版本号
 int get_cdrfile_version(const char* cdr_filename)

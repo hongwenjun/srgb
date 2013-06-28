@@ -75,7 +75,7 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
         }
 
         if (pch != NULL) {  // 解码 AI7_Thumbnail 为 图片
-            char savepng_filename[MAX_PATH];    // 源图是 BMP，保存png 失真少一点
+            char savepng_filename[MAX_PATH]={0};    // 源图是 BMP，保存png 失真少一点
             strncpy(savepng_filename , savejpeg_filename, strlen(savejpeg_filename) - 4);
             strcat(savepng_filename, ".png");
 
@@ -121,7 +121,19 @@ bool AdobeThumbnail(const char* adobe_filename , const char* savejpeg_filename)
     return true;
 }
 
+bool  AdobeThumbnail_W(const wchar_t* adobe_filename ,const wchar_t* savejpeg_filename ){
 
+    char fromfile[MAX_PATH] = {0};
+    char tofile[MAX_PATH] = {0};
+    WCHARTochar(fromfile, adobe_filename);
+    WCHARTochar(tofile, savejpeg_filename);
+    bool ret = AdobeThumbnail(fromfile, tofile);
+
+//  printf("%d\t%s\n",ret, fromfile);
+
+    return ret;
+
+}
 
 
 int toBase64_Encode(const char* pSrc, int nLenSrc, char* pDst, int nLenDst)
