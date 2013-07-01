@@ -4,8 +4,8 @@
 
 // 全局变量
 char ConfigFile[MAX_PATH] = {0};
-WCHAR docFile[MAX_PATH] =  L"2KC AI";
-WCHAR savePath[MAX_PATH] = L"D:\\Thumbs";
+WCHAR keyFile[MAX_PATH] =  L"";
+WCHAR savePath[MAX_PATH] = L"D:\\Thumbs缩略图";
 
 // 全局句柄
 HELE  keyEdit, pathEdit , hList;
@@ -40,7 +40,7 @@ void LoadConfigFile()
 {
     wfstream wFile(ConfigFile , fstream::in);
     wFile.imbue(locale("chs"));
-    wFile.getline(docFile, MAX_PATH);
+    wFile.getline(keyFile, MAX_PATH);
     wFile.getline(savePath, MAX_PATH);
     wFile.close();
 }
@@ -48,7 +48,7 @@ void SaveConfigFile()
 {
     wfstream wFile(ConfigFile , fstream::out);
     wFile.imbue(locale("chs"));
-    wFile << docFile << endl << savePath << endl;
+    wFile << keyFile << endl << savePath << endl;
     wFile.close();
 }
 
@@ -56,7 +56,7 @@ void SaveConfigFile()
 // 文本框回写配置
 bool edit_text(void)
 {
-    XEdit_GetText(keyEdit, docFile, MAX_PATH);
+    XEdit_GetText(keyEdit, keyFile, MAX_PATH);
     XEdit_GetText(pathEdit, savePath, MAX_PATH);
 
     return true;
@@ -72,7 +72,7 @@ void InitXC_Window(HWINDOW& hWindow)
     pathEdit = XEdit_Create(412, 2, 270, 22, hWindow);
 
     // 读取配置到文本框
-    XEdit_SetText(keyEdit, docFile);
+    XEdit_SetText(keyEdit, keyFile);
     XEdit_SetText(pathEdit, savePath);
 
 
@@ -119,6 +119,9 @@ void InitXC_Window(HWINDOW& hWindow)
     XPic_SetImage(hPic2, XImage_LoadFile(L"Thumbnail.dat")); //设置显示图片
     HELE hPic3 = XPic_Create(654, 416 - 130 - 130, 128, 128, hWindow);
     XPic_SetImage(hPic3, XImage_LoadFile(L"Thumbnail.dat")); //设置显示图片
+
+
+    XEle_SetFocus(keyEdit, true); // 输入关键字
 }
 
 
@@ -131,10 +134,10 @@ void InitXC_Window(HWINDOW& hWindow)
 
 bool CALLBACK keyBtnClick(HELE hEle, HELE hEventEle)
 {
-    wchar_t wbuf[MAX_PATH]={0};
-    XEdit_GetText(keyEdit, wbuf, MAX_PATH);
+    wchar_t keyWord[MAX_PATH] = {0};
+    XEdit_GetText(keyEdit, keyWord, MAX_PATH);
 
-    Everything_SetSearch(wbuf);
+    Everything_SetSearch(keyWord);
     bool EQRet =  Everything_Query(TRUE);
     if (EQRet == false) {
         return false;
@@ -144,12 +147,12 @@ bool CALLBACK keyBtnClick(HELE hEle, HELE hEventEle)
     XList_DeleteAllItems(hList);
 
     //添加列表项      // Display results.
-   for (int i = 0 ; i < Everything_GetNumResults(); i++){
+    for (int i = 0 ; i < Everything_GetNumResults(); i++) {
         //添加项
-        XList_AddItem(hList, (wchar_t *)Everything_GetResultFileName(i), 0);
-            //设置子项内容
-            XList_SetItemText(hList, i, 1, (wchar_t *)Everything_GetResultPath(i), 1);
-        //    XList_SetItemText(hList, i, 2, wbuf, 1);
+        XList_AddItem(hList, (wchar_t*)Everything_GetResultFileName(i), 0);
+        //设置子项内容
+        XList_SetItemText(hList, i, 1, (wchar_t*)Everything_GetResultPath(i), 1);
+//        XList_SetItemText(hList, i, 2, keyWord, 2);
 
     }
     return true;
@@ -168,23 +171,16 @@ bool CALLBACK pathBtnClick(HELE hEle, HELE hEventEle)
 
 bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle)
 {
-
-    // 文本框回写配置
+    // 从文本框获得参数
     edit_text();
+    // // 执行提取缩略图 主功能
+    bool ret = GuiThumbnail(keyFile , savePath);
+    if (ret == false)
+        return ret;
 
-    // 格式化命令行
-    wchar_t wbuf [2 * MAX_PATH] = {0};
-    char cmdline[2 * MAX_PATH] = {0};
-    swprintf(wbuf, L"\"%s\" \"%s\"" , docFile, savePath);
-    WCHARTochar(cmdline, wbuf);
-
-    // MessageBoxA(NULL, cmdline, "Debug", MB_OKCANCEL);
-    //  execute_command(cmdline);
-
-    // 打开记录文件
-    ShellExecute(NULL, "open", "使用字体报告.txt", NULL, NULL, SW_SHOW);
-
-    return true;
+    // 打开文件夹
+    ShellExecuteW(NULL, L"open", savePath, NULL, NULL, SW_SHOW);
+    return ret;
 }
 
 bool CALLBACK closeBtnClick(HELE hEle, HELE hEventEle)
