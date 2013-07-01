@@ -32,7 +32,7 @@ int main(int argc , char* argv[])
     // Display results.
     for (int i = 0 ; i < Everything_GetNumResults(); i++) {
 
-        //    wprintf(L"%s [%s]\n", Everything_GetResultFileName(i), Everything_GetResultPath(i));
+            wprintf(L"%s [%s]\n", Everything_GetResultFileName(i), Everything_GetResultPath(i));
 
         Everything_GetResultFullPathNameW(i, src_filename , MAX_PATH);
         fwprintf(pFile, L"%s\n", src_filename);

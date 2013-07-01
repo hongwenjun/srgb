@@ -1,4 +1,4 @@
- #include "../atpch.h"
+﻿#include "../atpch.h"
 #include <string.h>
 
 const char* version_info = "\nsRGB.googlecode.com   sRGB色彩联盟, 给你的工作增光添彩!\n\n"
@@ -18,12 +18,8 @@ void helpinfo(const char* exefile)
 // 全盘搜索模式导出缩略图
 bool everything_thumbnail(const char* adobe_corel_filename , const char* save_thumbs_file);
 
-
 int main(int argc , char* argv[])
 {
-    // 读RIFF_CDR_TYPE 文件头和软件版本号
-extern RIFF_CDR_TYPE cdr_riff ;
-
     const char* adobe_corel_filename = "AICS5.ai";
     const char* save_thumbs_file = "save_thumbs.jpeg";
     char tmp_filename[MAX_PATH] = {0};
@@ -109,7 +105,7 @@ bool everything_thumbnail(const char* adobe_corel_filename , const char* save_th
     }
 
     printf("\n%s\n", srgb_zfb);
- //   system("pause");
+    system("pause");
     string start_Thumbs_path = string("%SystemRoot%\\explorer.exe ") + app_path + string("\\Thumbs");
     system(start_Thumbs_path.c_str());
     return true;
