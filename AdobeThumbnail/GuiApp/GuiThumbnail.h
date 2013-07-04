@@ -15,4 +15,7 @@ int EVERYTHINGAPI Everything_GetResultFullPathNameW(int nIndex,LPWSTR wbuf,int w
 // 执行提取缩略图 主功能
 bool GuiThumbnail(const wchar_t* keyWord , const wchar_t* savePath);
 
+// 临时PNG显示文件
+bool Thumbnail_TempPng(const wchar_t* src_filename , const wchar_t* tmppng);
+
 #endif // GUITHUMBNAIL_H_INCLUDED

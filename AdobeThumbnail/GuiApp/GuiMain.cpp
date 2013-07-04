@@ -1,6 +1,7 @@
 ﻿#include "GuiThumbnail.h"
 #include "GuiMain.h"
 #include <wchar.h>
+#include <regex>
 
 // 全局变量
 char ConfigFile[MAX_PATH] = {0};
@@ -8,12 +9,16 @@ WCHAR keyFile[MAX_PATH] =  L"";
 WCHAR savePath[MAX_PATH] = L"D:\\Thumbs缩略图";
 
 // 全局句柄
-HELE  keyEdit, pathEdit , hList;
+HWINDOW hWindow;
+HELE  keyEdit, pathEdit , hList , hStatic;
+HELE hPic1, hPic2, hPic3;
+
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-    XInitXCGUI(); // 初始化
     Everything_Start();
+    XInitXCGUI(); // 初始化
+
 
     extern char ConfigFile[MAX_PATH];
     GetAppDir(ConfigFile);
@@ -21,7 +26,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     if (IsFileExist(ConfigFile))
         LoadConfigFile();
 
-    HWINDOW hWindow = XWnd_CreateWindow(0, 0, 800, 600, L"Adobe AI EPS INDD 和CorelDRAW 缩略图收集工具  版权所有 2013.06 Hongwenjun (蘭公子)"); // 创建窗口
+    hWindow = XWnd_CreateWindow(0, 0, 800, 600, L"Adobe AI EPS INDD 和CorelDRAW 缩略图收集工具  版权所有 2013.06 Hongwenjun (蘭公子)"); // 创建窗口
     if (hWindow) {
         // 设置图标
         HICON logo_hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_ICON1);
@@ -109,19 +114,24 @@ void InitXC_Window(HWINDOW& hWindow)
     XList_AddColumn(hList, 100, L"文件版本", 2);
 
     // 创建静态文本
-    HELE hStatic = XStatic_Create(1, 545, 650, 22, L"Adobe AI EPS INDD 和CorelDRAW 缩略图收集工具  版权所有 2013.06 Hongwenjun (蘭公子)", hWindow);
+    hStatic = XStatic_Create(1, 545, 650, 22, L"Adobe AI EPS INDD 和CorelDRAW 缩略图收集工具  版权所有 2013.06 Hongwenjun (蘭公子)", hWindow);
 
 
     //创建图片元素
-    HELE hPic1 = XPic_Create(654, 416, 128, 128, hWindow);
+    hPic1 = XPic_Create(654, 416, 128, 128, hWindow);
     XPic_SetImage(hPic1, XImage_LoadFile(L"Thumbnail.dat")); //设置显示图片
-    HELE hPic2 = XPic_Create(654, 416 - 130, 128, 128, hWindow);
+    hPic2 = XPic_Create(654, 416 - 130, 128, 128, hWindow);
     XPic_SetImage(hPic2, XImage_LoadFile(L"Thumbnail.dat")); //设置显示图片
-    HELE hPic3 = XPic_Create(654, 416 - 130 - 130, 128, 128, hWindow);
+    hPic3 = XPic_Create(654, 416 - 130 - 130, 128, 128, hWindow);
     XPic_SetImage(hPic3, XImage_LoadFile(L"Thumbnail.dat")); //设置显示图片
 
+    //注册列表元素项选择事件
+    XEle_RegisterEvent(hList, XE_LIST_SELECT, MyEventListSelect);
+    XEle_RegisterMessage(hList, XM_MOUSEDBCLICK, MyEventList_MouseDBClick);
+    XEle_RegisterMessage(hList, XM_RBUTTONUP, MyEventList_RButtonUp);
 
-    XEle_SetFocus(keyEdit, true); // 输入关键字
+
+    XEle_SetFocus(keyEdit, true);
 }
 
 
@@ -146,17 +156,27 @@ bool CALLBACK keyBtnClick(HELE hEle, HELE hEventEle)
     // 删除所有项目
     XList_DeleteAllItems(hList);
 
+    const wchar_t* rs = L"(.+)(\\.(?:ai|AI|indd|INDD|Indd|eps|EPS|Eps|cdr|CDR|Cdr))";  // 正则字符串，exp开始的单词
+    std::wregex expression(rs);                   // 字符串传递给构造函数，建立正则表达式
+
     //添加列表项      // Display results.
+    int id = 0;
     for (int i = 0 ; i < Everything_GetNumResults(); i++) {
+        bool ret = std::regex_match((wchar_t*)Everything_GetResultFileName(i), expression);
+        if (!ret) continue;
         //添加项
         XList_AddItem(hList, (wchar_t*)Everything_GetResultFileName(i), 0);
         //设置子项内容
-        XList_SetItemText(hList, i, 1, (wchar_t*)Everything_GetResultPath(i), 1);
+        XList_SetItemText(hList, id++, 1, (wchar_t*)Everything_GetResultPath(i), 1);
 //        XList_SetItemText(hList, i, 2, keyWord, 2);
 
     }
-    return true;
 
+    wchar_t pText[MAX_PATH] = {0};
+    wsprintfW(pText, L"匹配: %d 个文档(AI CDR EPS INDD格式), 鼠标双击: 打开文件，右键: 打开路径", id);
+    XStatic_SetText(hStatic, pText);
+    XWnd_RedrawWnd(hWindow, true);
+    return true;
 
 }
 
@@ -192,6 +212,46 @@ bool CALLBACK closeBtnClick(HELE hEle, HELE hEventEle)
     ExitProcess(0); // 退出程序
     return true;
 }
+
+
+// 选择的文件全名 和路径
+wstring select_filename , select_filepath;
+
+BOOL CALLBACK MyEventListSelect(HELE hEle, HELE hEventEle, int id)
+{
+    if (id < 0)
+        return false;
+    //hEle:列表元素句柄   //id:当前选择项索引
+    select_filename = wstring(XList_GetItemText(hEle,  id, 1)) + L"\\" + XList_GetItemText(hEle,  id, 0);
+    select_filepath = wstring(XList_GetItemText(hEle,  id, 1));
+
+
+    XPic_SetImage(hPic1, XImage_LoadFile(L"")); //设置图片为空，释放图片文件
+
+    wchar_t tmppng[MAX_PATH] = L"Thumbnail.png";
+    Thumbnail_TempPng(select_filename.c_str(),tmppng); // 生成新的临时预览图
+
+    XPic_SetImage(hPic1, XImage_LoadFile(tmppng ,true)); //设置显示图片
+    XWnd_RedrawWnd(hWindow, true);
+
+    return true;
+}
+
+BOOL CALLBACK MyEventList_RButtonUp(HELE hEle, UINT flags, POINT* pPt)
+{
+    ShellExecuteW(NULL, L"open", select_filepath.c_str(), NULL, NULL, SW_SHOW);
+    return false;
+}
+
+
+BOOL CALLBACK MyEventList_MouseDBClick(HELE hEle, POINT* pPt)
+{
+
+    ShellExecuteW(NULL, L"open", select_filename.c_str(), NULL, NULL, SW_SHOW);
+    return false;
+}
+
+
 
 // 选择一个目录
 int   GetPath(HWND hWnd, char* pBuffer)

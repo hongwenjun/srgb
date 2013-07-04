@@ -7,7 +7,7 @@
 #include "resource.h"
 #include <fstream>
 
-
+// 加载绚彩图形库，只放了头文件，库文件到 炫彩界面库 - 官方网站 : http://www.xcgui.com 下载
 #include "xcgui.h"
 
 #pragma warning(disable: 4996)
@@ -33,6 +33,14 @@ bool CALLBACK pathBtnClick(HELE hEle, HELE hEventEle);
 bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle);
 bool CALLBACK runBtnClick(HELE hEle, HELE hEventEle);
 bool CALLBACK closeBtnClick(HELE hEle, HELE hEventEle);
+
+BOOL CALLBACK MyEventListSelect(HELE hEle, HELE hEventEle, int id);
+
+// 消息响应
+BOOL CALLBACK MyEventList_RButtonUp(HELE hEle,UINT flags,POINT *pPt);
+BOOL CALLBACK MyEventList_MouseDBClick(HELE hEle,POINT *pPt);
+
+
 
 
 // 窗口布局

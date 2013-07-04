@@ -38,3 +38,17 @@ bool GuiThumbnail(const wchar_t* keyWord , const wchar_t* savePath)
     }
     return true;
 }
+
+
+
+// 临时PNG显示文件
+bool Thumbnail_TempPng(const wchar_t* src_filename , const wchar_t* tmppng)
+{
+        bool ret = AdobeThumbnail_W(src_filename , tmppng);
+
+        if (!ret) {
+            ret = CorelThumbnail_W(src_filename, tmppng);
+        }
+
+    return true;
+}
