@@ -23,10 +23,11 @@ int main(int argc, char* argv[])
         string content(os.str()); // sstream流 转换成 字符串类
 
         // 查找关键字,第一次出现的位置, 在文件的第 X 行
-        if (string::npos != content.find(keyword)) {
+        string::size_type pos = content.find(keyword);
+        if (string::npos != pos) {
             // 在文件的第 X 行,找到关键字
-            string::size_type pos = content.find(keyword);
-            int lines_count = count(content.c_str(), content.c_str() + pos, '\n') + 1;
+            std::string::iterator it = content.begin();  // 指向字符串开始的迭代器
+            int lines_count = count(it, it + pos, '\n') + 1;  // 使用迭代器
             cout << "Find \"" << keyword << "\" on Lines: " << lines_count << endl;
 
         } else {
