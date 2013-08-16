@@ -13,21 +13,21 @@ void loadPYdict(fstream& file, StringList& resultList); // 读取文件到 容�
 int main()
 {
     StringList sList;
-    fstream pyDict("py.dat" , ios_base::in);
+    fstream pyDict("py.dat" , ios_base::in);  // 输入数据文件 py.dat
     loadPYdict(pyDict, sList);
 
-    for (auto it = sList.begin(); it != sList.end(); ++it)
+    for (auto it = sList.begin(); it != sList.end(); ++it) // C++ 11 的auto关键字，方便遍历容器
         cout << *it << endl;
 
     return 0;
 }
 
-
+// 读取文件到 容器里里
 void loadPYdict(fstream& file, StringList& resultList)
 {
     string word , py , Pert;  // 单词 拼音 百分比
-    stringstream oss;    // 定义string流
-    oss << file.rdbuf();
+    stringstream oss;    // 加载文件到sstream流
+    oss << file.rdbuf(); // 文件缓冲区读到 sstream流
     while (oss) {
         oss >> word >> py >> Pert;
         resultList.push_back(word + py + Pert);
