@@ -26,19 +26,23 @@ int main(int argc, char* argv[])
     char cmd_line[512] = {0};
 
     while (!feof(keyfile)) {  // 读取每一行关键字
-        fscanf(keyfile, "%s", key_value);
+        if (fscanf(keyfile, "%s", key_value) == EOF)
+            return 0;
         printf("查找: %s-->\n", key_value);
 
         // 默认cmd_line调用命令:  find /N  "key_value" log.txt
         sprintf(cmd_line, "find /N  \"%s\" %s", key_value, argv[2]);
 
         // 扩展选项[/C或/E], /C 仅显示包含字符串的行数。 /E 调用Grep工具，支持正则公式
-        if (4 == argc) {
+        if ((4 == argc) || (5 == argc)) {
             char option = toupper(argv[3][1]);
             if (option == 'C')
                 sprintf(cmd_line, "find /C  \"%s\" %s", key_value, argv[2]);
-            if (option == 'E')
-                sprintf(cmd_line, "grep -n  \"%s\" %s", key_value, argv[2]);
+            if (option == 'E') {
+                sprintf(cmd_line, "grep  -i -n  \"%s\" %s", key_value, argv[2]);
+                if (5 == argc)
+                    strcat(cmd_line, " | wc -l");  // Grep工具统计参数
+            }
         }
         int ret = system(cmd_line);   // 每次的搜索结果
         if (ret != 0)
