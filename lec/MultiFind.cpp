@@ -1,8 +1,7 @@
-#include <windows.h>
+ #include <windows.h>
 #include <stdio.h>
 #include <string.h>
-
-#define LINE_SIZE 255
+#include <ctype.h>
 
 void help(); // 帮助
 BOOL IsFileExist(LPCTSTR lpFileName);  // 检查一个文件是否存在
@@ -24,22 +23,26 @@ int main(int argc, char* argv[])
     }
 
     char key_value[255];
-    char cmd_line[255] = {0};
+    char cmd_line[512] = {0};
 
     while (!feof(keyfile)) {  // 读取每一行关键字
         fscanf(keyfile, "%s", key_value);
-        printf("查找: %s", key_value);
+        printf("查找: %s-->\n", key_value);
 
-        strcpy(cmd_line, "find /N  \"");   //改成 find /C 统计找到的次数
-        strcat(cmd_line, key_value);
-        strcat(cmd_line, "\"  ");
-        strcat(cmd_line, argv[2]);
+        // 默认cmd_line调用命令:  find /N  "key_value" log.txt
+        sprintf(cmd_line, "find /N  \"%s\" %s", key_value, argv[2]);
 
-        // cmd_line调用命令 find /N  "key_value" log.txt
-        int ret = system(cmd_line);
-
+        // 扩展选项[/C或/E], /C 仅显示包含字符串的行数。 /E 调用Grep工具，支持正则公式
+        if (4 == argc) {
+            char option = toupper(argv[3][1]);
+            if (option == 'C')
+                sprintf(cmd_line, "find /C  \"%s\" %s", key_value, argv[2]);
+            if (option == 'E')
+                sprintf(cmd_line, "grep -n  \"%s\" %s", key_value, argv[2]);
+        }
+        int ret = system(cmd_line);   // 每次的搜索结果
         if (ret != 0)
-            printf("没有找到: %s\n", key_value);
+            printf("没有找到: %s <--\n", key_value);
 
         printf("\n");
     }
@@ -61,6 +64,8 @@ BOOL IsFileExist(LPCTSTR lpFileName)
 
 void help()
 {
-    printf("本工具可以按关键字文件在数据文件中搜索数据行  BY Hong Wenjun\n\n");
-    printf("示例:  D:\\>MultiFind.exe  keyfile.txt  原始数据.txt  \n");
+    printf("本工具可以按关键字文件在数据文件中搜索数据行  BY Hong Wenjun\n");
+
+    printf("选项  /C 仅显示包含字符串的行数;  /E 调用Grep工具m支持正则公式\n");
+    printf("\n示例:  D:\\>MultiFind.exe  keyfile.txt  log.txt  [/C或/E]\n");
 }
