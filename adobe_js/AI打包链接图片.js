@@ -6,7 +6,7 @@
 $.level = 1;
 ctrImg = 0;
 
-DiyFolder = "d:/桌面/输出"                // 可以使用自己定义的常用目录 "d:/桌面/输出"
+DiyFolder = "R:\\CTP"                 // 可以使用自己定义的常用目录 "d:\\桌面\\输出"
 
 // 有AI文档打开就打包当前文档的链接图
 
@@ -47,6 +47,7 @@ for (j=0;j<aiFiles.length;j++) {
 }
 EndInfo = "AICS链接图收集打包脚本--汉化增强版:蘭公子2008.07\n\nAI文档的链接图已经收集到指定的目录\n\nHttp://sRGB.net.cn  sRGB色彩联盟, QQ群:2471313\n用RGB颜色空间矫色，使你的图片色彩更丰富！\n\n(刚才执行的是批量打包链接图功能，已经完成)"
 alert(EndInfo);   //显示完成信息
+myFolder.execute(); // 浏览目的文件夹
 }
 
 
