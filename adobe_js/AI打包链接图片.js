@@ -20,6 +20,7 @@ myFolder= Folder.selectDialog ("AICS链接图收集打包脚本--汉化增强版
 
 EndInfo = "AICS链接图收集打包脚本--汉化增强版:蘭公子2008.07\n\nAI文档的链接图已经收集到指定的目录\n\nHttp://sRGB.net.cn  sRGB色彩联盟, QQ群:2471313\n用RGB颜色空间矫色，使你的图片色彩更丰富！\n\n①(批量打包链接图,先关闭所有的AI文件执行本脚本)\n②(文字转曲开启，请修改本脚本第18行)\n"
 alert(EndInfo);   //显示完成信息
+myFolder.execute(); // 浏览目的文件夹
 }
 
 
