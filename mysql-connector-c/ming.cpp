@@ -1,3 +1,11 @@
+/*
+1. 全局变量克隆一个，如图修改正确 MYSQL SDK存放处
+2. 新建一个 VC2010编译器项目，可以下载的现成库是 VC的
+3. 项目编译选项--> 搜索路径里的编译器 和链接器 分别添加 $(#MYSQL)\include 和 $(#MYSQL)\lib
+4. 链接器设置，添加库文件
+5. 复制进去正确代码，windows 要 winsock.h
+6. windows gcc 也可以用这个库，要用工具导出一个 mingw的导入库文件
+*
 #include <stdio.h>
 #include <winsock.h>
 #include "mysql.h"
