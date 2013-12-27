@@ -7,6 +7,7 @@
 #include <map>
 #include <algorithm>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "pcre.h"
 #define OVECCOUNT 30 /* should be a multiple of 3 */
@@ -27,11 +28,19 @@ std::string& load_string(std::string& str, fstream& infile)  // 加载文件到s
 
 int main()
 {
-    std::fstream fs("/tmp/getwanip.txt", std::fstream::in);
+    system("touch ./getwanip.txt");
+    system("curl -s 192.168.1.1 | grep ipinfo >>./getwanip.txt");
+    system("curl -s http://www.ip138.com/ips1388.asp | grep ip_add.asp  >>./getwanip.txt");
+    system("curl -s http://ns1.dnspod.net:6666    >>./getwanip.txt");
+    system("echo \"  \"  >>./getwanip.txt");
+    system("curl -s http://myip.dnsdynamic.org/  >>./getwanip.txt");
+
+    std::fstream fs("./getwanip.txt", std::fstream::in);
     std::string  src;  // 收集的网络 wanip数据
-    std::string  reg  = "(\\d+.\\d+.\\d+.\\d+)";     // 简单匹配IP地址正则公式
+    std::string  reg  = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";     // 简单匹配IP地址正则公式
     load_string(src, fs);
     fs.close();
+    remove("./getwanip.txt");
 
     std::string ipaddr;
     regex_get_group(src, reg , 1 , ipaddr);
@@ -40,7 +49,7 @@ int main()
 
     std::map<string, int> map_wanip;
     while (ipaddr != "") {
-        //      cout << ipaddr << endl;;
+              cout << ipaddr << endl;;
         ++map_wanip[ipaddr];
         src = src.substr(src.find(ipaddr) + ipaddr.size());
         regex_get_group(src, reg , 1 , ipaddr);
@@ -51,7 +60,7 @@ int main()
         re_wanip.insert(make_pair(it->second , it->first));
     }
 
-    auto it = re_wanip.rbegin(); // 最大值排最后
+    auto it = re_wanip.begin(); // 最大值排最后
     cout << it->second;
     return 0;
 }
