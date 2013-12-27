@@ -13,6 +13,8 @@
 #define OVECCOUNT 30 /* should be a multiple of 3 */
 using namespace std;
 
+bool DEBUG_MODE = 0;
+
 std::string& regex_get_group(const std::string& src , const std::string& pattern ,
                              int group , std::string& str_group);
 
@@ -24,23 +26,39 @@ std::string& load_string(std::string& str, fstream& infile)  // 加载文件到s
     return str;
 }
 
+void initializer_webdata(void);
 //  g++ -std=c++0x -lpcre -o getwanip   编译选项
 
-int main()
+int main(int argc, char* argv[])
 {
-    system("touch ./getwanip.txt");
-    system("curl -s 192.168.1.1 | grep ipinfo >>./getwanip.txt");
-    system("curl -s http://www.ip138.com/ips1388.asp | grep ip_add.asp  >>./getwanip.txt");
-    system("curl -s http://ns1.dnspod.net:6666    >>./getwanip.txt");
-    system("echo \"  \"  >>./getwanip.txt");
-    system("curl -s http://myip.dnsdynamic.org/  >>./getwanip.txt");
+    string option_url;
+    for (int i = 0 ; i != argc ; i++)
+        option_url = option_url + " " + argv[i] ;
 
-    std::fstream fs("./getwanip.txt", std::fstream::in);
+    if (option_url.find("-d") != string::npos)
+        DEBUG_MODE = 1;
+
+    if (option_url.find("http") != string::npos) {
+        string cmdline = "curl -s ";
+        cmdline += option_url.substr(option_url.find("http"));
+        cmdline += " >/tmp/getwanip.txt";
+        system("touch /tmp/getwanip.txt");
+        system(cmdline.c_str());
+
+        if (DEBUG_MODE) {
+            cout << cmdline << endl;
+            system("cat /tmp/getwanip.txt");
+            cout << "\n----------------------初始化网络IP数据完成！----------------------\n";
+        }
+    } else
+        initializer_webdata();
+
+    std::fstream fs("/tmp/getwanip.txt", std::fstream::in);
     std::string  src;  // 收集的网络 wanip数据
     std::string  reg  = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";     // 简单匹配IP地址正则公式
     load_string(src, fs);
     fs.close();
-    remove("./getwanip.txt");
+   remove("/tmp/getwanip.txt");
 
     std::string ipaddr;
     regex_get_group(src, reg , 1 , ipaddr);
@@ -49,7 +67,8 @@ int main()
 
     std::map<string, int> map_wanip;
     while (ipaddr != "") {
-              cout << ipaddr << endl;;
+        if (DEBUG_MODE)
+            cout << ipaddr << endl;;
         ++map_wanip[ipaddr];
         src = src.substr(src.find(ipaddr) + ipaddr.size());
         regex_get_group(src, reg , 1 , ipaddr);
@@ -110,4 +129,20 @@ std::string& regex_get_group(const std::string& src , const std::string& pattern
 
     pcre_free(re);                     // 编译正则表达式re 释放内存
     return str_group;
+}
+
+
+void initializer_webdata(void)
+{
+    system("touch /tmp/getwanip.txt");
+    system("curl -s 192.168.1.1 | grep ipinfo >>/tmp/getwanip.txt");
+    system("curl -s http://www.ip138.com/ips1388.asp | grep ip_add.asp  >>/tmp/getwanip.txt");
+    system("curl -s http://ns1.dnspod.net:6666    >>/tmp/getwanip.txt");
+    system("echo \"  \"  >>/tmp/getwanip.txt");
+//    system("curl -s http://myip.dnsdynamic.org/  >>/tmp/getwanip.txt");
+
+    if (DEBUG_MODE) {
+        system("cat /tmp/getwanip.txt");
+        cout << "\n----------------------初始化网络IP数据完成！----------------------\n";
+    }
 }
