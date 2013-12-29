@@ -12,8 +12,21 @@
 #include "pcre.h"
 #define OVECCOUNT 30 /* should be a multiple of 3 */
 using namespace std;
-
 bool DEBUG_MODE = 0;
+
+
+// STL中用min_element/max_element返回map的最值元素
+// http://chice.bokee.com/4105110.html
+template <class fT, class sT>
+struct second_less : public binary_function <fT , sT , bool> {
+    bool operator()(
+        const pair<fT, sT>& _1,
+        const pair<fT, sT>& _2
+    ) const
+    {
+        return _1.second < _2.second;
+    }
+};
 
 std::string& regex_get_group(const std::string& src , const std::string& pattern ,
                              int group , std::string& str_group);
@@ -41,7 +54,7 @@ int main(int argc, char* argv[])
     if (option_url.find("http") != string::npos) {
         string cmdline = "curl -s ";
         cmdline += option_url.substr(option_url.find("http"));
-        cmdline += " >/tmp/getwanip.txt";
+        cmdline += " >> /tmp/getwanip.txt";
         system("touch /tmp/getwanip.txt");
         system(cmdline.c_str());
 
@@ -58,9 +71,9 @@ int main(int argc, char* argv[])
     std::string  reg  = "(\\d+\\.\\d+\\.\\d+\\.\\d+)";     // 简单匹配IP地址正则公式
     load_string(src, fs);
     fs.close();
-   remove("/tmp/getwanip.txt");
+    remove("/tmp/getwanip.txt");
 
-    std::string ipaddr;
+    std::string ipaddr; int cnt = 0;
     regex_get_group(src, reg , 1 , ipaddr);
     if (ipaddr == "")
         return -1;
@@ -68,19 +81,16 @@ int main(int argc, char* argv[])
     std::map<string, int> map_wanip;
     while (ipaddr != "") {
         if (DEBUG_MODE)
-            cout << ipaddr << endl;;
+            cout << cnt++ << ": " << ipaddr << endl;
+
         ++map_wanip[ipaddr];
         src = src.substr(src.find(ipaddr) + ipaddr.size());
         regex_get_group(src, reg , 1 , ipaddr);
     }
 
-    std::map< int , string> re_wanip;  // 按计数器重排IP地址MAP容器
-    for (auto it = map_wanip.begin(); it != map_wanip.end() ; ++it) {
-        re_wanip.insert(make_pair(it->second , it->first));
-    }
-
-    auto it = re_wanip.begin(); // 最大值排最后
-    cout << it->second;
+    // 找到出现最多的IP，计数器
+    auto it = std::max_element(map_wanip.begin(), map_wanip.end(), second_less<const string, int>());
+    cout << it->first << endl;
     return 0;
 }
 
@@ -139,7 +149,7 @@ void initializer_webdata(void)
     system("curl -s http://www.ip138.com/ips1388.asp | grep ip_add.asp  >>/tmp/getwanip.txt");
     system("curl -s http://ns1.dnspod.net:6666    >>/tmp/getwanip.txt");
     system("echo \"  \"  >>/tmp/getwanip.txt");
-//    system("curl -s http://myip.dnsdynamic.org/  >>/tmp/getwanip.txt");
+    system("curl -s http://myip.dnsdynamic.org/  >>/tmp/getwanip.txt");
 
     if (DEBUG_MODE) {
         system("cat /tmp/getwanip.txt");
