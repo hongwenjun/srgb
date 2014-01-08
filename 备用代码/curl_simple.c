@@ -8,17 +8,17 @@
  * $Id: simple.c,v 1.6 2004-08-23 14:22:52 bagder Exp $
  */
 
-#include <stdio.h>
-#include <curl/curl.h>
-
 int main(void)
 {
   CURL *curl;
   CURLcode res;
+    FILE * pFile;
+  pFile = fopen ("myfile.txt","w");
 
   curl = curl_easy_init();
   if(curl) {
     curl_easy_setopt(curl, CURLOPT_URL, "curl.haxx.se");
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, pFile);
     res = curl_easy_perform(curl);
 
     /* always cleanup */
@@ -26,7 +26,6 @@ int main(void)
   }
   return 0;
 }
-
 
 #if(0)
 
