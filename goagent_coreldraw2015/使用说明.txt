@@ -1,0 +1,22 @@
+使用方法：
+1. goagent\local\goagent.exe  开启代理程序
+2. 使用Chrome浏览器，装好goagent\Chrome浏览器插件目录下
+   的SwitchySharp_1_9_52.crx插件，和恢复SwitchyOptions.bak
+   按 chrome1.png chrome2.png chrome3.png三张图，
+3. 输入127.0.0.1:8087 测试时候成功链接
+
+------------------------------------
+goagent\local\goagent.exe 可以发送到桌面快捷方式，方便下次使用
+SwitchySharp_1_9_52.crx插件 设置后，以后不用重新装
+
+详细设置见URL
+https://code.google.com/p/goagent/
+
+
+============================================
+coreldraw2015@gmail.com
+帐户 10个 appid 群友共享使用
+[gae]
+appid = coreldraw2015|coreldraw2016|coreldraw2017|coreldraw2018|coreldraw2019|coreldraw2020|coreldraw2021|coreldraw2022|coreldraw2023|coreldraw2024|
+
+============================================
