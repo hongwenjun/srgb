@@ -29,6 +29,7 @@ struct second_less : public binary_function <fT , sT , bool> {
 };
 
 int set_srgb_x64_me_ip(const string& ipaddr);
+int set_srgb_vicp_net_ip(const string& ipaddr);
 
 std::string& regex_get_group(const std::string& src , const std::string& pattern ,
                              int group , std::string& str_group);
@@ -96,6 +97,7 @@ int main(int argc, char* argv[])
 
     // 自动设置 srgb.x64.me 网址密码
     int ret = set_srgb_x64_me_ip(it->first);
+    ret += set_srgb_vicp_net_ip(it->first);
     return ret;
 }
 
@@ -126,6 +128,40 @@ int set_srgb_x64_me_ip(const string& ipaddr)
     cmdline += ipaddr;
     system(cmdline.c_str());
     system("cat /tmp/srgb.x64.me");
+
+    return 0;
+}
+
+int set_srgb_vicp_net_ip(const string& ipaddr)
+{
+    std::fstream fs("/tmp/srgb.vicp.net", std::fstream::in);
+    std::string  srgb_vicp_net_ip;
+    load_string(srgb_vicp_net_ip, fs);
+    fs.close();
+
+    if (srgb_vicp_net_ip.find(ipaddr) != string::npos) {
+        std::fstream fs("/tmp/srgb.vicp.net", std::fstream::out);
+        fs << "sRGB.vicp.net WAN IP: " << ipaddr << " good 不用更新!" << endl;
+        fs.close();
+        return 1;
+    }
+
+    if (srgb_vicp_net_ip.find("nochg") != string::npos) {
+        std::fstream fs("/tmp/srgb.vicp.net", std::fstream::out);
+        fs << "sRGB.vicp.net WAN IP: " << ipaddr << " good 不用更新!" << endl;
+        fs.close();
+        return 2;
+    }
+
+//    使用URL验证,适用于浏览器或应用程序（fetch, curl, lwp-request），可以在URL中包含验证信息。
+//    http://username:password@ddns.oray.com/ph/update?hostname=yourhostname&myip=ipaddress
+
+    string cmdline = "wget --http-user=username   --http-passwd=password  -q -O /tmp/srgb.vicp.net "
+                     "http://ddns.oray.com/ph/update?hostname=srgb.vicp.net\\&myip=";
+
+    cmdline += ipaddr;
+    system(cmdline.c_str());
+    system("cat /tmp/srgb.vicp.net");
 
     return 0;
 }
