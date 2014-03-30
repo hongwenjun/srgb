@@ -1,3 +1,12 @@
+Beating Heart
+Ellie Goulding  《分歧者》 电影原声带 Divergent: Original Motion Picture Soundtrack [Deluxe]
+
+How Long Will I Love You
+Ellie Goulding   电影《时空恋旅人》2013
+
+Bittersweet
+Ellie Goulding 《暮光之城:破晓2 电影原声带》的其他歌曲
+/***************************************************************/
 
 田园般的宁静   Shine Dion -- The Well
 
