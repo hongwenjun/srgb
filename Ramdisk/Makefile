@@ -11,7 +11,7 @@ all:    # 解压目录到 Ramdisk盘 R:
 	gmake CBMini
 	gmake AICS5
 	@del  R:\Makefile.log
-	@ping -n 1 srgb.vicp.net > R:\www\srgb.vicp.net.txt
+	gmake srgbip
 
 	
 adobe:  # adobe 软件配置
@@ -70,5 +70,10 @@ corel:  # CorelDRAW 9 软件配置
 soft:
 	@7z x soft.7z -oR:\soft\   -y > R:\Makefile.log
 
-CBMini: # google浏览器
+CBMini: # CodeBlock迷你版
 	@7z x CodeBlockMini.7z -oR:\   -y >> R:\Makefile.log
+
+srgbip: # 测试 sRGB.vicp.net
+	@nslookup srgb.vicp.net   > R:\www\srgbip.txt
+	@nslookup srgb.3322.org  >> R:\www\srgbip.txt
+	@nslookup srgb.x64.me    >> R:\www\srgbip.txt
