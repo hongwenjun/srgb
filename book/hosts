@@ -1,0 +1,46 @@
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+
+# 屏蔽广告和软件破解
+127.0.0.1       localhost
+127.0.0.1       www.regsoft.net
+127.0.0.1       www.apolisoft.com
+127.0.0.1       activate.adobe.com
+127.0.0.1       game1.zj.vnet.cn
+127.0.0.1       zj.vnet.cn
+127.0.0.1       mypc.net
+
+127.0.0.1 activate.adobe.com
+127.0.0.1 practivate.adobe.com
+127.0.0.1 ereg.adobe.com
+127.0.0.1 activate.wip3.adobe.com
+127.0.0.1 wip3.adobe.com
+127.0.0.1 3dns-3.adobe.com
+127.0.0.1 3dns-2.adobe.com
+127.0.0.1 adobe-dns.adobe.com
+127.0.0.1 adobe-dns-2.adobe.com
+127.0.0.1 adobe-dns-3.adobe.com
+127.0.0.1 ereg.wip3.adobe.com
+127.0.0.1 activate-sea.adobe.com
+127.0.0.1 wwis-dubc1-vip60.adobe.com
+127.0.0.1 activate-sjc0.adobe.com
+127.0.0.1 adobeereg.com
+
+127.0.0.1 cbjs.baidu.com
+127.0.0.1 cb.baidu.com
+127.0.0.1 youxi.baidu.com
+
+127.0.0.1 pagead2.googlesyndication.com  # 插入这句，F5刷新一下好像不会出现广告了
+
+0.0.0.0 pagead2.googlesyndication.com/pagead/show_ads.js
+0.0.0.0 www.csdn.net/ui/scripts/Csdn/counter.js
+0.0.0.0 topic.csdn.net/u/t5/include/ad4.asp
+0.0.0.0 csdnimg.cn/pubfooter/js/publib_footer.js
+0.0.0.0 counter.csdn.net/pv.aspx
+
+0.0.0.0 popme.163.com/js/nadTimeFlashLayer3.js
+0.0.0.0 pos.baidu.com
+0.0.0.0 dol.tianya.cn
+0.0.0.0 img11.360buyimg.com/da
+0.0.0.0 img1.126.net
+0.0.0.0 img2.126.net
+
