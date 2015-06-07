@@ -76,9 +76,9 @@ bool make_gpsfile(FILE* bin_file, const char* filename)
     size_t gps_head_size = sizeof(GPS_FILEHEAD);
     memset(gps_filehead, '\0', gps_head_size);
     gps_filehead->date_pos = 0x18;
-    gps_filehead->unknown1 = 0x04;
-    gps_filehead->unknown2 = 0x54B12D6F;
-    gps_filehead->unknown3 = 0x594B003C;
+    gps_filehead->unknown1 = 0x05;    // 05 是新的轨迹文件，之前是04
+    gps_filehead->unknown2 = 0x54E981EF;
+    gps_filehead->unknown3 = 0x58970040;
 
 
 
