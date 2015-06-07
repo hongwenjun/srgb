@@ -30,6 +30,10 @@ typedef struct baidu_navi_gps_trajectory_point {
     int32_t unknown_7;
     int32_t unknown_8;
     int32_t unknown_9;
+
+    int32_t unknown_ver05;  // 05版本的轨迹文件增加了个数据，现在每节点64字节了
+    int32_t unknown_ver06;  // 06版本的轨迹文件增加了个数据，现在每节点68字节了
+
 } GPS_POINT;
 
 /*
