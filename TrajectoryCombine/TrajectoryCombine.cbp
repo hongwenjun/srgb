@@ -48,7 +48,7 @@
 		<Unit filename="CDirectoryExplorer.cpp" />
 		<Unit filename="CDirectoryExplorer.h" />
 		<Unit filename="TrajectoryCombine.cpp" />
-		<Unit filename="bagps_api.cpp" />
+		<Unit filename="bdgps_api.cpp" />
 		<Unit filename="bdgps_api.h" />
 		<Unit filename="zconf.h" />
 		<Unit filename="zlib.h" />

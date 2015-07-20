@@ -45,8 +45,8 @@
 		<Linker>
 			<Add library="zlib.lib" />
 		</Linker>
-		<Unit filename="bagps_api.cpp" />
 		<Unit filename="bdgps.cpp" />
+		<Unit filename="bdgps_api.cpp" />
 		<Unit filename="bdgps_api.h" />
 		<Unit filename="zconf.h" />
 		<Unit filename="zlib.h" />
