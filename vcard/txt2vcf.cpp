@@ -126,13 +126,14 @@ bool get_name_number(char* name, char* mobile_number, char* home_number , string
     home_number[0] = '\0' ;
 
     char* pch;
-    pch = strtok(cstr, " ,");
+    char*   delimiters = " ,\t";
+    pch = strtok(cstr, delimiters);
     if (pch != NULL) {
         sprintf(name, "%s", pch);
-        pch = strtok(NULL, " ,");
+        pch = strtok(NULL, delimiters);
         if (pch != NULL) {
             sprintf(mobile_number, "%s", pch);
-            pch = strtok(NULL, " ,");
+            pch = strtok(NULL, delimiters);
             if (pch != NULL)
                 sprintf(home_number, "%s", pch);
         }
