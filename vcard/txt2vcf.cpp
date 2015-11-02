@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <stdio.h>
+#include <string>
+#include <string.h>
 #include <windows.h>
 using namespace std;
 
@@ -44,6 +46,8 @@ char* utf_encode_hex(char* cstr)
     return cstr;
 }
 
+// 从一行获取 姓名和电话号码
+bool get_name_number(char* name, char* mobile_number, char* home_number , string& line);
 
 int main()
 {
@@ -65,19 +69,28 @@ int main()
     char home_number[16] = "610616"; // 可以存移动短号
 
 
+//    cout << "请输入 姓名  手机号码  移动短号 " << endl;
 
-    /*     把name 转换成 utf-8 ，然后 使用=EE=FF=EE取16进制进行编码 */
-    gbk_to_utf8(name);
-    utf_encode_hex(name);
+    string line;
+    while (std::getline(std::cin, line)) {
+        if (line.size() < 10)
+            continue;
 
+        if (!get_name_number(name,  mobile_number,  home_number , line))
+            continue;
 
+        /*   把name 转换成 utf-8 ，然后 使用=EE=FF=EE取16进制进行编码 */
+        gbk_to_utf8(name);
+        utf_encode_hex(name);
 
-    cout << vcard_head
-         << name_title << name << end_name  << endl
-         << f_name_title << name << endl
-         << mobile_number_title << mobile_number << endl
-         << home_number_title  << home_number << endl
-         << vcard_end << endl;
+        cout << vcard_head
+             << name_title << name << end_name  << endl
+             << f_name_title << name << endl
+             << mobile_number_title << mobile_number << endl
+             << home_number_title  << home_number << endl
+             << vcard_end << endl;
+
+    }
     return 0;
 }
 
@@ -96,3 +109,36 @@ END:VCARD
 
 */
 #endif
+
+
+bool get_name_number(char* name, char* mobile_number, char* home_number , string& line)
+{
+    string flag = "#;/"  ;  // 注释
+    if ((line[0] == flag[0]) || (line[0] == flag[1]) || (line[0] == flag[2]))
+        return false;
+
+    char* cstr = new char [line.length() + 1];
+    std::strcpy(cstr, line.c_str());
+
+
+    name[0] = '\0' ;
+    mobile_number[0] = '\0' ;
+    home_number[0] = '\0' ;
+
+    char* pch;
+    pch = strtok(cstr, " ,");
+    if (pch != NULL) {
+        sprintf(name, "%s", pch);
+        pch = strtok(NULL, " ,");
+        if (pch != NULL) {
+            sprintf(mobile_number, "%s", pch);
+            pch = strtok(NULL, " ,");
+            if (pch != NULL)
+                sprintf(home_number, "%s", pch);
+        }
+    }
+
+    delete[] cstr;
+    return true;
+
+}
