@@ -1,9 +1,8 @@
-﻿#include <iostream>
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <string>
 #include <string.h>
 #include <windows.h>
-using namespace std;
+
 
 // gbk unicode utf-8 转换
 const size_t maxsize = 4 * 1024;
@@ -30,27 +29,38 @@ char* gbk_to_utf8(char* cstr)
     return cstr;
 }
 
+
 // utf 编码成hex
-char* utf_encode_hex(char* cstr)
-{
-    unsigned char* pch = (unsigned char*) cstr;
-    char byte_str[4] = {"\0"};
-    char tmp[maxsize] = {"\0"};
-
-    for (size_t i = 0; i != (strlen(cstr)) ; i++) {
-        sprintf(byte_str, "=%0.2X" , *pch++);
-        strcat(tmp, byte_str);
-    }
-
-    strcpy(cstr, tmp);
-    return cstr;
-}
+char* utf_encode_hex(char* cstr);
 
 // 从一行获取 姓名和电话号码
-bool get_name_number(char* name, char* mobile_number, char* home_number , string& line);
+bool get_name_number(char* name, char* mobile_number, char* home_number , char* line);
 
-int main()
+void help(); // 调用使用帮助
+
+int main(int argc, char* argv[])
 {
+
+    bool help_flag = false;
+    if (1 == argc) {  //错误输入处理
+        help();
+        help_flag = true;
+    }
+
+    FILE* input  = stdin;
+    FILE* outfile = stdout;
+
+    if (1 < argc) {
+        input = fopen(argv[1], "r"); // 数据输入文件
+        if (ferror(input)) {
+            printf("文件错误：不能打开输入文件: %s \n", argv[1]);
+            return -1;
+        }
+    }
+
+    if (2 < argc)  // 如果没有输出文件，输出到屏幕
+        outfile = fopen(argv[2], "w"); // 输出结果文件
+
 
     char* vcard_head = "BEGIN:VCARD\nVERSION:2.1\n";
     char* vcard_end = "END:VCARD\n";
@@ -65,15 +75,15 @@ int main()
 
 
     char name[512] = "通讯录";
-    char mobile_number[16] = "1839593888";
-    char home_number[16] = "610616"; // 可以存移动短号
+    char mobile_number[64] = "1839593888";
+    char home_number[64] = "610616"; // 可以存移动短号
 
 
-//    cout << "请输入 姓名  手机号码  移动短号 " << endl;
+    char* vcard_text =  new char[maxsize];  // 一个vcard文本
+    char* line =  new char[maxsize];
 
-    string line;
-    while (std::getline(std::cin, line)) {
-        if (line.size() < 10)
+    while (fgets(line, maxsize , input)) {  // 读取每一行
+        if (strlen(line) < 10)
             continue;
 
         if (!get_name_number(name,  mobile_number,  home_number , line))
@@ -83,14 +93,24 @@ int main()
         gbk_to_utf8(name);
         utf_encode_hex(name);
 
-        cout << vcard_head
-             << name_title << name << end_name  << endl
-             << f_name_title << name << endl
-             << mobile_number_title << mobile_number << endl
-             << home_number_title  << home_number << endl
-             << vcard_end << endl;
 
+        // 组成 一个vcard文本
+        sprintf(vcard_text, "%s%s%s%s\n%s%s\n%s%s\n%s%s\n%s" , vcard_head,
+                name_title , name , end_name ,
+                f_name_title , name,
+                mobile_number_title , mobile_number ,
+                home_number_title  , home_number,
+                vcard_end);
+
+        fprintf(outfile, "%s", vcard_text);  // 写文件
+
+        if (help_flag)  // 帮助测试
+            break;
     }
+
+
+    delete[] line;
+    delete[] vcard_text;
     return 0;
 }
 
@@ -111,23 +131,29 @@ END:VCARD
 #endif
 
 
-bool get_name_number(char* name, char* mobile_number, char* home_number , string& line)
+void help()
 {
-    string flag = "#;/"  ;  // 注释
+    printf("本工具把通讯录 从文本TEXT转换成VCARD格式导入手机使用  BY Hong Wenjun\n\n");
+    printf("示例 1 ：D:\\>txt2vcf.exe  TelText.txt \n");
+    printf("示例 2 ：D:\\>txt2vcf.exe  TelText.txt  TelVcard.vcf \n");
+    printf("\n输出文件不填，结果显示在屏幕上\a\n");
+    printf("\n测试输入(按回车转换记录,按Ctrl+Z关闭程序):\n\n姓名\t手机号码\t移动短号\n");
+
+}
+
+bool get_name_number(char* name, char* mobile_number, char* home_number , char* line)
+{
+    char flag[] = "#;/"  ;  // 注释
     if ((line[0] == flag[0]) || (line[0] == flag[1]) || (line[0] == flag[2]))
         return false;
-
-    char* cstr = new char [line.length() + 1];
-    std::strcpy(cstr, line.c_str());
-
 
     name[0] = '\0' ;
     mobile_number[0] = '\0' ;
     home_number[0] = '\0' ;
 
     char* pch;
-    char*   delimiters = " ,\t";
-    pch = strtok(cstr, delimiters);
+    char*   delimiters = " ,\t\n;\"";
+    pch = strtok(line, delimiters);
     if (pch != NULL) {
         sprintf(name, "%s", pch);
         pch = strtok(NULL, delimiters);
@@ -139,7 +165,21 @@ bool get_name_number(char* name, char* mobile_number, char* home_number , string
         }
     }
 
-    delete[] cstr;
     return true;
+}
 
+// utf 编码成hex
+char* utf_encode_hex(char* cstr)
+{
+    unsigned char* pch = (unsigned char*) cstr;
+    char byte_str[4] = {"\0"};
+    char tmp[maxsize] = {"\0"};
+
+    for (size_t i = 0; i != (strlen(cstr)) ; i++) {
+        sprintf(byte_str, "=%0.2X" , *pch++);
+        strcat(tmp, byte_str);
+    }
+
+    strcpy(cstr, tmp);
+    return cstr;
 }
