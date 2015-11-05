@@ -2,41 +2,27 @@
 #include <string>
 #include <string.h>
 #include <windows.h>
+#include "utf8.h"
 
 
-// gbk unicode utf-8 转换
+
+
 const size_t maxsize = 4 * 1024;
-wchar_t* charToWCHAR(wchar_t* wch, const char* czs)
-{
-    MultiByteToWideChar(CP_ACP, 0, czs, -1, wch, maxsize); // czs 转换到宽字节wch
-    return wch;
-}
-char* WCHARTochar(char* czs , const wchar_t* wch)
-{
-    WideCharToMultiByte(CP_ACP, 0, wch, -1, czs, maxsize , NULL, NULL);
-    return czs;
-}
-char* WCHARToUTF8(char* utf8 , const wchar_t* wch)
-{
-    WideCharToMultiByte(CP_UTF8, 0, wch, -1, utf8, maxsize , NULL, NULL);
-    return utf8;
-}
-char* gbk_to_utf8(char* cstr)
-{
-    wchar_t tmp_wch[maxsize];
-    charToWCHAR(tmp_wch, cstr);
-    WCHARToUTF8(cstr, tmp_wch);
-    return cstr;
-}
+
 
 
 // utf 编码成hex
 char* utf_encode_hex(char* cstr);
 
 // 从一行获取 姓名和电话号码
-bool get_name_number(char* name, char* mobile_number, char* home_number , char* line);
+bool get_name_number(char* name, char* mobile_number, char* home_number, char* line);
 
-void help(); // 调用使用帮助
+// 反序字符串
+char* cs_strrev(char* string);
+// 删除前后空白
+char* strtrim(char* cs);
+// 调用使用帮助
+void help();
 
 int main(int argc, char* argv[])
 {
@@ -62,16 +48,16 @@ int main(int argc, char* argv[])
         outfile = fopen(argv[2], "w"); // 输出结果文件
 
 
-    char* vcard_head = "BEGIN:VCARD\nVERSION:2.1\n";
-    char* vcard_end = "END:VCARD\n";
+    const char* vcard_head = "BEGIN:VCARD\nVERSION:2.1\n";
+    const char* vcard_end = "END:VCARD\n";
 
-    char* name_title = "N;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:;";
-    char* end_name = ";;;";
+    const char* name_title = "N;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:;";
+    const char* end_name = ";;;";
 
-    char* f_name_title = "FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:";
+    const char* f_name_title = "FN;CHARSET=UTF-8;ENCODING=QUOTED-PRINTABLE:";
 
-    char*  mobile_number_title = "TEL;CELL:";
-    char*  home_number_title = "TEL;HOME:";
+    const char*  mobile_number_title = "TEL;CELL:";
+    const char*  home_number_title = "TEL;HOME:";
 
 
     char name[512] = "通讯录";
@@ -82,24 +68,27 @@ int main(int argc, char* argv[])
     char* vcard_text =  new char[maxsize];  // 一个vcard文本
     char* line =  new char[maxsize];
 
-    while (fgets(line, maxsize , input)) {  // 读取每一行
+    while (fgets(line, maxsize, input)) {   // 读取每一行
         if (strlen(line) < 10)
             continue;
 
-        if (!get_name_number(name,  mobile_number,  home_number , line))
+        if (!get_name_number(name,  mobile_number,  home_number, line))
             continue;
 
         /*   把name 转换成 utf-8 ，然后 使用=EE=FF=EE取16进制进行编码 */
-        gbk_to_utf8(name);
+        gb_to_utf8(name, name, strlen(name) * 3 / 2 + 1);
+
+        //  printf("%s\n", name);
+
         utf_encode_hex(name);
 
 
         // 组成 一个vcard文本
-        sprintf(vcard_text, "%s%s%s%s\n%s%s\n%s%s\n%s%s\n%s" , vcard_head,
-                name_title , name , end_name ,
-                f_name_title , name,
-                mobile_number_title , mobile_number ,
-                home_number_title  , home_number,
+        sprintf(vcard_text, "%s%s%s%s\n%s%s\n%s%s\n%s%s\n%s", vcard_head,
+                name_title, name, end_name,
+                f_name_title, name,
+                mobile_number_title, mobile_number,
+                home_number_title, home_number,
                 vcard_end);
 
         fprintf(outfile, "%s", vcard_text);  // 写文件
@@ -111,6 +100,8 @@ int main(int argc, char* argv[])
 
     delete[] line;
     delete[] vcard_text;
+    fclose(input);
+    fclose(outfile);
     return 0;
 }
 
@@ -141,18 +132,19 @@ void help()
 
 }
 
-bool get_name_number(char* name, char* mobile_number, char* home_number , char* line)
+bool get_name_number(char* name, char* mobile_number, char* home_number, char* line)
 {
     char flag[] = "#;/"  ;  // 注释
     if ((line[0] == flag[0]) || (line[0] == flag[1]) || (line[0] == flag[2]))
         return false;
 
+    // 清零
     name[0] = '\0' ;
     mobile_number[0] = '\0' ;
     home_number[0] = '\0' ;
 
     char* pch;
-    char*   delimiters = " ,\t\n;\"";
+    char*   delimiters = ",;\t\n\"\'";
     pch = strtok(line, delimiters);
     if (pch != NULL) {
         sprintf(name, "%s", pch);
@@ -165,6 +157,11 @@ bool get_name_number(char* name, char* mobile_number, char* home_number , char* 
         }
     }
 
+    // 删除前后空格
+    strtrim(name);
+    strtrim(mobile_number);
+    strtrim(home_number);
+
     return true;
 }
 
@@ -176,10 +173,46 @@ char* utf_encode_hex(char* cstr)
     char tmp[maxsize] = {"\0"};
 
     for (size_t i = 0; i != (strlen(cstr)) ; i++) {
-        sprintf(byte_str, "=%0.2X" , *pch++);
+        sprintf(byte_str, "=%0.2X", *pch++);
         strcat(tmp, byte_str);
     }
 
     strcpy(cstr, tmp);
     return cstr;
+}
+
+
+
+// VC6.0 的_strrev 的源码 _strrev 不是标准库，所以可以应急自己写一个
+char* cs_strrev(char* string)
+{
+    char* start = string;
+    char* left = string;
+    char ch;
+
+    while (*string++) // 找到string 末位的'\0'，
+        ;             // 因为上面 string++，实际指针在 '\0'的后一个
+    string -= 2;      // 所以退2格，回到字符串最后一个字母
+    while (left < string) {
+        ch = *left;    // 通过临时变量 ch 进行交换
+        *left++ = *string;
+        *string-- = ch;
+    }
+    return (start);
+}
+
+char* strtrim(char* cs)
+{
+    char* ret = cs;
+    char* pc = new char[strlen(cs) + 1];
+
+    int pos = strspn(cs, "\t \n");      // 查找非空白处pos
+    strcpy(pc, cs + pos);
+    cs_strrev(pc);                        // 反序字符串
+    pos = strspn(pc, "\t \n");          // 原来后面的空白，就变成了前面的空白
+    strcpy(cs, pc + pos);
+    cs_strrev(cs);                        // 再反序，还原回来
+
+    delete[] pc;
+    return ret;
 }
