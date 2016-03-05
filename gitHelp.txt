@@ -15,3 +15,29 @@ $ git status
 $ git add gitHelp.txt
 $ git status
 #       modified:   gitHelp.txt  (使用git add后，再git status显示绿色已经缓存)
+
+
+Git 仓库中删除大文件的历史提交记录
+http://blog.csdn.net/tidus5/article/details/8770621
+
+
+## 注意Windows下用双引号
+git filter-branch --index-filter "git rm -r --cached --ignore-unmatch path/to/your/file" HEAD
+git push origin master --force
+rm -rf .git/refs/original/
+git reflog expire --expire=now --all
+git gc --prune=now
+git gc --aggressive --prune=now
+
+
+//  示例删除 bin 目录下所有文件  
+
+git filter-branch --index-filter "git rm -r --cached --ignore-unmatch ./bin/*" HEAD
+
+git filter-branch --force --index-filter "git rm --cached --ignore-unmatch ./bin/*" HEAD -- --all
+
+git push origin master --force
+rm -Force -R .git/refs/original/
+git reflog expire --expire=now --all
+git gc --prune=now
+git gc --aggressive --prune=now
