@@ -1,7 +1,6 @@
 ﻿#include <bdgps_api.h>
 
 
-
 // DEBUG 调试数据用
 void debug_gps_point(FILE* outfile, GPS_POINT* gps_point)
 {
@@ -28,7 +27,7 @@ void debug_gps_point(FILE* outfile, GPS_POINT* gps_point)
 }
 
 
-
+extern FILE* out_google_maps;
 
 void print_gps_point(FILE* outfile, GPS_POINT* gps_point)
 {
@@ -44,21 +43,27 @@ void print_gps_point(FILE* outfile, GPS_POINT* gps_point)
     strftime(time_str, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
     fprintf(outfile, "%s\n", time_str);
 
-#if(1)
+#if(0)
     debug_gps_point(outfile, gps_point);
 #endif
 
+    // 打印纬度和精度到google_maps用的html文件里
+    fprintf(out_google_maps, "%.5f", (float)gps_point->latitude / 100000);
+    fprintf(out_google_maps, "%%09%.5f/", (float)gps_point->longitude / 100000);
 
 }
 
 void help()
 {
-    printf("百度轨迹GPS: 轨迹记录文件导出Gps点(1/60，支持gz格式) BY Hong Wenjun 2015.1.9\n\n");
+    printf("百度轨迹GPS: 轨迹记录文件导出Gps点(for Google地图版) BY Hong Wenjun 2016.3.4\n"
+           "本软件源码 https://github.com/hongwenjun/TrajectoryCombine\n\n");
     printf("示例1: D:\\>bdgps.exe  test.bin [或者 test.bin.gz]  \n");
     printf("示例2: D:\\>bdgps.exe  test.bin.gz  gps.txt \n");
     printf("示例3: D:\\>bdgps.exe  test.bin.gz  gps.txt  -ALL \n");
-    printf("示例4: D:\\>bdgps.exe  test.bin.gz  gps.txt  -100 \n");
-    printf("\n输出文件不填，结果显示在屏幕上\a  <用-ALL或者数字参数，设置分数>\n");
+    printf("示例4: D:\\>bdgps.exe  test.bin.gz  gps.txt  -60 \n");
+    printf("\n输出文件不填，结果显示在屏幕上\a  <用-ALL参数所有Gps点，-60近每分钟频率>\n");
+    printf("另外输出文件index.html, 用浏览器Gps点显示在Google地图上\n");
+
 }
 
 
@@ -77,7 +82,7 @@ BOOL IsFileExist(LPCTSTR lpFileName)
 size_t get_fileSize(const char* filename)
 {
     FILE* pfile = fopen(filename, "rb");
-    fseek(pfile, 0 , SEEK_END);
+    fseek(pfile, 0, SEEK_END);
     size_t size = ftell(pfile);
     fclose(pfile);
     return size;
@@ -91,7 +96,7 @@ size_t get_gzbinSize(const char* filename)
     char* buf = new char[BUFSIZE];
     int data_size = 0;  int cnt = 0;
     gzFile gzf = gzopen(filename, "rb");
-    while ((cnt = gzread(gzf , buf ,   BUFSIZE))  > 0)
+    while ((cnt = gzread(gzf, buf,   BUFSIZE))  > 0)
         data_size += cnt;
 
     gzclose(gzf);
@@ -104,7 +109,7 @@ char* GetAppDir(char* szPath)
 {
     char* ret = szPath;
     GetModuleFileName(NULL, szPath, MAX_PATH); // 得到当前执行文件的文件名（包含路径）
-    *(strrchr(szPath , '\\')) = '\0';   // 删除文件名，只留下目录
+    *(strrchr(szPath, '\\')) = '\0';    // 删除文件名，只留下目录
     return ret;
 }
 

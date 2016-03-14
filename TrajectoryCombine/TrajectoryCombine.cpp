@@ -10,6 +10,11 @@
 using namespace std;
 using namespace mrpt::system;
 
+
+FILE* out_google_maps;
+GPS_FILEHEAD  first_file_gps_filehead;
+char first_filename[512];
+
 int readgpsfile(const char* filename, map<time_t, GPS_POINT>& map_gps_point);
 bool make_gpsfile(FILE* bin_file, const char* filename);
 // ------------------------------------------------------
@@ -19,6 +24,7 @@ int main(int argc, char** argv)
 {
     try {
         if (argc < 2) {
+            printf("https://github.com/hongwenjun/TrajectoryCombine   <BY Hong Wenjun> 2016.3.4\n\n");
             printf("Usage: TrajectoryCombine.exe  test.bin.gz  [test2.bin.gz ...]\n");
             return -1;
         }
@@ -35,18 +41,22 @@ int main(int argc, char** argv)
             }
 
             for (CDirectoryExplorer::TFileInfoList::const_iterator it = lst.begin(); it != lst.end(); it++) {
+                if (i == 1 && it == lst.begin())
+                    strcpy(first_filename, it->wholePath.c_str()) ;  // 读取第一个文件名
 
                 readgpsfile(it->wholePath.c_str(), map_gps_point);   // 读取所有的 gps节点到容器
+
             }
         }
 
         FILE* bin_file = tmpfile();
         for (auto it = map_gps_point.begin(); it != map_gps_point.end(); ++it) {
-            fwrite(&it->second ,  sizeof(GPS_POINT), 1, bin_file);   // 写容器里的gps节点到bin文件
+            fwrite(&it->second,  sizeof(GPS_POINT), 1, bin_file);    // 写容器里的gps节点到bin文件
         }
 
-        if (make_gpsfile(bin_file, "new合并后的轨迹.bin.gz"))
-            cerr << "报告: 合并文件  " << "new合并后的轨迹.bin.gz" << endl;
+        strcat(first_filename, ".NewCombine.bin.gz");
+        if (make_gpsfile(bin_file, first_filename))
+            cerr << "\nTrajectory Combine New File:\n" << first_filename << endl;
         fclose(bin_file);
 
 
@@ -67,18 +77,17 @@ bool make_gpsfile(FILE* bin_file, const char* filename)
 {
     // 获得bin数据大小
     rewind(bin_file);
-    fseek(bin_file, 0 , SEEK_END);
+    fseek(bin_file, 0, SEEK_END);
     size_t bin_size = ftell(bin_file);
     rewind(bin_file);
 
     // 建立gps文件头
-    GPS_FILEHEAD* gps_filehead = new GPS_FILEHEAD[1];
+    GPS_FILEHEAD* gps_filehead = new GPS_FILEHEAD;
     size_t gps_head_size = sizeof(GPS_FILEHEAD);
-    memset(gps_filehead, '\0', gps_head_size);
-    gps_filehead->date_pos = 0x18;
-    gps_filehead->unknown1 = 0x06;    // 06 是06版轨迹文件，之前是04  05
-    gps_filehead->unknown2 = 0x54E981EF;
-    gps_filehead->unknown3 = 0x58970040;
+
+    memcpy(gps_filehead, &first_file_gps_filehead, sizeof(GPS_FILEHEAD));
+    gps_filehead->data_pos = 0x18;
+    gps_filehead->data_ver = 0x06;    // 06 是06版轨迹文件，之前是04  05
 
 
 
@@ -87,8 +96,8 @@ bool make_gpsfile(FILE* bin_file, const char* filename)
     char* buffer = new char[buf_size];
 
     // 加载到缓存
-    memcpy(buffer, gps_filehead , gps_head_size);
-    fread(buffer + gps_head_size,  bin_size , 1 , bin_file);
+    memcpy(buffer, gps_filehead, gps_head_size);
+    fread(buffer + gps_head_size,  bin_size, 1, bin_file);
 
 
 //    // 写文件  测试用bin文件.bin
@@ -99,7 +108,7 @@ bool make_gpsfile(FILE* bin_file, const char* filename)
 
     // 写入gz压缩的百度导航轨迹文件
     gzFile gzf = gzopen(filename, "rw");
-    if (gzwrite(gzf , buffer ,  buf_size)  < 0)
+    if (gzwrite(gzf, buffer,  buf_size)  < 0)
         return false;
     gzclose(gzf);
 
@@ -134,7 +143,7 @@ int readgpsfile(const char* filename, map<time_t, GPS_POINT>& map_gps_point)
         buffer = new char[data_size + 1];
         buffer[data_size] = 0;
 
-        if (gzread(gzf , buffer ,  data_size)  < 0)
+        if (gzread(gzf, buffer,  data_size)  < 0)
             return -1;
         gzclose(gzf);
     } else {
@@ -146,9 +155,33 @@ int readgpsfile(const char* filename, map<time_t, GPS_POINT>& map_gps_point)
     char* gps_buffer = buffer;
     GPS_FILEHEAD* gps_filehead = (GPS_FILEHEAD*)gps_buffer;   // bin文件头
 
-    GPS_POINT* gps_point = (GPS_POINT*)(gps_buffer + gps_filehead->date_pos);  // 第一条GPS记录
-    int gps_point_total = (data_size - gps_filehead->date_pos) / sizeof(GPS_POINT); // GPS记录条目数
+    // 屏蔽  xxxx_rp.bin.gz 非轨迹文件
+    if (!((gps_filehead->empty_1 == 0x00) && (gps_filehead->data_pos == 0x18))) {
 
+        cerr << "Error: NO GPS_Trajectory in " << filename << endl;
+        return -2;
+    }
+
+
+    if (strcmp(filename, first_filename) == 0) {
+        // 获取第一个文件的文件头
+        memcpy(&first_file_gps_filehead, gps_filehead, sizeof(GPS_FILEHEAD));
+
+        //      printf("\n\n%s\n%s\n %d", filename, first_filename, first_file_gps_filehead.unknown2);
+    }
+
+
+    // 兼容旧版本 02 04 05 和当前 06版本数据，使用指针回退，兼容数据结构不一样长
+    int ver_offset = 0;
+    if (gps_filehead->data_ver == 5) {
+        ver_offset = sizeof(int32_t);
+    } else if (gps_filehead->data_ver <= 4) {
+        ver_offset = 2 * sizeof(int32_t);
+    }
+
+
+    GPS_POINT* gps_point = (GPS_POINT*)(gps_buffer + gps_filehead->data_pos);  // 第一条GPS记录
+    int gps_point_total = (data_size - gps_filehead->data_pos) / (sizeof(GPS_POINT) - ver_offset); // GPS记录条目数
 
     int fraction = 10;   // 默认输出(1/10) GPS节点
     int count = fraction;
@@ -160,7 +193,10 @@ int readgpsfile(const char* filename, map<time_t, GPS_POINT>& map_gps_point)
             count = fraction;
 
         gps_point++;
+        gps_point = (GPS_POINT*)((char*)gps_point - ver_offset);    // 兼容旧版本 02 04 05 当作 06版本数据读，读好来个指针回退
     }
+
+    gps_point = (GPS_POINT*)((char*)gps_point + ver_offset);
     --gps_point;
     map_gps_point.insert(make_pair(gps_point->timestamp, *gps_point));
 

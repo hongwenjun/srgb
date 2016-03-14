@@ -46,9 +46,9 @@ longitude   latitude     speed    bearing    accuracy   timestamp           unkn
 typedef struct baidu_navi_gps_trajectory_filehead {
 
     int32_t empty_1;
-    int32_t date_pos;  // gps点数据开始
+    int32_t data_pos;  // gps点数据开始
     int32_t empty_2;
-    int32_t unknown1;
+    int32_t data_ver;  // gps数据版本
     int32_t unknown2;
     int32_t unknown3;
 
