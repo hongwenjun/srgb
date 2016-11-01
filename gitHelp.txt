@@ -41,3 +41,21 @@ rm -Force -R .git/refs/original/
 git reflog expire --expire=now --all
 git gc --prune=now
 git gc --aggressive --prune=now
+
+
+// 使用 VIM 的 TOhtml 来转换源码文件到HTML文件
+1. 先用   locate .cpp | grep "path" > list.txt
+          locate .c  | grep "path" >> list.txt
+list.txt 内容如下, 都是全路径的文件名
+/var/www/srgb/vcard/txt2vcf.cpp
+/var/www/srgb/vcard/utf8.cpp
+/var/www/srgb/vcard/vcf2txt.cpp
+
+2. 修改list.txt 把每行替换成 命令行，保存成 list2html.sh
+   注意如果windows 替换，请不要用DOS格式打开还是unix格式
+vim -c :TOhtml -c :wqa /var/www/srgb/vcard/txt2vcf.cpp
+vim -c :TOhtml -c :wqa /var/www/srgb/vcard/utf8.cpp
+vim -c :TOhtml -c :wqa /var/www/srgb/vcard/vcf2txt.cpp
+
+3. 上传回linux修改脚本运行权限,  chmod +x  list2html.sh
+   
