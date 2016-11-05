@@ -1,5 +1,4 @@
-#  Sublime VC2010编译和运行
-
+#  Sublime 使用 VC2010编译器 编译和运行
       #include <stdio.h>
 
       int main()
@@ -7,7 +6,6 @@
          printf ("VC.sublime-build   vc.cmd \n");
         return 0;
       }
-
 
 #if(0)
     //  把C++ VC.sublime-build 和 vc.cmd 复制到 SublimeText\\Data\\Packages\\User\n 
@@ -49,3 +47,38 @@ vc.cmd
 
 -------------------------------------
 #endif
+
+
+
+#  Sublime 调用 JAVA SDK 编译和运行
+
+   Java.sublime-build
+-------------------------------------
+      {
+          "cmd": ["javac", "-Xlint", "$file"],
+          "file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+          "selector": "source.java",
+
+
+          "variants": [
+
+
+              { "cmd": ["javac", "-Xlint", "$file"],
+                "file_regex": "^(...*?):([0-9]*):?([0-9]*)",
+                "selector": "source.java",
+                "name": "Java Lintter"
+              },  
+
+
+              { "cmd": ["java", "$file_base_name"],
+                "name": "Run Java"
+              }
+          ]
+      }
+-------------------------------------
+# 设置 CLASSPATH 到电脑环境变量. 
+  WIN7 可以设置到用户的环境变量里, <<JAVA编程思想>> 的源码 下载解压 C:\TIJ4\code;
+***
+*  CLASSPATH 变量设置如下
+*  .;..;C:\TIJ4\code;
+***
