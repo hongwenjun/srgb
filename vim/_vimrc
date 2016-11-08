@@ -1,5 +1,7 @@
-" .vimrc
+" .vimrc   请把本文件 _vimrc 改成 .vimrc 放到 ~目录
 " 参见: http://vimdoc.sourceforge.net/htmldoc/options.html 获取更多信息
+" 国内 http://blog.csdn.net/luckytanggu/article/details/52045357
+
 
 set nocompatible  "非兼容模式，使用vim高级特性
 " 对于多字节字符支持 (如 CJK 支持):
@@ -68,7 +70,51 @@ set background=dark " 当设置为 "dark" 时，Vim 会尝试使用在暗色背�
 set mouse=a         " 启用鼠标的使用
 
 
+set pastetoggle=<F11>  " 快捷键来激活/取消 paste模式 按F11 然后 Shift + Insert 把文本复制到Vim
+                       " gg 移动光标到第一行,  =G 格式化所有行文本
+                       " 使用vim寄存器 "+p  粘贴不用考虑是否自动缩进，是否paste模式，直接原文传递
+
+
 
 syntax on
 filetype plugin on
 au BufRead,BufNewFile *.txt setlocal ft=txt
+
+
+
+" C++ 按F5编译运行
+map <F5> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+    exec "w"
+    if &filetype == 'c'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<"
+        exec "!time ./%<"
+    elseif &filetype == 'java'
+        exec "!javac %"
+        exec "!time java %<"
+    elseif &filetype == 'sh'
+        :!time bash %
+    elseif &filetype == 'python'
+        exec "!time python2.7 %"
+    elseif &filetype == 'html'
+        exec "!firefox % &"
+    elseif &filetype == 'go'
+    "        exec "!go build %<"
+        exec "!time go run %"
+    elseif &filetype == 'mkd'
+        exec "!~/.vim/markdown.pl % > %.html &"
+        exec "!firefox %.html &"
+    endif
+endfunc
+
+" C,C++的调试 按F8
+map <F8> :call Rungdb()<CR>
+func! Rungdb()
+    exec "w"
+    exec "!g++ % -g -o %<"
+    exec "!gdb ./%<"
+endfunc
+
