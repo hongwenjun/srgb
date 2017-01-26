@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<head>
+<title>我分享的易车网视频</title>  
+<meta http-equiv="content-type" content="text/html; charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+</head>
+
+<body>
+<div id="myApp">
+<h3>我分享的易车网视频</h3>
+<!-- Virtual DOM -->
+<div v-if="seen">2017年1月26日更新 -- sRGB.vicp.net </div>
+<ol>
+<li v-for="video in videos"> <a  href={{video.url}}> {{video.title}} </a> </li>
+</ol>
+</div>
+
+<script src="./videos.js"></script>
+
+</body>
+</html>
+
+
+<!--
+videos.js 内容
+
+...
+
+{title:'上海外滩风景和游船夜景',  url:'http://vc.yiche.com/vplay/146737.html'},
+{title:'兰溪到金华高速公路行车',  url:'http://vc.yiche.com/vplay/146736.html'},
+
+...
+-->
