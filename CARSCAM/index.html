@@ -10,7 +10,7 @@
 <div id="myApp">
 <h3>我分享的易车网视频</h3>
 <!-- Virtual DOM -->
-<div v-if="seen">2017年1月26日更新 -- sRGB.vicp.net </div>
+<div v-if="seen">{{update}}</div>
 <ol>
 <li v-for="video in videos"> {{video.title}} <br>
 <a v-bind:href="video.url"> {{video.url}} </a> <p> </li>
