@@ -7,7 +7,7 @@ videos: [
 
 {title:'回程_第一次上高速_过实习期行车5000公里',  url:'http://vc.yiche.com/vplay/147611.html'},
 {title:'第一次上高速_过实习期行车5000公里',  url:'http://vc.yiche.com/vplay/147603.html'},
-{title:'实际道路停车_三点掉头侧方位停车',  url:'http://vc.yiche.com/vplay/147591.htmll'},
+{title:'实际道路停车_三点掉头侧方位停车',  url:'http://vc.yiche.com/vplay/147591.html'},
 {title:'浙江47省道马涧到兰溪市区',  url:'http://vc.yiche.com/vplay/146965.html'},
 {title:'2017年春节超车和突发路况',  url:'http://vc.yiche.com/vplay/146957.html'},
 {title:'上海外滩风景和游船夜景',  url:'http://vc.yiche.com/vplay/146737.html'},
