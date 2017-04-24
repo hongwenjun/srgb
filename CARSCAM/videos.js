@@ -2,9 +2,11 @@ var myApp = new Vue({
 el: '#myApp', 
 data: {
 seen: 1,
-update:'2017年1月26日更新 -- sRGB.vicp.net',
+update:'2017年4月25日更新 -- sRGB.vicp.net',
 videos: [
-
+  
+{title:'兰溪市星辰路-三江路单行路线',  url:'http://vc.yiche.com/vplay/157881.html'},
+{title:'晚上行车掉头过路口停车',  url:'http://vc.yiche.com/vplay/151550.html'},
 {title:'回程_第一次上高速_过实习期行车5000公里',  url:'http://vc.yiche.com/vplay/147611.html'},
 {title:'第一次上高速_过实习期行车5000公里',  url:'http://vc.yiche.com/vplay/147603.html'},
 {title:'实际道路停车_三点掉头侧方位停车',  url:'http://vc.yiche.com/vplay/147591.html'},
