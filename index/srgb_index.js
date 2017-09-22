@@ -1,0 +1,42 @@
+var myApp = new Vue({
+el: '#myApp', 
+data: {
+seen: 1,
+update:'2017年9月22日更新 -- sRGB.vicp.net  https://github.com/hongwenjun ',
+videos: [
+
+
+{title:'精美壁纸每日一图', url:'http://srgb.vicp.net/bing_img' },
+{title:'JavaScript 标准参考教程（alpha）', url:'http://javascript.ruanyifeng.com' },
+{title:'配兵助手更新新版PvP配兵方案，战损优化', url:'http://www.mathmt.com/koa.html'   },
+{title:'阿瓦隆之王安卓客户端',  url:'http://srgb.vicp.net/avalon/'},
+{title:'阿瓦隆之王安卓客户端(百度网盘 链接:http://pan.baidu.com/s/1bpCHo4Z 密码:9mrg )',  url:'http://pan.baidu.com/s/1bpCHo4Z'},
+{title:'我分享的易车网视频',  url:'http://srgb.vicp.net/CARSCAM.html'},
+{title:'自驾游轨迹和卫星地图',  url:'http://srgb.vicp.net/Trajectory/'},
+{title:'山水古韵 森林兰溪 --兰溪市创建省级森林城市360度全景',  url:'http://srgb.vicp.net/Trajectory/lanxi.html'},
+{title:'我在github开源项目',  url:'https://github.com/hongwenjun'},
+{title:'我的开源项目源码镜像',  url:'http://srgb.vicp.net/srgb/'},
+{title:'CodeBlocks 相关资源在百度网盘',  url:'http://pan.baidu.com/s/1dD6Qrap'},
+{title:'CodeBlocks 相关资源',  url:'http://srgb.vicp.net/cb/'},
+{title:'C++语言速查学习-Cplusplus-2013-8-8',  url:'http://srgb.vicp.net/reference/'},
+{title:'VC2012-CRT源码',  url:'http://srgb.vicp.net/vc2012_CRT/crt/src/'},
+{title:'C++Primer_5th_示例源码',  url:'http://srgb.vicp.net/cppprimer/'},
+{title:'C++ Primer, Fifth Edition 示例源码',  url:'http://srgb.vicp.net/cpp/'},
+{title:'百度摩卡托坐标:bd09mc 转换 wgs84,火星坐标',  url:'http://srgb.vicp.net/BD09MC_To_WGS84/'},
+{title:'小马视频频道（优酷）',  url:'http://i.youku.com/komavideo'},
+{title:'小马视频 Vue.js学习和HTML学习源码演示',  url:'http://srgb.vicp.net/koma/'},
+{title:'随便乱看的电子书',  url:'http://srgb.vicp.net/book_cn/'},
+{title:'学习文本',  url:'http://srgb.vicp.net/text/'},
+{title:'Linux命令行中文帮助',  url:'http://srgb.vicp.net/cmdhelp/'},
+{title:'工具软件方便下载',  url:'http://srgb.vicp.net/soft/'},
+{title:'远程scp上传目录(临时)',  url:'http://srgb.vicp.net/scp/'},
+{title:'分享的MP3和视频',  url:'http://srgb.vicp.net/sdcard/'},
+{title:'分享的MP3',  url:'http://srgb.vicp.net/mp3/'},
+{title:'龙芯小本服务器，是个怎么样子',  url:'http://srgb.vicp.net/The_server/'},
+{title:'龙芯服务器移动光纤动态IP情况记录',  url:'http://srgb.vicp.net/ip/'},
+{title:'龙芯服务器测试',  url:'http://srgb.vicp.net/test/'},
+{title:'兰溪市区处罚不按车道行驶',  url:'http://srgb.vicp.net/兰溪市区处罚不按车道行驶/'},
+
+],
+},
+});
