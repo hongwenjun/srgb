@@ -5,6 +5,7 @@
 
 set nocompatible  "非兼容模式，使用vim高级特性
 " 对于多字节字符支持 (如 CJK 支持):
+set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,big5,euc-jp,euc-kr,gb18030,latin1
        
 set tabstop=4       " 文件中一个 <Tab> 占据的空格数。
