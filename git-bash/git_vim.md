@@ -1,7 +1,8 @@
-# VIM代码跳转功能视频
+# git-bash 中vim使用
 蘭雅sRGB 龙芯小本服务器 | sRGB.vicp.net
 
-![](http://srgb.vicp.net/blog/webp/vim_tags.webp)
+### 其他 VIM 常用用法和linux常用命令
+https://www.srgb.xyz/tags/vim/
 
 ### vim中跳转到头文件
 - 按 gf 跳转到指定头文件
