@@ -1,0 +1,22 @@
+iptables 技巧
+==========================
+-A 在后面追加 -I 在前面添加 -D 删除 -R 修改
+
+iptables -I INPUT -s 50.3.66.188 -j ACCEPT <= 接受50.3.66.188所有数据包,在最前面添加.
+iptables -I INPUT -i eth2 -p icmp -j ACCEPT <= 接受ETH2的ICMP请求.
+iptables -I INPUT ! -s 50.3.66.188 -j ACCEPT <= 报文源IP不是50.3.66.188,都可以接受,源IP是50.3.66.188,继续往下匹配.
+iptables -A INPUT -s 50.3.66.188 -j DROP <= 丢弃50.3.66.188所有数据包,在最后面添加.
+iptables -A INPUT -d 127.0.0.1 -j DROP <= 到达本地回环地址的,都会被丢弃.
+iptables -A INPUT -s 50.3.66.18 -j -p tcp DROP <= 从50.3.66.18过来的TCP都会被丢弃.支持tcp,udp,udplite,icmp,icmpv6... 如果不指定,是拒绝所有.
+iptables -A INPUT -s 50.3.66.18 -j -p tcp --dport 22 DROP <= 从50.3.66.18过来的TCP并且端口是22的会被丢弃.--sport是对立的.
+iptables -A INPUT -s 50.3.66.188 -d -s 50.3.66.189 -j DROP <= 从50.3.66.188发到50.3.66.189的会被丢弃.
+iptables -R INPUT 1 -s 50.3.66.188 -j ACCEPT <= 修改第一条规则为接收包.
+iptables -D INPUT 1 <= 删除第一条规则
+iptables -P FORWARD DROP <= 修改FORWARD的默认动作是DROP
+iptables -F <= 清理所有
+iptables-save > my_iptables <= 导出所有表
+iptables-restore <  my_iptables <= 导入所有表
+
+端口转发
+==========================
+iptables -t nat -A PREROUTING -m tcp -p tcp --dport 22 -j REDIRECT --to-port 2222
