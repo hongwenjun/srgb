@@ -11,9 +11,13 @@
  alias ls='ls $LS_OPTIONS'
  alias ll='ls $LS_OPTIONS -l'
  alias l='ls $LS_OPTIONS -lA'
-#
+
 # Some more alias to avoid making mistakes:
 # alias rm='rm -i'
 # alias cp='cp -i'
 # alias mv='mv -i'
   alias tohtml='vim -c "TOhtml" -c ":w|:qa"'
+  
+alias cls='clear'
+alias ss="http_proxy=http://127.0.0.1:1080 https_proxy=http://127.0.0.1:1080"
+alias grep='grep --color=auto'
