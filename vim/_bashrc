@@ -19,5 +19,6 @@
   alias tohtml='vim -c "TOhtml" -c ":w|:qa"'
   
 alias cls='clear'
-alias ss="http_proxy=http://127.0.0.1:1080 https_proxy=http://127.0.0.1:1080"
+alias hg='history | grep --color=auto'
+alias ssr="http_proxy=http://127.0.0.1:1080 https_proxy=http://127.0.0.1:1080"
 alias grep='grep --color=auto'
