@@ -33,6 +33,11 @@ ss-server -c /etc/shadowsocks-libev/config.json  -f /tmp/ss-server.pid
 Shadowsocks 配置
 http://127.0.0.1:1080/pac.txt
 
+### 一键脚本 ss_brook 和 个人配置
+```
+# ss_brook脚本 (私人备份恢复脚本)
+wget -qO- git.io/fxQug | bash
+```
 
 ====测试搬迁服务器==============
 tar -czvf srgb.tar.gz index.html CARSCAM.html img script srgb v315  cppprimer  ico reference text vc2012_CRT Trajectory cmdhelp
