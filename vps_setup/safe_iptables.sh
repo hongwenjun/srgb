@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
-export PATH
 
-# tcp 4个 初始化安全防火墙规则预设端口
+# 下载 IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB
+# wget -qO safe_iptables.sh  git.io/fhJrU
+
+#  初始化安全防火墙规则预设端口
 tcp_port="80,443"
+udp_port="8989,8899,9999"
 
 # 保存防火墙规则文件路径 /etc/iptables/rules.v4  /etc/iptables/rules.v6
 mkdir -p /etc/iptables
@@ -31,25 +33,6 @@ check_sys(){
     bit=`uname -m`
 }
 
-# 添加指定tcp端口防火墙规则
-Add_iptables(){
-    iptables -I INPUT  -p tcp --dport ${port} -j ACCEPT
-
-    RELATED_ESTABLISHED
-}
-
-# 添加指定udp端口防火墙规则
-Add_udp_iptables(){
-    iptables -I INPUT -p udp --dport ${port} -j ACCEPT
-
-    RELATED_ESTABLISHED
-}
-
-# 删除指定端口防火墙规则
-Del_iptables(){
-    iptables -D INPUT  -p tcp --dport ${port} -j ACCEPT   >/dev/null 2>&1
-    iptables -D INPUT  -p udp --dport ${port} -j ACCEPT   >/dev/null 2>&1
-}
 
 # 保存防火墙规则
 Save_iptables(){
@@ -79,7 +62,7 @@ hide_menu(){
     echo -e "${Green}>  1. ss_kcp_speed_udp2raw 端口开放 防火墙规则"
     echo -e ">  2. ss brook 电报代理端口开放 防火墙规则"
     echo -e ">  3. frps_iptables 防火墙规则"
-    echo -e ">  4. 菜单项1-2-3全功能开放"
+    echo -e ">  4. 菜单项1-2-3全功能开放${Font}"
     echo
     read -p "请输入数字(1-4):" num_x
     case "$num_x" in
@@ -163,29 +146,49 @@ init_iptables(){
     iptables -F
     disable_ipv6
 
-    # 添加 预置 tcp 端口
+    # 添加 预置 tcp 和 udp端口
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT
+    iptables -I INPUT -p udp -m multiport --dport ${udp_port} -j ACCEPT
 
     safe_iptables
     Set_iptables
 }
 
-add_tcp(){
-read -p "请输入TCP端口号(20--65000): " port
-Add_iptables
-Save_iptables
+add_tcp_chain(){
+    echo -e "${GreenBG} 追加TCP端口段到 Chain INPUT ( multiport dports) ${Font}"
+    read -p "请输入TCP端口段(示例: 7000,7500:7510 ): " port
+
+    iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${port} -j ACCEPT
+
+    RELATED_ESTABLISHED
+    Save_iptables
 }
 
-add_udp(){
-read -p "请输入UDP端口号(20--65000): " port
-Add_udp_iptables
-Save_iptables
+add_udp_chain(){
+    echo -e "${GreenBG} 追加UDP端口段到 Chain INPUT ( multiport dports) ${Font}"
+    read -p "请输入UDP端口段(示例: 7000,7500:7510 ): " port
+
+    iptables -D INPUT -p udp -m multiport --dport ${udp_port} -j ACCEPT  >/dev/null 2>&1
+    iptables -I INPUT -p udp -m multiport --dport ${udp_port},${port} -j ACCEPT
+
+    RELATED_ESTABLISHED
+    Save_iptables
 }
 
-del_tcp(){
-read -p "请输入TCP端口号(20--65000): " port
-Del_iptables
-Save_iptables
+# 删除指定INPUT Chain 序号行
+del_chain(){
+    iptables -nvL --line
+    echo -e "${RedBG} 删除指定INPUT Chain 序号行 ${Font}"
+    read -p "请检查INPUT Chain序号行，输入序号(2-X): " no_x
+
+    if [[ ${no_x} -ge 2 ]] && [[ ${no_x} -le 20 ]]; then
+      iptables -D INPUT ${no_x}
+    else
+       echo -e "${RedBG}::  INPUT Chain序号行选择错误，没有删除！${Font}"
+    fi
+
+    Save_iptables
 }
 
 # 禁止ICMP，禁止Ping服务器
@@ -197,9 +200,9 @@ no_ping(){
 start_menu(){
     echo
     echo -e "${RedBG}   IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  ${Font}"
-    echo -e "${Green}>  1. 添加 TCP 端口到防火墙规则"
-    echo -e ">  2. 添加 UDP 端口到防火墙规则"
-    echo -e ">  3. 删除TCP/UDP端口防火墙规则"
+    echo -e "${Green}>  1. 追加 TCP 多端口到防火墙规则"
+    echo -e ">  2. 追加 UDP 多端口到防火墙规则"
+    echo -e ">  3. 删除 指定INPUT Chain 序号行"
     echo -e ">  4. 禁止ICMP，禁止Ping服务器"
     echo -e ">  5. 重置 初始化安全防火墙规则预设端口"
     echo -e ">  6. 退出设置${Font}"
@@ -207,13 +210,13 @@ start_menu(){
     read -p "请输入数字(1-6):" num
     case "$num" in
         1)
-        add_tcp
+        add_tcp_chain
         ;;
         2)
-        add_udp
+        add_udp_chain
         ;;
         3)
-        del_tcp
+        del_chain
         ;;
         4)
         no_ping
@@ -229,9 +232,9 @@ start_menu(){
         ;;
         *)
         echo
-        iptables -nvL --line
         ;;
         esac
+        iptables -nvL --line
 }
 
 check_sys
