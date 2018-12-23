@@ -2,9 +2,8 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-# tcp 4个  udp 4个  初始化安全防火墙规则预设端口
-tcp_port=(80 443 8000 9000)
-udp_port=(2999 3999 8000 9999)
+# tcp 4个 初始化安全防火墙规则预设端口
+tcp_port="80,443"
 
 # 保存防火墙规则文件路径 /etc/iptables/rules.v4  /etc/iptables/rules.v6
 mkdir -p /etc/iptables
@@ -34,33 +33,30 @@ check_sys(){
 
 # 添加指定tcp端口防火墙规则
 Add_iptables(){
-    iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${port} -j ACCEPT
-    ip6tables -I INPUT -m state --state NEW -m tcp -p tcp --dport ${port} -j ACCEPT
+    iptables -I INPUT  -p tcp --dport ${port} -j ACCEPT
+
+    RELATED_ESTABLISHED
 }
 
 # 添加指定udp端口防火墙规则
 Add_udp_iptables(){
-    iptables -I INPUT -m state --state NEW -m udp -p udp --dport ${port} -j ACCEPT
-    ip6tables -I INPUT -m state --state NEW -m udp -p udp --dport ${port} -j ACCEPT
+    iptables -I INPUT -p udp --dport ${port} -j ACCEPT
+
+    RELATED_ESTABLISHED
 }
 
 # 删除指定端口防火墙规则
 Del_iptables(){
-    iptables -D INPUT -m state --state NEW -m tcp -p tcp --dport ${port} -j ACCEPT   >/dev/null 2>&1
-    ip6tables -D INPUT -m state --state NEW -m tcp -p tcp --dport ${port} -j ACCEPT  >/dev/null 2>&1
-
-    iptables -D INPUT -m state --state NEW -m udp -p udp --dport ${port} -j ACCEPT   >/dev/null 2>&1
-    ip6tables -D INPUT -m state --state NEW -m udp -p udp --dport ${port} -j ACCEPT  >/dev/null 2>&1
+    iptables -D INPUT  -p tcp --dport ${port} -j ACCEPT   >/dev/null 2>&1
+    iptables -D INPUT  -p udp --dport ${port} -j ACCEPT   >/dev/null 2>&1
 }
 
 # 保存防火墙规则
 Save_iptables(){
     if [[ ${release} == "centos" ]]; then
         service iptables save
-        service ip6tables save
     else
         iptables-save > /etc/iptables/rules.v4
-        ip6tables-save > /etc/iptables/rules.v6
     fi
 }
 
@@ -68,13 +64,10 @@ Save_iptables(){
 Set_iptables(){
     if [[ ${release} == "centos" ]]; then
         service iptables save
-        service ip6tables save
         chkconfig --level 2345 iptables on
-        chkconfig --level 2345 ip6tables on
     else
         iptables-save > /etc/iptables/rules.v4
-        ip6tables-save > /etc/iptables/rules.v6
-        echo -e '#!/bin/bash\n/sbin/iptables-restore < /etc/iptables/rules.v4\n/sbin/ip6tables-restore < /etc/iptables/rules.v6' > /etc/network/if-pre-up.d/iptables
+        echo -e '#!/bin/bash\n/sbin/iptables-restore < /etc/iptables/rules.v4' > /etc/network/if-pre-up.d/iptables
         chmod +x /etc/network/if-pre-up.d/iptables
     fi
 }
@@ -100,9 +93,9 @@ hide_menu(){
         frps_iptables
         ;;
         4)
-        ss_kcp_speed_udp2raw
-        ss_bk_tg
         frps_iptables
+        ss_bk_tg
+        ss_kcp_speed_udp2raw
         ;;
         *)
         ;;
@@ -111,42 +104,32 @@ hide_menu(){
 
 # ss_kcp_speed_udp2raw 端口防火墙规则
 ss_kcp_speed_udp2raw(){
-    # ss+kcp+udp2raw
-    iptables -I INPUT -s 127.0.0.1 -p tcp --dport 40000 -j ACCEPT
-    iptables -I INPUT -s 127.0.0.1 -p udp --dport 4000 -j ACCEPT
-    iptables -I INPUT -p tcp -m tcp --dport 8989 -j DROP
+    # ss+kcp+udp2raw  和  # wg+speed+udp2raw
+    iptables -I INPUT -s 127.0.0.1 -p tcp  --dport 40000 -j ACCEPT
+    iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
 
-    # speed+udp2raw
-    iptables -I INPUT -s 127.0.0.1 -p udp --dport 8888 -j ACCEPT
-    iptables -I INPUT -p tcp -m tcp --dport 8899 -j DROP
-
+    RELATED_ESTABLISHED
     Save_iptables
 
 }
 
 # ss brook 电报代理端口开放 防火墙规则
 ss_bk_tg(){
-    ss_bk_tg=(2018 7731 7979)
+    ss_bk_tg="2018,7731,7979"
+    iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${ss_bk_tg} -j ACCEPT
 
-    for i in {0..2}
-        do
-        port=${ss_bk_tg[$i]}
-        Add_iptables
-    done
-
+    RELATED_ESTABLISHED
     Save_iptables
 }
 
 # frps_iptables 防火墙规则
 frps_iptables(){
-    frps_port=(7000 7500 8080 4443 11122 2222)
+    frps_port="7000,7500,8080,4443,11122,2222"
+    iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${frps_port} -j ACCEPT
 
-    for i in {0..5}
-        do
-        port=${frps_port[$i]}
-        Add_iptables
-    done
-
+    RELATED_ESTABLISHED
     Save_iptables
 }
 
@@ -156,37 +139,32 @@ safe_iptables(){
     iptables -A INPUT -p tcp -m tcp --dport 22  -j ACCEPT
     iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
     iptables -A INPUT -j DROP
-    iptables -P FORWARD ACCEPT
+    iptables -P FORWARD DROP
     iptables -A OUTPUT -j ACCEPT
-
-    ip6tables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-    ip6tables -A INPUT -p tcp -m tcp --dport 22  -j ACCEPT
-#    ip6tables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
-    ip6tables -A INPUT -j DROP
-    ip6tables -P FORWARD ACCEPT
-    ip6tables -A OUTPUT -j ACCEPT
-
 }
+
+# 建立的相关的链接优先
+RELATED_ESTABLISHED(){
+    iptables -D INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+    iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+}
+
+
+# 禁止网卡IPV6功能
+disable_ipv6(){
+    ni=$(ls /sys/class/net | awk {print} | grep -e eth. -e ens. -e venet.)
+    echo 1 > /proc/sys/net/ipv6/conf/${ni}/disable_ipv6
+}
+
 
 # 初始化安全防火墙规则
 init_iptables(){
     # 清除防火墙规则
     iptables -F
-    ip6tables -F
+    disable_ipv6
 
-    # 添加 tcp 端口
-    for i in {0..3}
-        do
-        port=${tcp_port[$i]}
-        Add_iptables
-    done
-
-    # 添加 udp 端口
-    for i in {0..3}
-        do
-        port=${udp_port[$i]}
-        Add_udp_iptables
-    done
+    # 添加 预置 tcp 端口
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT
 
     safe_iptables
     Set_iptables
@@ -195,24 +173,24 @@ init_iptables(){
 add_tcp(){
 read -p "请输入TCP端口号(20--65000): " port
 Add_iptables
-safe_iptables
+Save_iptables
 }
 
 add_udp(){
 read -p "请输入UDP端口号(20--65000): " port
 Add_udp_iptables
-safe_iptables
+Save_iptables
 }
 
 del_tcp(){
 read -p "请输入TCP端口号(20--65000): " port
 Del_iptables
-safe_iptables
+Save_iptables
 }
 
 # 禁止ICMP，禁止Ping服务器
 no_ping(){
-    iptables -I INPUT -p icmp --icmp-type echo-request -j DROP
+    iptables -D INPUT -p icmp --icmp-type echo-request -j ACCEPT
 }
 
 # 设置菜单
@@ -251,7 +229,7 @@ start_menu(){
         ;;
         *)
         echo
-        iptables -L -n
+        iptables -nvL --line
         ;;
         esac
 }
