@@ -3,11 +3,11 @@
 # 下载 IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB
 # wget -qO safe_iptables.sh  git.io/fhJrU
 
-#  初始化安全防火墙规则预设端口
-tcp_port="80,443"
-udp_port="8989,8899,9999"
+#  初始化安全防火墙规则预设端口,1999和2999是转接端口
+tcp_port="80,443,1999,2999"
+udp_port="9999,8000"
 
-# 保存防火墙规则文件路径 /etc/iptables/rules.v4  /etc/iptables/rules.v6
+# 保存防火墙规则文件路径 /etc/iptables/rules.v4  禁用ipv6
 mkdir -p /etc/iptables
 
 # 定义文字颜色
@@ -35,7 +35,7 @@ check_sys(){
 
 
 # 保存防火墙规则
-Save_iptables(){
+save_iptables(){
     if [[ ${release} == "centos" ]]; then
         service iptables save
     else
@@ -44,7 +44,7 @@ Save_iptables(){
 }
 
 # 设置防火墙规则，下次开机也生效
-Set_iptables(){
+set_iptables(){
     if [[ ${release} == "centos" ]]; then
         service iptables save
         chkconfig --level 2345 iptables on
@@ -76,9 +76,8 @@ hide_menu(){
         frps_iptables
         ;;
         4)
-        frps_iptables
-        ss_bk_tg
         ss_kcp_speed_udp2raw
+        ss_bk_tg_frps_iptables
         ;;
         *)
         ;;
@@ -92,8 +91,10 @@ ss_kcp_speed_udp2raw(){
     iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
 
     RELATED_ESTABLISHED
-    Save_iptables
+    save_iptables
 
+    wg-quick down wg0   >/dev/null 2>&1
+    wg-quick up wg0     >/dev/null 2>&1
 }
 
 # ss brook 电报代理端口开放 防火墙规则
@@ -103,7 +104,7 @@ ss_bk_tg(){
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${ss_bk_tg} -j ACCEPT
 
     RELATED_ESTABLISHED
-    Save_iptables
+    save_iptables
 }
 
 # frps_iptables 防火墙规则
@@ -113,7 +114,17 @@ frps_iptables(){
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${frps_port} -j ACCEPT
 
     RELATED_ESTABLISHED
-    Save_iptables
+    save_iptables
+}
+
+ss_bk_tg_frps_iptables(){
+    ss_bk_tg="2018,7731,7979"
+    frps_port="7000,7500,8080,4443,11122,2222"
+    iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${ss_bk_tg},${frps_port} -j ACCEPT
+
+    RELATED_ESTABLISHED
+    save_iptables
 }
 
 # 安全防火墙规则
@@ -126,7 +137,7 @@ safe_iptables(){
     iptables -A OUTPUT -j ACCEPT
 }
 
-# 建立的相关的链接优先
+# 建立相关链接的优先
 RELATED_ESTABLISHED(){
     iptables -D INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
     iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -139,7 +150,6 @@ disable_ipv6(){
     echo 1 > /proc/sys/net/ipv6/conf/${ni}/disable_ipv6
 }
 
-
 # 初始化安全防火墙规则
 init_iptables(){
     # 清除防火墙规则
@@ -151,7 +161,7 @@ init_iptables(){
     iptables -I INPUT -p udp -m multiport --dport ${udp_port} -j ACCEPT
 
     safe_iptables
-    Set_iptables
+    set_iptables
 }
 
 add_tcp_chain(){
@@ -162,7 +172,7 @@ add_tcp_chain(){
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${port} -j ACCEPT
 
     RELATED_ESTABLISHED
-    Save_iptables
+    save_iptables
 }
 
 add_udp_chain(){
@@ -173,7 +183,7 @@ add_udp_chain(){
     iptables -I INPUT -p udp -m multiport --dport ${udp_port},${port} -j ACCEPT
 
     RELATED_ESTABLISHED
-    Save_iptables
+    save_iptables
 }
 
 # 删除指定INPUT Chain 序号行
@@ -188,7 +198,7 @@ del_chain(){
        echo -e "${RedBG}::  INPUT Chain序号行选择错误，没有删除！${Font}"
     fi
 
-    Save_iptables
+    save_iptables
 }
 
 # 禁止ICMP，禁止Ping服务器
@@ -199,10 +209,11 @@ no_ping(){
 # 设置菜单
 start_menu(){
     echo
-    echo -e "${RedBG}   IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  ${Font}"
+    echo -e "${GreenBG}   IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导  ${Font}"
+    echo -e   "${RedBG}   规则不宜超过10条，3-5条最好，每增加规则系统都忙很多。 ${Font}"
     echo -e "${Green}>  1. 追加 TCP 多端口到防火墙规则"
     echo -e ">  2. 追加 UDP 多端口到防火墙规则"
-    echo -e ">  3. 删除 指定INPUT Chain 序号行"
+    echo -e ">  3. 删除指定INPUT Chain 序号行(不浪费防火墙效率)"
     echo -e ">  4. 禁止ICMP，禁止Ping服务器"
     echo -e ">  5. 重置 初始化安全防火墙规则预设端口"
     echo -e ">  6. 退出设置${Font}"
