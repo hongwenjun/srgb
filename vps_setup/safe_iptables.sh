@@ -2,9 +2,9 @@
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
 export PATH
 
-# tcp 20个  udp 10个  初始化安全防火墙规则预设端口
-tcp_port=(80 443 7000 7500 8080 4443 11122 7979 8000 9000 2018 7731 8888 8989 8899 9999 1999 2999 3999 4000)
-udp_port=(7001 8000 8888 8989 8899 9999 1999 2999 3999 4000)
+# tcp 4个  udp 4个  初始化安全防火墙规则预设端口
+tcp_port=(80 443 8000 9000)
+udp_port=(2999 3999 8000 9999)
 
 # 保存防火墙规则文件路径 /etc/iptables/rules.v4  /etc/iptables/rules.v6
 mkdir -p /etc/iptables
@@ -79,6 +79,77 @@ Set_iptables(){
     fi
 }
 
+# 隐藏的防火墙设置功能菜单  88
+hide_menu(){
+    echo
+    echo -e "${RedBG}   隐藏的高级防火墙设置功能 By 蘭雅sRGB  ${Font}"
+    echo -e "${Green}>  1. ss_kcp_speed_udp2raw 端口开放 防火墙规则"
+    echo -e ">  2. ss brook 电报代理端口开放 防火墙规则"
+    echo -e ">  3. frps_iptables 防火墙规则"
+    echo -e ">  4. 菜单项1-2-3全功能开放"
+    echo
+    read -p "请输入数字(1-4):" num_x
+    case "$num_x" in
+        1)
+        ss_kcp_speed_udp2raw
+        ;;
+        2)
+        ss_bk_tg
+        ;;
+        3)
+        frps_iptables
+        ;;
+        4)
+        ss_kcp_speed_udp2raw
+        ss_bk_tg
+        frps_iptables
+        ;;
+        *)
+        ;;
+        esac
+}
+
+# ss_kcp_speed_udp2raw 端口防火墙规则
+ss_kcp_speed_udp2raw(){
+    # ss+kcp+udp2raw
+    iptables -I INPUT -s 127.0.0.1 -p tcp --dport 40000 -j ACCEPT
+    iptables -I INPUT -s 127.0.0.1 -p udp --dport 4000 -j ACCEPT
+    iptables -I INPUT -p tcp -m tcp --dport 8989 -j DROP
+
+    # speed+udp2raw
+    iptables -I INPUT -s 127.0.0.1 -p udp --dport 8888 -j ACCEPT
+    iptables -I INPUT -p tcp -m tcp --dport 8899 -j DROP
+
+    Save_iptables
+
+}
+
+# ss brook 电报代理端口开放 防火墙规则
+ss_bk_tg(){
+    ss_bk_tg=(2018 7731 7979)
+
+    for i in {0..2}
+        do
+        port=${ss_bk_tg[$i]}
+        Add_iptables
+    done
+
+    Save_iptables
+}
+
+# frps_iptables 防火墙规则
+frps_iptables(){
+    frps_port=(7000 7500 8080 4443 11122 2222)
+
+    for i in {0..5}
+        do
+        port=${frps_port[$i]}
+        Add_iptables
+    done
+
+    Save_iptables
+}
+
 # 安全防火墙规则
 safe_iptables(){
     iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
@@ -97,21 +168,21 @@ safe_iptables(){
 
 }
 
-# 初始化安全防火墙规则  预设端口 tcp 20个  udp 10个
+# 初始化安全防火墙规则
 init_iptables(){
     # 清除防火墙规则
     iptables -F
     ip6tables -F
 
     # 添加 tcp 端口
-    for i in {0..19}
+    for i in {0..3}
         do
         port=${tcp_port[$i]}
         Add_iptables
     done
 
     # 添加 udp 端口
-    for i in {0..9}
+    for i in {0..3}
         do
         port=${udp_port[$i]}
         Add_udp_iptables
@@ -175,7 +246,9 @@ start_menu(){
         6)
         exit 1
         ;;
-
+        88)
+        hide_menu
+        ;;
         *)
         echo
         iptables -L -n
