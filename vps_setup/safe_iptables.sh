@@ -64,15 +64,13 @@ no_use_passwd(){
 }
 
 srgb18_ga_ddns(){
-
    # 下载 IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB
    wget -qO safe_iptables.sh  git.io/fhJrU
 
    echo -e "${Red}  浏览器 HE.NET 动态DDNS更新IP示例: ${Font}"
-   echo  "${Green}https://srgb18.ga:Br9LmXp6le1MTSXY@dyn.dns.he.net/nic/update?hostname=srgb18.ga&myip=35.235.96.85 ${Font}"
+   echo -e "${Green}https://srgb18.ga:Br9LmXp6le1MTSXY@dyn.dns.he.net/nic/update?hostname=srgb18.ga&myip=35.235.96.85 ${Font}"
    curl -4 "srgb18.ga:Br9LmXp6le1MTSXY@dyn.dns.he.net/nic/update?hostname=srgb18.ga"
    echo
-
 }
 
 # 隐藏的防火墙设置功能菜单  88
@@ -114,20 +112,21 @@ hide_menu(){
 
 # ss_kcp_speed_udp2raw 端口防火墙规则
 ss_kcp_speed_udp2raw(){
-
+    # udp2raw 转接端口 1999 和 2999
     iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
     tcp_port="80,443,1999,2999"
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT
 
-    # ss+kcp+udp2raw  和  # wg+speed+udp2raw
+    # ss+kcp+udp2raw  和  # wg+speed+udp2raw  环路设置
     iptables -I INPUT -s 127.0.0.1 -p tcp  --dport 40000 -j ACCEPT
     iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
 
     RELATED_ESTABLISHED
     save_iptables
 
+    # 重启 WireGuard
     wg-quick down wg0   >/dev/null 2>&1
-    wg-quick up wg0     >/dev/null 2>&1
+    wg-quick up   wg0   >/dev/null 2>&1
 }
 
 # ss brook 电报代理端口开放 防火墙规则
@@ -150,6 +149,7 @@ frps_iptables(){
     save_iptables
 }
 
+# 菜单项1-2-3全功能开放
 ss_bk_tg_frps_iptables(){
     ss_bk_tg="2018,7731,7979"
     frps_port="7000,7500,8080,4443,11122,2222"
@@ -160,9 +160,14 @@ ss_bk_tg_frps_iptables(){
     save_iptables
 }
 
-# 安全防火墙规则
+# 安全防火墙规则: 只能Ping和SSH，如果SSH不是22端口
 safe_iptables(){
     iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+    ssh_port=$(cat /etc/ssh/sshd_config | grep -e 'Port ' | awk '{print $2}')
+    if [ ${ssh_port}!=22 ]; then
+       iptables -A INPUT -p tcp -m tcp --dport ${ssh_port}  -j ACCEPT
+    fi
     iptables -A INPUT -p tcp -m tcp --dport 22  -j ACCEPT
     iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
     iptables -A INPUT -j DROP
