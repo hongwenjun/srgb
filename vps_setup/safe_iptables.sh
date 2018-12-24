@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导
-# wget -qO- git.io/fhJrU | bash
+# wget -qO safe_iptables.sh  git.io/fhJrU
 
 #  初始化安全防火墙规则预设端口,1999和2999是转接端口
 tcp_port="80,443"
@@ -293,11 +293,5 @@ start_menu(){
         iptables -nvL --line
 }
 
-#  下载防火墙脚本到本地
-if [ ! -f '~/safe_iptables.sh' ]; then
-    wget -qO ~/safe_iptables.sh  git.io/fhJrU
-    bash  ~/safe_iptables.sh    
-else
-   check_sys
-   start_menu   
-fi
+check_sys
+start_menu
