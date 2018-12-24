@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# 下载 IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB
-# wget -qO safe_iptables.sh  git.io/fhJrU
+# IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导
+# wget -qO- git.io/fhJrU | bash
 
 #  初始化安全防火墙规则预设端口,1999和2999是转接端口
 tcp_port="80,443"
@@ -57,8 +57,9 @@ set_iptables(){
 
 no_use_passwd(){
     # 禁用密码登陆
+    sed -i "s/#PasswordAuthentication.*/PasswordAuthentication no/g"   /etc/ssh/sshd_config
     sed -i "s/PasswordAuthentication.*/PasswordAuthentication no/g"   /etc/ssh/sshd_config
-
+    
     # 重启ssh服务
     systemctl restart ssh
 }
