@@ -293,5 +293,11 @@ start_menu(){
         iptables -nvL --line
 }
 
-check_sys
-start_menu
+#  下载防火墙脚本到本地
+if [ ! -f '~/safe_iptables.sh' ]; then
+    wget -qO ~/safe_iptables.sh  git.io/fhJrU
+    bash  ~/safe_iptables.sh    
+else
+   check_sys
+   start_menu   
+fi
