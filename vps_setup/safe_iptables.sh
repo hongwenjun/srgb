@@ -4,7 +4,7 @@
 # wget -qO safe_iptables.sh  git.io/fhJrU
 
 #  初始化安全防火墙规则预设端口,1999和2999是转接端口
-tcp_port="80,443,1999,2999"
+tcp_port="80,443"
 udp_port="9999,8000"
 
 # 保存防火墙规则文件路径 /etc/iptables/rules.v4  禁用ipv6
@@ -55,6 +55,26 @@ set_iptables(){
     fi
 }
 
+no_use_passwd(){
+    # 禁用密码登陆
+    sed -i "s/PasswordAuthentication.*/PasswordAuthentication no/g"   /etc/ssh/sshd_config
+
+    # 重启ssh服务
+    systemctl restart ssh
+}
+
+srgb18_ga_ddns(){
+
+   # 下载 IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB
+   wget -qO safe_iptables.sh  git.io/fhJrU
+
+   echo -e "${Red}  浏览器 HE.NET 动态DDNS更新IP示例: ${Font}"
+   echo  "${Green}https://srgb18.ga:Br9LmXp6le1MTSXY@dyn.dns.he.net/nic/update?hostname=srgb18.ga&myip=35.235.96.85 ${Font}"
+   curl -4 "srgb18.ga:Br9LmXp6le1MTSXY@dyn.dns.he.net/nic/update?hostname=srgb18.ga"
+   echo
+
+}
+
 # 隐藏的防火墙设置功能菜单  88
 hide_menu(){
     echo
@@ -62,9 +82,11 @@ hide_menu(){
     echo -e "${Green}>  1. ss_kcp_speed_udp2raw 端口开放 防火墙规则"
     echo -e ">  2. ss brook 电报代理端口开放 防火墙规则"
     echo -e ">  3. frps_iptables 防火墙规则"
-    echo -e ">  4. 菜单项1-2-3全功能开放${Font}"
+    echo -e ">  4. 菜单项1-2-3全功能开放"
+    echo -e ">  5. 使用临时${GreenBG} srgb18.ga ${Font}${Green}域名(更新脚本)"
+    echo -e ">  6. ${RedBG}禁止使用密码远程SSH登陆${Font}"
     echo
-    read -p "请输入数字(1-4):" num_x
+    read -p "请输入数字(1-6):" num_x
     case "$num_x" in
         1)
         ss_kcp_speed_udp2raw
@@ -79,6 +101,12 @@ hide_menu(){
         ss_kcp_speed_udp2raw
         ss_bk_tg_frps_iptables
         ;;
+        5)
+        srgb18_ga_ddns
+        ;;
+        6)
+        no_use_passwd
+        ;;
         *)
         ;;
         esac
@@ -86,6 +114,11 @@ hide_menu(){
 
 # ss_kcp_speed_udp2raw 端口防火墙规则
 ss_kcp_speed_udp2raw(){
+
+    iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
+    tcp_port="80,443,1999,2999"
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT
+
     # ss+kcp+udp2raw  和  # wg+speed+udp2raw
     iptables -I INPUT -s 127.0.0.1 -p tcp  --dport 40000 -j ACCEPT
     iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
@@ -209,16 +242,17 @@ no_ping(){
 # 设置菜单
 start_menu(){
     echo
-    echo -e "${GreenBG}   IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导  ${Font}"
-    echo -e   "${RedBG}   规则不宜超过10条，3-5条最好，每增加规则系统都忙很多。 ${Font}"
+    echo -e "${GreenBG}  IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导 ${Font}"
+    echo -e "${RedBG}   原则: 规则不宜超过10条，3-5条最好，每增加规则系统都忙很多。    ${Font}"
     echo -e "${Green}>  1. 追加 TCP 多端口到防火墙规则"
     echo -e ">  2. 追加 UDP 多端口到防火墙规则"
-    echo -e ">  3. 删除指定INPUT Chain 序号行(不浪费防火墙效率)"
+    echo -e ">  3. 删除指定INPUT Chain 序号行(原则: 精简规则)"
     echo -e ">  4. 禁止ICMP，禁止Ping服务器"
-    echo -e ">  5. 重置 初始化安全防火墙规则预设端口"
-    echo -e ">  6. 退出设置${Font}"
+    echo -e ">  5. 重置初始化安全防火墙规则(首次需运行)"
+    echo -e ">  6. 退出设置"
+    echo -e ">  8. ${RedBG}  小白一键设置防火墙  ${Font}"
     echo
-    read -p "请输入数字(1-6):" num
+    read -p "请输入数字(1-8):" num
     case "$num" in
         1)
         add_tcp_chain
@@ -236,7 +270,12 @@ start_menu(){
         init_iptables
         ;;
         6)
+        netstat -ltup
         exit 1
+        ;;
+        8)
+        init_iptables
+        ss_kcp_speed_udp2raw
         ;;
         88)
         hide_menu
