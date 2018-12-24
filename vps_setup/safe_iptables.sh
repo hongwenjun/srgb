@@ -160,12 +160,12 @@ ss_bk_tg_frps_iptables(){
     save_iptables
 }
 
-# 安全防火墙规则: 只能Ping和SSH，如果SSH不是22端口
+# 安全防火墙规则: 只能Ping和SSH
 safe_iptables(){
     iptables -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 
     ssh_port=$(cat /etc/ssh/sshd_config | grep -e 'Port ' | awk '{print $2}')
-    if [ ${ssh_port}!=22 ]; then
+        if [ ${ssh_port} != '22' ]; then
        iptables -A INPUT -p tcp -m tcp --dport ${ssh_port}  -j ACCEPT
     fi
     iptables -A INPUT -p tcp -m tcp --dport 22  -j ACCEPT
