@@ -3,7 +3,11 @@
 # IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导
 # wget -qO safe_iptables.sh  git.io/fhJrU
 
-#  初始化安全防火墙规则预设端口,1999和2999是转接端口
+# Debian 和 Centos 关闭防火墙命令分别是
+# iptables -F  && iptables-save > /etc/iptables/rules.v4
+# iptables -F  && service iptables save
+
+#  初始化安全防火墙规则预设端口; 可以个性修改脚本; 或者 指定INPUT Chain 设置删除
 tcp_port="80,443"
 udp_port="9999,8000"
 
@@ -113,14 +117,14 @@ hide_menu(){
 
 # ss_kcp_speed_udp2raw 端口防火墙规则
 ss_kcp_speed_udp2raw(){
+    # ss+kcp+udp2raw  和  # wg+speed+udp2raw  环路设置
+    iptables -I INPUT -s 127.0.0.1 -p tcp  --dport 40000 -j ACCEPT
+    iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
+    
     # udp2raw 转接端口 1999 和 2999
     iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
     tcp_port="80,443,1999,2999"
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT
-
-    # ss+kcp+udp2raw  和  # wg+speed+udp2raw  环路设置
-    iptables -I INPUT -s 127.0.0.1 -p tcp  --dport 40000 -j ACCEPT
-    iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
 
     RELATED_ESTABLISHED
     save_iptables
