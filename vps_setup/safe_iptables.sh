@@ -3,10 +3,6 @@
 # IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导
 # wget -qO safe_iptables.sh  git.io/fhJrU
 
-# Debian 和 Centos 关闭防火墙命令分别是
-# iptables -F  && iptables-save > /etc/iptables/rules.v4
-# iptables -F  && service iptables save
-
 #  初始化安全防火墙规则预设端口; 可以个性修改脚本; 或者 指定INPUT Chain 设置删除
 tcp_port="80,443"
 udp_port="9999,8000"
@@ -63,7 +59,7 @@ no_use_passwd(){
     # 禁用密码登陆
     sed -i "s/#PasswordAuthentication.*/PasswordAuthentication no/g"   /etc/ssh/sshd_config
     sed -i "s/PasswordAuthentication.*/PasswordAuthentication no/g"   /etc/ssh/sshd_config
-    
+
     # 重启ssh服务
     systemctl restart ssh
 }
@@ -101,8 +97,8 @@ hide_menu(){
         frps_iptables
         ;;
         4)
-        ss_kcp_speed_udp2raw
         ss_bk_tg_frps_iptables
+        ss_kcp_speed_udp2raw
         ;;
         5)
         srgb18_ga_ddns
@@ -120,17 +116,17 @@ ss_kcp_speed_udp2raw(){
     # ss+kcp+udp2raw  和  # wg+speed+udp2raw  环路设置
     iptables -I INPUT -s 127.0.0.1 -p tcp  --dport 40000 -j ACCEPT
     iptables -I INPUT -s 127.0.0.1 -p udp -m multiport --dport 4000,8888,9999 -j ACCEPT
-    
+
     # udp2raw 转接端口 1999 和 2999
     iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
     tcp_port="80,443,1999,2999"
-    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT
+    iptables -I INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
 
     RELATED_ESTABLISHED
+    wg-quick down wg0   >/dev/null 2>&1
     save_iptables
 
     # 重启 WireGuard
-    wg-quick down wg0   >/dev/null 2>&1
     wg-quick up   wg0   >/dev/null 2>&1
 }
 
@@ -159,6 +155,7 @@ ss_bk_tg_frps_iptables(){
     ss_bk_tg="2018,7731,7979"
     frps_port="7000,7500,8080,4443,11122,2222"
     iptables -D INPUT -p tcp -m multiport --dport ${tcp_port} -j ACCEPT  >/dev/null 2>&1
+    tcp_port="80,443,1999,2999"
     iptables -I INPUT -p tcp -m multiport --dport ${tcp_port},${ss_bk_tg},${frps_port} -j ACCEPT
 
     RELATED_ESTABLISHED
@@ -177,7 +174,7 @@ safe_iptables(){
     iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
     iptables -A INPUT -j DROP
     iptables -P FORWARD DROP
-    iptables -A OUTPUT -j ACCEPT
+    iptables -P OUTPUT  ACCEPT
 }
 
 # 建立相关链接的优先
@@ -249,6 +246,12 @@ no_ping(){
     iptables -D INPUT -p icmp --icmp-type echo-request -j ACCEPT
 }
 
+no_iptables(){
+    # Debian 和 Centos 关闭防火墙命令分别是
+    iptables -F  && iptables-save > /etc/iptables/rules.v4   >/dev/null 2>&1
+    iptables -F  && service iptables save                    >/dev/null 2>&1
+}
+
 # 设置菜单
 start_menu(){
     echo
@@ -260,6 +263,7 @@ start_menu(){
     echo -e ">  4. 禁止ICMP，禁止Ping服务器"
     echo -e ">  5. 重置初始化安全防火墙规则(首次需运行)"
     echo -e ">  6. 退出设置"
+    echo -e ">  7. 关闭 IPTABLES 防火墙"
     echo -e ">  8. ${RedBG}  小白一键设置防火墙  ${Font}"
     echo
     read -p "请输入数字(1-8):" num
@@ -282,6 +286,9 @@ start_menu(){
         6)
         netstat -ltup
         exit 1
+        ;;
+        7)
+        no_iptables
         ;;
         8)
         init_iptables
