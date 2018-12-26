@@ -70,7 +70,7 @@ set background=dark " 当设置为 "dark" 时，Vim 会尝试使用在暗色背�
  
 set mouse=a         " 启用鼠标的使用
 
-
+set paste
 set pastetoggle=<F11>  " 快捷键来激活/取消 paste模式 按F11 然后 Shift + Insert 把文本复制到Vim
                        " gg 移动光标到第一行,  =G 格式化所有行文本
                        " 使用vim寄存器 "+p  粘贴不用考虑是否自动缩进，是否paste模式，直接原文传递
@@ -91,7 +91,7 @@ func! CompileRunGcc()
         exec "!g++ % -o %<"
         exec "!time ./%<"
     elseif &filetype == 'cpp'
-        exec "!g++ % -o %<"
+        exec "!g++ -std=c++11 % -o %<"
         exec "!time ./%<"
     elseif &filetype == 'java'
         exec "!javac %"
@@ -99,7 +99,7 @@ func! CompileRunGcc()
     elseif &filetype == 'sh'
         :!time bash %
     elseif &filetype == 'python'
-        exec "!time python2.7 %"
+        exec "!time python %"
     elseif &filetype == 'html'
         exec "!firefox % &"
     elseif &filetype == 'go'
