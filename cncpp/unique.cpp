@@ -1,3 +1,19 @@
+#include <cstdio>
+#include <algorithm>
+
+int main(int argc, char** argv)
+{
+    int a[] = {1, 1, 1, 2, 2, 3, 3, 4, 4, 5};
+    int size = sizeof a / sizeof * a;
+    auto ps = std::unique(a, a + size);
+
+    for (int i = 0 ;  i != (ps - a); ++i)
+        printf("%d", a[i]);
+
+    return 0;
+}
+
+
 #include<stdio.h>  
 int main()
 {
