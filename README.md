@@ -1,8 +1,11 @@
-Adobe InDesign Illustrator  Photoshop  Acrobat CorelDRAW
-图形软件 扩展脚本工具包
-Graphics Soft Extend Script Toolkit
+### linux笔记(全中文笔记，真是爱学习的好学生)
+https://github.com/ericdd/linux
 
-===sRGB.googlecode.com   sRGB色彩联盟,给你的工作增光添彩!===
+### linux  vim bash 脚本学习笔记
+https://github.com/hongwenjun/vps_setup
 
-原来 https://code.google.com/p/srgb
-搬迁到  https://github.com/hongwenjun/srgb
+### Debian 轻量级服务设置脚本 (学习脚本挺好)
+https://github.com/Xeoncross/lowendscript
+
+### 浙江A级景区名单
+https://github.com/hongwenjun/zjajq
