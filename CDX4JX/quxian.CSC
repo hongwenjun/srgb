@@ -1,0 +1,6 @@
+
+WITHOBJECT "CorelDraw.Automation.14" 
+.SELECTOBJECTOFTYPE 4  
+.ConvertToCurves 
+END WITHOBJECT
+

@@ -1,0 +1,45 @@
+REM About module
+REM Copyright 1999 Corel Corporation. All rights reserved.
+REM Copyright 1999 Alex Vakulenko, lfw-lfw@163.com
+REM QQ 7984802
+
+DECLARE SUB ShellExecute LIB "shell32" (BYVAL hWnd&,BYVAL Operation&,BYVAL File$,BYVAL Parameters&,BYVAL Directory&,BYVAL Show&) ALIAS "ShellExecuteA"
+
+REM GLOBAL Path$
+REM 
+REM Path$=GETSCRIPTFOLDER()
+REM IF Right(Path$,1)<>"\" THEN Path$=Path$+"\"
+
+BEGIN DIALOG OBJECT AboutDialog 170, 78, "About", SUB AboutSub
+	GROUPBOX  3, 1, 163, 51, .GroupBox1
+	TEXT  8, 9, 154, 8, .Module, ""
+	TEXT  22, 19, 125, 8, .Text1, "Copyright © 1999 by Alex I. Vakulenko"
+	TEXT  32, 29, 105, 8, .Text2, "E-Mail: lfw-lfw@163.com"
+	TEXT  13, 39, 144, 8, .Text3, "QQ7984802"
+	OKBUTTON  4, 58, 35, 14, .OK
+	PUSHBUTTON  89, 58, 35, 14, .Web, "&Web..."
+	PUSHBUTTON  130, 58, 35, 14, .Email, "&Email..."
+END DIALOG
+
+SUB AboutSub(BYVAL ControlID%, BYVAL EventCode%)
+SELECT CASE EventCode
+	CASE 2
+ 		SELECT CASE ControlID
+ 			CASE AboutDialog.Web.GETID()
+ 				ShellExecute 0,0,"QQ7984802",0,0,0
+ 			CASE AboutDialog.Email.GETID()
+ 				ShellExecute 0,0,"mailto:lfw-lfw@163.com",0,0,0
+		END SELECT
+END SELECT
+END SUB
+
+SUB AboutBox(ModuleName$)
+	AboutDialog.SETTEXT "About "+ModuleName$
+	AboutDialog.Module.SETSTYLE 1024+64
+	AboutDialog.Text1.SETSTYLE 1024+64
+	AboutDialog.Text2.SETSTYLE 1024+64
+	AboutDialog.Text3.SETSTYLE 1024+64
+	AboutDialog.Module.SETTEXT ModuleName$
+	ret%=DIALOG(AboutDialog)
+END SUB
+
