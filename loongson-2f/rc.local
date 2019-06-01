@@ -1,0 +1,59 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          rc.local
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Run /etc/rc.local if it exist
+### END INIT INFO
+
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+do_start() {
+	if [ -x /etc/rc.local ]; then
+	        [ "$VERBOSE" != no ] && log_begin_msg "Running local boot scripts (/etc/rc.local)"
+		/etc/rc.local
+		ES=$?
+		[ "$VERBOSE" != no ] && log_end_msg $ES
+		return $ES
+	fi
+}
+
+case "$1" in
+    start)
+	do_start
+        ;;
+    restart|reload|force-reload)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+        ;;
+    stop)
+        ;;
+    *)
+        echo "Usage: $0 start|stop" >&2
+        exit 3
+        ;;
+esac
+
+# 设置IP和掩码
+ifconfig eth0 192.168.1.135 netmask 255.255.255.0
+# 设置网关
+route add default gw 192.168.1.1
+
+mount /dev/sdb1 /home/samba/sd4g -o rw
+
+sleep 3
+cd /root/frp  && ./frpc -c frpc.ini > /dev/null 2>&1 &
+
+
+# sleep 3
+# 运行启动PHDDNS
+# /usr/bin/phddns -c /etc/phlinux.conf -d
+
+# 同步时间，已经放到 crontab 里
+# ntpdate time-a.nist.gov

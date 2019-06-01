@@ -1,0 +1,27 @@
+server {
+        listen 443 ssl;
+        ssl_certificate         ssl.srgb.work.crt;
+        ssl_certificate_key     ssl.srgb.work.key;
+        ssl_protocols           TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers             HIGH:!aNULL:!MD5;
+        server_name             ssl.srgb.work;
+        root            /var/www;
+        
+        location / {
+            proxy_redirect off;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $http_host;
+            if ($http_host = "www.baidu_bing.com" ) {
+                proxy_pass http://127.0.0.1:8000;
+            }
+        }
+}
+
+server {
+        listen 80;
+        server_name ssl.srgb.work;
+        return 301 https://ssl.srgb.work:443;
+}
+
