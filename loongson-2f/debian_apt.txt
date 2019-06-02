@@ -1,0 +1,59 @@
+中科大源
+https://mirrors.ustc.edu.cn/repogen/
+
+清华大学
+https://mirrors.tuna.tsinghua.edu.cn/
+
+
+
+deb http://mirrors.ustc.edu.cn/debian/ stretch main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ stretch main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian/ stretch-updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ stretch-updates main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian/ stretch-backports main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ stretch-backports main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian-security/ stretch/updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian-security/ stretch/updates main contrib non-free
+
+
+
+=======================
+
+deb http://mirrors.ustc.edu.cn/debian/ jessie main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ jessie main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian/ jessie-updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ jessie-updates main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian/ jessie-backports main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ jessie-backports main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian-security/ jessie/updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian-security/ jessie/updates main contrib non-free
+
+=======================
+
+deb http://mirrors.ustc.edu.cn/debian/ wheezy main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ wheezy main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian/ wheezy-updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ wheezy-updates main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian/ wheezy-backports main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ wheezy-backports main contrib non-free
+
+deb http://mirrors.ustc.edu.cn/debian-security/ wheezy/updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian-security/ wheezy/updates main contrib non-free
+
+==================
+
+deb http://mirrors.ustc.edu.cn/debian/ sid main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian/ sid main contrib non-free
+
+
+====
+ apt-key adv --recv-keys --keyserver keyserver.ubuntu.com EF0F382A1A7B6500
+
