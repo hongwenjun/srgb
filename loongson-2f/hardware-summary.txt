@@ -1,0 +1,176 @@
+uname -a: Linux debian 4.5.0-2-loongson-2f #1 Debian 4.5.3-2 (2016-05-08) mips64 GNU/Linux
+usb-list: 
+usb-list: Bus 01 Device 01: EHCI Host Controller [1d6b:0002]
+usb-list:    Level 00 Parent 00 Port 00  Class 09(hub  ) Subclass 00 Protocol 00
+usb-list:    Manufacturer: Linux 4.5.0-2-loongson-2f ehci_hcd
+usb-list:    Interface 00: Class 09(hub  ) Subclass 00 Protocol 00 Driver hub
+usb-list: 
+usb-list: Bus 02 Device 01: EHCI Host Controller [1d6b:0002]
+usb-list:    Level 00 Parent 00 Port 00  Class 09(hub  ) Subclass 00 Protocol 00
+usb-list:    Manufacturer: Linux 4.5.0-2-loongson-2f ehci_hcd
+usb-list:    Interface 00: Class 09(hub  ) Subclass 00 Protocol 00 Driver hub
+usb-list: 
+usb-list: Bus 02 Device 02: USB2.0-CRW [0bda:0158]
+usb-list:    Level 01 Parent 01 Port 00  Class 00(>ifc ) Subclass 00 Protocol 00
+usb-list:    Manufacturer: Generic
+usb-list:    Interface 00: Class 08(mstor) Subclass 06 Protocol 50 Driver <none>
+usb-list: 
+usb-list: Bus 02 Device 03: RTL8187B_WLAN_Adapter [0bda:8189]
+usb-list:    Level 01 Parent 01 Port 03  Class 00(>ifc ) Subclass 00 Protocol 00
+usb-list:    Manufacturer: Manufacturer_Realtek
+usb-list:    Interface 00: Class ff(vend.) Subclass ff Protocol ff Driver rtl8187
+usb-list: 
+usb-list: Bus 03 Device 01: OHCI PCI host controller [1d6b:0001]
+usb-list:    Level 00 Parent 00 Port 00  Class 09(hub  ) Subclass 00 Protocol 00
+usb-list:    Manufacturer: Linux 4.5.0-2-loongson-2f ohci_hcd
+usb-list:    Interface 00: Class 09(hub  ) Subclass 00 Protocol 00 Driver hub
+usb-list: 
+usb-list: Bus 04 Device 01: OHCI PCI host controller [1d6b:0001]
+usb-list:    Level 00 Parent 00 Port 00  Class 09(hub  ) Subclass 00 Protocol 00
+usb-list:    Manufacturer: Linux 4.5.0-2-loongson-2f ohci_hcd
+usb-list:    Interface 00: Class 09(hub  ) Subclass 00 Protocol 00 Driver hub
+df: Filesystem           1K-blocks      Used Available Use% Mounted on
+df: none                    102976       240    102736   0% /run
+df: devtmpfs                505424         0    505424   0% /dev
+free:              total         used         free       shared      buffers
+free: Mem:       1029632       137888       891744       103088            0
+free: -/+ buffers:             137888       891744
+free: Swap:            0            0            0
+/proc/cmdline: PMON_VER=LM8089-1.4.9 EC_VER=PQ1D28 machtype=lemote-yeeloong-2f-8.9inches rd_start=0x84000000 rd_size=0x11dc9a3 
+/proc/cpuinfo: system type		: lemote-yeeloong-2f-8.9inches
+/proc/cpuinfo: machine			: Unknown
+/proc/cpuinfo: processor		: 0
+/proc/cpuinfo: cpu model		: ICT Loongson-2 V0.3  FPU V0.1
+/proc/cpuinfo: BogoMIPS		: 528.38
+/proc/cpuinfo: wait instruction	: no
+/proc/cpuinfo: microsecond timers	: yes
+/proc/cpuinfo: tlb_entries		: 64
+/proc/cpuinfo: extra interrupt vector	: no
+/proc/cpuinfo: hardware watchpoint	: yes, count: 0, address/irw mask: []
+/proc/cpuinfo: isa			: mips2 mips3
+/proc/cpuinfo: ASEs implemented	:
+/proc/cpuinfo: shadow register sets	: 1
+/proc/cpuinfo: kscratch registers	: 0
+/proc/cpuinfo: package			: 0
+/proc/cpuinfo: core			: 0
+/proc/cpuinfo: VCED exceptions		: not available
+/proc/cpuinfo: VCEI exceptions		: not available
+/proc/cpuinfo: 
+/proc/ioports: 0020-0021 : pic1
+/proc/ioports: 0060-006f : i8042
+/proc/ioports: 0070-0071 : rtc_cmos
+/proc/ioports:   0070-0071 : rtc0
+/proc/ioports: 00a0-00a1 : pic2
+/proc/ioports: 0170-0177 : pata_amd
+/proc/ioports: 01f0-01f7 : pata_amd
+/proc/ioports: 0376-0376 : pata_amd
+/proc/ioports: 03f6-03f6 : pata_amd
+/proc/ioports: 4000-ffff : pci io space
+/proc/ioports:   4000-40ff : 0000:00:07.0
+/proc/ioports:     4000-40ff : 8139too
+/proc/ioports:   4400-44ff : 0000:00:0e.0
+/proc/ioports:   4800-487f : 0000:00:0e.0
+/proc/ioports:   4880-48ff : 0000:00:0e.3
+/proc/ioports:   4c00-4c3f : 0000:00:0e.0
+/proc/ioports:   4c40-4c5f : 0000:00:0e.0
+/proc/ioports:   4c60-4c6f : 0000:00:0e.2
+/proc/ioports:     4c60-4c6f : pata_amd
+/proc/ioports:   4c70-4c77 : 0000:00:0e.0
+/proc/iomem: 00000000-0fffffff : System RAM
+/proc/iomem:   00000000-00000000 : Crash kernel
+/proc/iomem:   00200000-00836b13 : Kernel code
+/proc/iomem:   00836b14-00ad7fff : Kernel data
+/proc/iomem: 10000000-3fffffff : reserved
+/proc/iomem: 40000000-7fffffff : pci memory space
+/proc/iomem:   40000000-40ffffff : 0000:00:08.0
+/proc/iomem:     40000000-40ffffff : sm7xxfb
+/proc/iomem:   41000000-4101ffff : 0000:00:07.0
+/proc/iomem:   41020000-41020fff : 0000:00:09.0
+/proc/iomem:     41020000-41020fff : ohci_hcd
+/proc/iomem:   41021000-41021fff : 0000:00:0e.4
+/proc/iomem:     41021000-41021fff : ohci_hcd
+/proc/iomem:   41022000-41022fff : 0000:00:0e.5
+/proc/iomem:     41022000-41022fff : ehci_hcd
+/proc/iomem:   41023000-410230ff : 0000:00:07.0
+/proc/iomem:     41023000-410230ff : 8139too
+/proc/iomem:   41023100-410231ff : 0000:00:09.1
+/proc/iomem:     41023100-410231ff : ehci_hcd
+/proc/iomem: 80000000-8fffffff : reserved
+/proc/iomem: 90000000-bfffffff : System RAM
+/proc/interrupts:            CPU0       
+/proc/interrupts:   1:       2694    XT-PIC   1  i8042
+/proc/interrupts:   2:          0    XT-PIC   2  cascade
+/proc/interrupts:   8:          0    XT-PIC   8  rtc0
+/proc/interrupts:  11:       3769    XT-PIC  11  ehci_hcd:usb2, ohci_hcd:usb4
+/proc/interrupts:  12:        566    XT-PIC  12  i8042
+/proc/interrupts:  14:       1197    XT-PIC  14  pata_amd
+/proc/interrupts:  15:          0    XT-PIC  15  pata_amd
+/proc/interrupts:  18:          0      MIPS   2  cascade
+/proc/interrupts:  22:      18464      MIPS   6  cascade
+/proc/interrupts:  23:      57263      MIPS   7  timer
+/proc/interrupts:  37:      18395  bonito_irq  enp0s7
+/proc/interrupts:  39:          0  bonito_irq  ehci_hcd:usb1, ohci_hcd:usb3
+/proc/interrupts: ERR:          1
+/proc/meminfo: MemTotal:        1029632 kB
+/proc/meminfo: MemFree:          891632 kB
+/proc/meminfo: MemAvailable:     889168 kB
+/proc/meminfo: Buffers:               0 kB
+/proc/meminfo: Cached:           103088 kB
+/proc/meminfo: SwapCached:            0 kB
+/proc/meminfo: Active:            74864 kB
+/proc/meminfo: Inactive:          44176 kB
+/proc/meminfo: Active(anon):      74864 kB
+/proc/meminfo: Inactive(anon):    44176 kB
+/proc/meminfo: Active(file):          0 kB
+/proc/meminfo: Inactive(file):        0 kB
+/proc/meminfo: Unevictable:           0 kB
+/proc/meminfo: Mlocked:               0 kB
+/proc/meminfo: SwapTotal:             0 kB
+/proc/meminfo: SwapFree:              0 kB
+/proc/meminfo: Dirty:                 0 kB
+/proc/meminfo: Writeback:             0 kB
+/proc/meminfo: AnonPages:         16000 kB
+/proc/meminfo: Mapped:             6928 kB
+/proc/meminfo: Shmem:            103088 kB
+/proc/meminfo: Slab:              12784 kB
+/proc/meminfo: SReclaimable:       6768 kB
+/proc/meminfo: SUnreclaim:         6016 kB
+/proc/meminfo: KernelStack:         800 kB
+/proc/meminfo: PageTables:          832 kB
+/proc/meminfo: NFS_Unstable:          0 kB
+/proc/meminfo: Bounce:                0 kB
+/proc/meminfo: WritebackTmp:          0 kB
+/proc/meminfo: CommitLimit:      514816 kB
+/proc/meminfo: Committed_AS:     123680 kB
+/proc/meminfo: VmallocTotal:   1069547488 kB
+/proc/meminfo: VmallocUsed:           0 kB
+/proc/meminfo: VmallocChunk:          0 kB
+/proc/meminfo: AnonHugePages:         0 kB
+/proc/meminfo: HugePages_Total:       0
+/proc/meminfo: HugePages_Free:        0
+/proc/meminfo: HugePages_Rsvd:        0
+/proc/meminfo: HugePages_Surp:        0
+/proc/meminfo: Hugepagesize:      32768 kB
+/proc/bus/input/devices: I: Bus=0011 Vendor=0001 Product=0001 Version=ab41
+/proc/bus/input/devices: N: Name="AT Translated Set 2 keyboard"
+/proc/bus/input/devices: P: Phys=isa0060/serio0/input0
+/proc/bus/input/devices: S: Sysfs=/devices/platform/i8042/serio0/input/input0
+/proc/bus/input/devices: U: Uniq=
+/proc/bus/input/devices: H: Handlers=sysrq kbd leds 
+/proc/bus/input/devices: B: PROP=0
+/proc/bus/input/devices: B: EV=120013
+/proc/bus/input/devices: B: KEY=4 2000000 3803078 f800d001 feffffdf ffefffff ffffffff fffffffe
+/proc/bus/input/devices: B: MSC=10
+/proc/bus/input/devices: B: LED=7
+/proc/bus/input/devices: 
+/proc/bus/input/devices: I: Bus=0011 Vendor=0002 Product=000f Version=0000
+/proc/bus/input/devices: N: Name="FSPPS/2 Sentelic FingerSensingPad"
+/proc/bus/input/devices: P: Phys=isa0060/serio1/input0
+/proc/bus/input/devices: S: Sysfs=/devices/platform/i8042/serio1/input/input2
+/proc/bus/input/devices: U: Uniq=
+/proc/bus/input/devices: H: Handlers=mouse0 
+/proc/bus/input/devices: B: PROP=1
+/proc/bus/input/devices: B: EV=7
+/proc/bus/input/devices: B: KEY=670000 0 0 0 0 0 0 0 0
+/proc/bus/input/devices: B: REL=143
+/proc/bus/input/devices: 
