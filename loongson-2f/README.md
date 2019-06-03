@@ -29,3 +29,12 @@ PMON> g
 deb http://srgb18.ga/debian/debian/ jessie main contrib
 deb http://srgb18.ga/debian/ jessie main contrib
 ```
+
+# 卸载GUI xfec4 窗口和安装设置软件
+```
+apt remove xfce4  x11-common 
+apt update
+apt install tmux   # 后台窗口
+apt upgrade        # tmux 后更新软件
+apt install gcc g++ gdb git htop screen nginx qemu
+```
