@@ -36,7 +36,7 @@ apt remove xfce4  x11-common
 apt update
 apt install tmux   # 后台窗口
 apt upgrade        # tmux 后更新软件
-apt install gcc g++ gdb git htop screen nginx qemu
+apt install gcc g++ gdb git build-essential autoconf libtool automake  htop  screen nginx qemu 
 ```
 
 ### 5. 使用 QEMU 可以用户态模拟翻译运行 GO语言 1.10版本以下编译的程序
@@ -44,4 +44,4 @@ apt install gcc g++ gdb git htop screen nginx qemu
 qemu-mips    ./frpc --help 
 qemu-mipsle  ./frpc_mipsle
 ```
-
+- [frp  mips](https://github.com/hongwenjun/srgb/tree/master/loongson-2f/frp)    [kcp-client mips](https://github.com/hongwenjun/srgb/raw/master/loongson-2f/bin/kcp-client)
