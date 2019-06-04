@@ -1,5 +1,5 @@
 # 龙芯2F 8089D 安装 debian 8.10 使用恢复系统和升级法
-
+- 本文章短网址  https://git.io/loongson
 ### 1. 搜索 loongson2_debian8_xfce4_20141129a.tar.lzma  
 -	http://www.anheng.com.cn/loongson/install/
 -	下载  loongson2_debian8_xfce4_20141129a.tar.lzma   vmlinux   readme.utf8.txt
@@ -30,7 +30,7 @@ deb http://srgb18.ga/debian/debian/ jessie main contrib
 deb http://srgb18.ga/debian/ jessie main contrib
 ```
 
-# 卸载GUI xfec4 窗口和安装设置软件
+### 4.  卸载GUI xfec4 窗口和安装设置软件
 ```
 apt remove xfce4  x11-common 
 apt update
@@ -38,3 +38,10 @@ apt install tmux   # 后台窗口
 apt upgrade        # tmux 后更新软件
 apt install gcc g++ gdb git htop screen nginx qemu
 ```
+
+### 5. 使用 QEMU 可以用户态模拟翻译运行 GO语言 1.10版本以下编译的程序
+```
+qemu-mips    ./frpc --help 
+qemu-mipsle  ./frpc_mipsle
+```
+
