@@ -1,8 +1,9 @@
 # 龙芯2F 8089D 安装 debian 8.10 使用恢复系统和升级法
 - 本文章短网址  https://git.io/loongson
 ### 1. 搜索 loongson2_debian8_xfce4_20141129a.tar.lzma  
--	http://www.anheng.com.cn/loongson/install/
--	下载  loongson2_debian8_xfce4_20141129a.tar.lzma   vmlinux   readme.utf8.txt
+-	http://www.anheng.com.cn/loongson/install/      安恒源
+- https://mirrors.tuna.tsinghua.edu.cn/loongson/  清华源
+- 下载 　 loongson2_debian8_xfce4_20141129a.tar.lzma  　 vmlinux  　 readme.utf8.txt
 - 在企鹅云也会搜到，看哪个地方块，哪里下载到本地
 
 ### 2. 龙芯2F_8089D网络安装，官方源已经失效，恢复法也可以这个方法
