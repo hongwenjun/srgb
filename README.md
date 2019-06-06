@@ -41,8 +41,12 @@ alias gcc='_win_gcc() { winpty gcc $@ ; }; _win_gcc'
 alias g++='_win_g++() { winpty g++ $@ ; }; _win_g++'
 alias cl='_win_cl() { winpty cl $@ ; }; _win_cl'
 
+alias youtube-dl='youtube-dl --proxy 127.0.0.1:1080 '
 
-alias hg="history | sed 's/^[ ]*[0-9]\+[ ]*//' | sort | uniq | grep "
+alias cls='clear'
+alias hg="history | sed 's/^[ ]*[0-9]\+[ ]*//' | sort | uniq |grep --color=auto"
+alias ssr="http_proxy=http://127.0.0.1:1080 https_proxy=http://127.0.0.1:1080"
+alias grep='grep --color=auto'
 
 # 添加 youtube-dl 和 ffmpeg 可执行文件的路径，用 ：分割
 PATH=$PATH:/e/mp4:/c/soft/ffmpeg/bin:/c/CodeBlocks/MinGW64/bin:/c/soft/GifCam:/c/Ramdisk:/c/soft/iperf-3.1.3-win64:
@@ -72,7 +76,6 @@ bind -n WheelUpPane select-pane -t= \; copy-mode -e \; send-keys -M
 bind -n WheelDownPane select-pane -t= \; send-keys -M
 
 ```
-
 
 #  .vimrc
 ```
