@@ -1,11 +1,17 @@
 ### linux笔记(全中文笔记，真是爱学习的好学生)
-https://github.com/ericdd/linux
+https://github.com/hongwenjun/linux
 
 ### linux  vim bash 脚本学习笔记
-https://github.com/hongwenjun/vps_setup
+https://git.io/vps.us
 
 ### Debian 轻量级服务设置脚本 (学习脚本挺好)
 https://github.com/Xeoncross/lowendscript
+
+### openwrt-luci-kcp-udp 软件包
+https://git.io/openwrt
+
+### Windows udp2raw+kcptun 加速tcp流量 简易工具
+https://git.io/winkcp
 
 ### 浙江A级景区名单
 https://github.com/hongwenjun/zjajq
