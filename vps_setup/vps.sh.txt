@@ -1,0 +1,91 @@
+>     Open Source Project: https://github.com/hongwenjun/vps_setup
+>  1. Default Three-in-One-Step Automated WireGuard Shadowsocks V2Ray
+>  2. Choose to install WireGuard VPN Multi-user Configuration
+>  3. Compile install / Update  shadowsocks-libev
+>  4. Uninstall WireGuard Shadowsocks V2ray Service
+-------------------------------------------------------
+>  5. Display WireGuard V2ray and rc.local Configuration
+>  6. Exit
+>  7. WireGuard Management Command:  bash wgmtu
+>  8. Choose to install  Shadowsocks and V2Ray  Generate and Display QR_code
+Please Enter the Number to Choose (Press Enter to Default):
+
+ One-Step Automated Install WireGuard Script For Debian_9 Ubuntu Centos_7
+      Open Source Project: https://github.com/hongwenjun/vps_setup
+>  1. Display Client Configuration and QR code for Mobile Phone
+>  2. Modify WireGuard Server MTU Number
+>  3. Modify WireGuard Server Port
+>  4. WireGuard+Speeder+Udp2Raw and SS+Kcp+Udp2RAW Automated Configuration
+----------------------------------------------------------
+>  5. Add/Delete WireGuard Client Peer Management
+>  6. Update/Remove WireGuard and Udp2Raw Service
+>  7. Replace the Script itself with English to Simplified Chinese(中文)
+>  8.   IPTABLES Firewall Setup Script
+
+Usage:  bash wgmtu  [ setup | remove | vps | bench | -U ]
+                    [ v2ray | vnstat | log | trace | -h ]
+
+Please Enter the Number(1-8):
+
+   WireGuard+Speeder+Udp2Raw and SS+Kcp+Udp2RAW Automated Configuration
+       Open Source Project: https://github.com/hongwenjun/vps_setup
+Random Password:  a9555e  Now, You can change the Password, Press Enter to not Modify:
+Please Enter the New Password:
+
+
+:: WG+Speeder+Udp2Raw and SS+Kcp+Udp2RAW Configuration information.
+
+Please visit  https://git.io/winkcp  to download the Windows KcpTun and Udp2RAW Socket Bridge tools.
+Display Information  Server IP: 34.97.187.20
+  WG+SPEED+UDP2RAW Original Port: 21669 ;  UDP2RAW Camouflage TCP Port: 2999 ; Forward Password: a9555e
+  SS+KCP+UDP2RAW Speeded-Up: UDP2RAW Camouflage TCP Port: 1999 ; SS_Password: a9555e Encrypt_Method: aes-256-gcm
+  Mobile Phone SS+KCP Speeded-Up: KCPTUN Port: 4000 ; KCP Plugin Parameters: mode=fast2;key=a9555e;mtu=1300
+
+:: Easy Install Shadowsocks & V2Ray : Generate and display QR_code  By 蘭雅sRGB
+:: Usage:  bash <(curl -L -s https://git.io/v2ray_ss.sh)
+:: Shadowsocks Client Configuration for Mobile QR_code!
+:: V2rayNG Client Configuration for Mobile QR_code!
+
+:: V2rayN Windows Client Vmess Protocol Configuration
+:: Usage:  bash <(curl -L -s https://git.io/v2ray_ss.sh) setup  to Modified Port Password and UUID
+
+:: 1. Please Modify the V2ray Server Port Number, Random Port:  27021
+Please Enter the Number, Press Enter to not Modify(100--60000):
+:: 2. Please Modify the Shadowsocks Server Port Number, Random Port:  33307
+Please Enter the Number, Press Enter to not Modify(100--60000):
+:: 3. Please Modify the Password of Shadowsocks, Random Password:  c97f09
+
+
+:: Display Client Configuration and Mobile Phone QR_code.
+:: Client Configuration: wg_v2ng_2.conf
+:: Please use the key combination Ctrl+Ins to copy the text to the Windows client.
+:: Mobile Phone WireGuard APP Support pure IPV6 connection, Whether to display IPV6 QR code?(Y/N):
+:: Get IPV6 address is incorrect, Your Server may not have IPV6 network support!
+
+   Add/Delete WireGuard Client Peer Management
+>  1. Add One WireGuard Client Peer
+>  2. Delete Last WireGuard Client Peer
+>  3. Delete Choose WireGuard Client Peer
+------------------------------------------------------
+>  4. Exit
+>  5. Reset WireGuard All Client Peer
+
+:: Warning: The original client configuration will be deleted, press Ctrl+C to revoke urgently.
+:: Enter the total number of client Peers(2--200):
+
+
+
+中文菜单中的英文
+>  7. Replace the Script itself with Simplified Chinese to English
+
+  IPTABLES 设置防火墙规则 脚本 By 蘭雅sRGB  特别感谢 TaterLi 指导
+   原则: 规则不宜超过10条，3-5条最好，每增加规则系统都忙很多。
+>  1. 追加 TCP 多端口到防火墙规则
+>  2. 追加 UDP 多端口到防火墙规则
+>  3. 删除指定INPUT Chain 序号行(原则: 精简规则)
+>  4. 禁止ICMP，禁止Ping服务器
+>  5. 重置初始化安全防火墙规则(首次需运行)
+>  6. 退出设置
+------------------------------------------------------------
+>  7. 关闭 IPTABLES 防火墙
+>  8.   小白一键设置防火墙
