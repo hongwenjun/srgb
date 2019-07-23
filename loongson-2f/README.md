@@ -46,3 +46,27 @@ qemu-mips    ./frpc --help
 qemu-mipsle  ./frpc_mipsle
 ```
 - [frp  mips](https://github.com/hongwenjun/srgb/tree/master/loongson-2f/frp)    [kcp-client mips](https://github.com/hongwenjun/srgb/raw/master/loongson-2f/bin/kcp-client)
+
+----
+### MIPS汇编语言小科普 - 视频教程
+```
+链接: https://pan.baidu.com/s/1gRNMUpoZtZulmHv7PwkLtQ 密码: ygce
+
+Mars4_5.jar   MIPS 模拟器  需要安装 自行安装 JAVA
+
+mips_mars_help.zip  指令集使用 和 包含
+mipsref.pdf   MIPS/SPIM Reference Card
+```
+----
+```
+其他相关链接
+
+龙芯汇编语言程序设计
+https://www.bilibili.com/video/av14809674/
+
+mips指令简单入门
+https://blog.csdn.net/ben_chong/article/details/51794392
+
+MIPS体系结构--指令集
+https://blog.csdn.net/sdreamq/article/details/51044913
+```
