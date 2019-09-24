@@ -41,7 +41,7 @@ server {
 	root /var/www/html;
 
 	# Add index.php to the list if you are using PHP
-	index index.html index.htm index.nginx-debian.html;
+	index index.html index.htm index.nginx-debian.html index.php;
 
 	server_name _;
 
@@ -53,11 +53,11 @@ server {
 
 	# pass PHP scripts to FastCGI server
 	#
-	#location ~ \.php$ {
-	#	include snippets/fastcgi-php.conf;
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
 	#
 	#	# With php-fpm (or other unix sockets):
-	#	fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+		fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
 	#	# With php-cgi (or other tcp sockets):
 	#	fastcgi_pass 127.0.0.1:9000;
 	#}
@@ -67,7 +67,7 @@ server {
 	#
 	#location ~ /\.ht {
 	#	deny all;
-	#}
+	}
 }
 
 
