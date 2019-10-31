@@ -17,9 +17,9 @@ index index.html index.htm index.nginx-debian.html index.php;
             include snippets/fastcgi-php.conf;
     #
     #       # With php-fpm (or other unix sockets):
-            fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;  # 注意版本好要对应，不然 520 网关错误
     #       # With php-cgi (or other tcp sockets):
-    #       fastcgi_pass 127.0.0.1:9000;
+    #       fastcgi_pass 127.0.0.1:9000;                     # apt 安装的 php-fpm 直接开这个是不行的
     }
 ```
 
