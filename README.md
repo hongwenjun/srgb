@@ -1,3 +1,12 @@
+### Python 3.8.0 中文文档 镜像
+- http://srgb.vicp.net/python-zh-cn/
+
+### linux  chown 改变文件属
+- chown -R username:user_group folder
+
+### 改变 WEB文件夹属性为 www-data
+- chown -R www-data:www-data  /var/www
+
 ### linux笔记(全中文笔记，真是爱学习的好学生)
 https://github.com/hongwenjun/linux
 
