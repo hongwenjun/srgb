@@ -1,6 +1,18 @@
 ### Python 3.8.0 中文文档 镜像
 - http://srgb.vicp.net/python-zh-cn/
 
+### 如何在不破坏apt的情况下更新Python 3的替代方案？
+
+- sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.7 3
+
+```
+update-alternatives: using /usr/bin/python3.7 to provide /usr/bin/python (python) in auto mode
+
+root@orangepizero /u/bin# python -V
+
+Python 3.7.3
+```
+
 ### linux  chown 改变文件属
 - chown -R username:user_group folder
 
