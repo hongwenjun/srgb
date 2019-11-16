@@ -2,7 +2,7 @@
 
 import sys , os
 
-# 颜色定义
+# define Color
 Green = '\033[32m'
 Red = '\033[31m'
 GreenBG = '\033[42;37m'
@@ -17,22 +17,28 @@ sys.ps2 = SkyBlue + '... ' + Font
 def cls():
     print('\x1bc')
 
+def pwd():
+    print( SkyBlue + os.getcwd(), end = ' ')
+
 def ls():
     cur_path = os.getcwd()
     os.system('ls -l ' + cur_path)
-    print( SkyBlue + os.getcwd(), end = ' ')
+    pwd()
 
 def cd(path = '.'):
     os.chdir(path)
-    print( SkyBlue + os.getcwd(), end = ' ')
+    pwd()
 
 def cat(file = 'me.py'):
     with open(file, 'r') as f:
         print(f.read())
 
+def bash():
+    os.system('bash')
+
 def info():
-    print( SkyBlue + ':: Usage:  ' + Green + 'python -i me.py' + Yellow + ' Or, import the module [import me]')
-    print( Green   + ':: Function:  me.cls()  me.ls()  me.cd(path)  me.cat(file)  me.info() ')
-    print( SkyBlue + os.getcwd(), end = ' ')
+    print( SkyBlue + ':: Usage:  ' + Green + 'python -i me.py' + Yellow + '     or [import me] , import the module me.py')
+    print( Green   + ':: Function:  cls()  ls()  cd(path)  cat(file)  pwd()  bash()  info() ')
+    pwd()
 
 info()
