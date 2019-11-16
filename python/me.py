@@ -31,8 +31,8 @@ def cat(file = 'me.py'):
         print(f.read())
 
 def info():
-    print( SkyBlue + ':: Usage:  ' + RedBG + 'me.cls()' + Yellow + ' 功能: 清理屏幕; 需先导入 [import me]')
-    print( Green   + ':: Other:  me.ls()  me.cd(path)  me.cat(file)  me.info() ')
+    print( SkyBlue + ':: Usage:  ' + Green + 'python -i me.py' + Yellow + ' Or, import the module [import me]')
+    print( Green   + ':: Function:  me.cls()  me.ls()  me.cd(path)  me.cat(file)  me.info() ')
     print( SkyBlue + os.getcwd(), end = ' ')
 
 info()
