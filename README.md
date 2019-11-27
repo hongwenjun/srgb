@@ -1,3 +1,10 @@
+### 初窥Scrapy
+https://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/overview.html
+- Scrapy是一个为了爬取网站数据，提取结构性数据而编写的应用框架。 可以应用在包括数据挖掘，信息处理或存储历史数据等一系列的程序中。
+
+### scrapy学习
+https://www.jianshu.com/p/7dee0837b3d2
+
 ### Python 3.8.0 中文文档 镜像
 - http://srgb.vicp.net/python-zh-cn/
 
