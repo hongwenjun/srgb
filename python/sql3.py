@@ -23,3 +23,40 @@ conn.commit()
 # Just be sure any changes have been committed or they will be lost.  # 只要确保任何的修改已经提交，否则将丢失。
 conn.close()
 
+
+# 这些数据被持久化保存了，而且可以在之后的会话中使用它们：
+
+import sqlite3
+conn = sqlite3.connect('example.db')
+c = conn.cursor()
+
+'''
+通常你的 SQL 操作需要使用一些 Python 变量的值。你不应该使用 Python 的字符串操作来创建你的查询语句，因为那样做不安全；它会使你的程序容易受到 SQL 注入攻击（在 https://xkcd.com/327/ 上有一个搞笑的例子，看看有什么后果）
+
+推荐另外一种方法：使用 DB-API 的参数替换。在你的 SQL 语句中，使用 ? 占位符来代替值，然后把对应的值组成的元组做为 execute() 方法的第二个参数。（其他数据库可能会使用不同的占位符，比如 %s 或者 :1）例如：
+'''
+
+# Never do this -- insecure!  # 永远不要这样做-不安全！
+symbol = 'RHAT'
+c.execute("SELECT * FROM stocks WHERE symbol = '%s'" % symbol)
+
+# Do this instead  # 改为这样操作
+t = ('RHAT',)
+c.execute('SELECT * FROM stocks WHERE symbol=?', t)
+print(c.fetchone())
+
+# Larger example that inserts many records at a time  # 较大的示例一次插入许多记录
+purchases = [('2006-03-28', 'BUY', 'IBM', 1000, 45.00),
+             ('2006-04-05', 'BUY', 'MSFT', 1000, 72.00),
+             ('2006-04-06', 'SELL', 'IBM', 500, 53.00),
+            ]
+c.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
+
+
+# 要在执行 SELECT 语句后获取数据，你可以把游标作为 iterator，然后调用它的 fetchone() 
+# 方法来获取一条匹配的行，也可以调用 fetchall() 来得到包含多个匹配行的列表。
+
+# 下面是一个使用迭代器形式的例子：
+
+for row in c.execute('SELECT * FROM stocks ORDER BY price'):
+	print(row)
