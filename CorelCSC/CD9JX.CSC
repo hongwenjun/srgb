@@ -2,19 +2,19 @@ REM 创建 2007年8月28日 By  蘭雅sRGB    更新于2020年02月19日
 GLOBAL BITMAP_LOGO$ , Help_File$ , BJ_File$ ,BITMAP_CD3D$, URLText$
 
 DECLARE SUB ShellExecute LIB "shell32" (BYVAL hWnd&,BYVAL Operation&,BYVAL File$,BYVAL Parameters&,BYVAL Directory&,BYVAL Show&) ALIAS "ShellExecuteA"
-DECLARE SUB BJWJ          ' 快速导入个性标记文件
-DECLARE SUB JX4J            ' 把角线放置到页面四角(请先选择角线)
-DECLARE SUB ZX4B           ' 把中线放置到页边中间(请先选择中线)
-DECLARE SUB WZQX         ' 文字曲线
-DECLARE SUB Xgs2            ' 调用外部插件
-DECLARE SUB OPENBJ        ' 隐藏功能：编辑标记文件
-DECLARE SUB sRGB3D        ' 3D展示盒变形插件
-DECLARE SUB SetPageSize     '拼版物件居中设定页面大小
-DECLARE SUB COLORMARK      ' 导入颜色套准标记文件
-DECLARE SUB CMYKMARK        '  放置 CMYK 四色标记
-DECLARE SUB Colorstrip_Place3B     ' 把色条放置到页面三边
+DECLARE SUB BJWJ              ' 快速导入个性标记文件
+DECLARE SUB JX4J              ' 把角线放置到页面四角(请先选择角线)
+DECLARE SUB ZX4B              ' 把中线放置到页边中间(请先选择中线)
+DECLARE SUB WZQX              ' 文字曲线
+DECLARE SUB Xgs2              ' 调用外部插件
+DECLARE SUB OPENBJ            ' 隐藏功能：编辑标记文件
+DECLARE SUB sRGB3D            ' 3D展示盒变形插件
+DECLARE SUB SetPageSize       ' 拼版物件居中设定页面大小
+DECLARE SUB COLORMARK         ' 导入颜色套准标记文件
+DECLARE SUB CMYKMARK          ' 放置 CMYK 四色标记
+DECLARE SUB Colorstrip_Place3B    ' 把色条放置到页面三边
 
-DECLARE FUNCTION CheckDrawDoc&()
+DECLARE FUNCTION CheckDrawDoc&()    '  检查 CorelDRAW 文档 ，是否选择物件 
 
 '  设置 CorelDRAW 软件版本 9=9，如果 X4=14
 #define DRAWOBJECT "CorelDRAW.Automation.9"
@@ -149,13 +149,13 @@ SUB Colorstrip_Place3B     ' 把色条放置到页面三边
 		.OrderToBack ' 移到最下
 		
 		.DuplicateObject 0, 0
-		.RotateObject -90000000, FALSE, 0, 0
+		.RotateObject 90000000, FALSE, 0, 0
 		.AlignToCenterOfPage 2, 2
 		.MoveObject -PXSize&/2, -PYSize&/2 '左下移
 		.OrderToBack ' 移到最下
 		
 		.DuplicateObject 0, 0
-		.RotateObject -180000000, FALSE, 0, 0
+		'  .RotateObject -180000000, FALSE, 0, 0
 		.AlignToCenterOfPage 1, 2
 		.MoveObject  PXSize&/2, -PYSize&/2 '右下移
 		.OrderToBack ' 移到最下
