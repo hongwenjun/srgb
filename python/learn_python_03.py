@@ -94,6 +94,25 @@ num_list = [20, 40, 10, 50.4, 30, 100, 5]
 num_list.sort()
 print (num_list)
 
+# 元组是不可变的 创建一个元组, 类似于列表的元组。所有索引和切片操作也适用于它
+car = ("Ford", "Raptor", 2019, "Red")
+print (car)
+# Length    # Indexing   # Slicing 
+print (len(car), car[1], car[2:])
+
+# 可以使用 + 运算符合并元组：
+hero1 = ("Batman", "Bruce Wayne")
+hero2 = ("Wonder Woman", "Diana Prince")
+awesome_team = hero1 + hero2
+print (awesome_team)
+
+# 元组搜索: 使用 in 运算符检查元组中是否存在元素, index() 函数可以为我们提供特定值的索引
+cities = ("London", "Paris", "Los Angeles", "Tokyo")
+print ("Moscow" in cities)
+print (cities.index("Tokyo"))
+
+
+
 """  #  Dictionary(字典) :   字典 dict  即映射
       字典包含了一个索引的集合，被称为 键（keys） ，和一个值(values)的集合。 一个键对应一个值。
 这种一一对应的关联被称为 键值对（key-value pair) ， 有时也被称为 项（item）
@@ -105,6 +124,21 @@ b = {'one': 1, 'two': 2, 'three': 3}
 c = dict(zip(['one', 'two', 'three'], [1, 2, 3]))
 d = dict([('two', 2), ('one', 1), ('three', 3)])
 e = dict({'three': 3, 'one': 1, 'two': 2})
+
+# 字典访问值  通过将值的键括在方括号中来访问该值[] ,另外可以使用get()方法
+phone_book = {"Batman": 468426, "Cersei": 237734, "Ghostbusters": 44678}
+print (phone_book["Cersei"])
+print (phone_book.get("Ghostbusters"))
+
+# 添加/更新条目, 只需在键中分配一个值即可在字典中添加新条目, 如果此键上已经存在一个值，它将被更新
+phone_book["Godzilla"] = 46394  # New entry
+print (phone_book)
+phone_book["Godzilla"] = 9000  # Updating entry
+print (phone_book)
+
+# 删除条目:  要删除条目，我们可以使用 del 关键字
+del phone_book["Batman"]
+print (phone_book)
 
 """
 #  集合类型 --- set, frozenset :  目前有两种内置集合类型，set 和 frozenset。 
