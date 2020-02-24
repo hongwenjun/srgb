@@ -111,8 +111,6 @@ cities = ("London", "Paris", "Los Angeles", "Tokyo")
 print ("Moscow" in cities)
 print (cities.index("Tokyo"))
 
-
-
 """  #  Dictionary(字典) :   字典 dict  即映射
       字典包含了一个索引的集合，被称为 键（keys） ，和一个值(values)的集合。 一个键对应一个值。
 这种一一对应的关联被称为 键值对（key-value pair) ， 有时也被称为 项（item）
@@ -140,12 +138,69 @@ print (phone_book)
 del phone_book["Batman"]
 print (phone_book)
 
+# 如果我们要使用删除的值，则pop()or popitem()方法会更好地工作
+cersei = phone_book.pop("Cersei")
+print (phone_book, cersei)
+# Removes and returns an arbitrary pair as a tuple
+lastAdded = phone_book.popitem()
+print (lastAdded)
+
+# 字典的长度   类似于列表和元组,使用 len() 方法计算字典长度
+phone_book = {"Batman": 468426, "Cersei": 237734, "Ghostbusters": 44678}
+print (len(phone_book))
+
+# 检查Key值是否存在 使用 in 关键字可用于检查一个键在字典中存在
+print ("Batman" in phone_book)
+print ("Godzilla" in phone_book)
+
+# 字典复制  将一个字典的内容复制到另一个字典，使用 update() 方法操作：
+second_phone_book = {"Catwoman": 67423, "Jaime": 237734, "Godzilla": 37623}
+# 将 secondphone_book 添加到 phone_book
+phone_book.update(second_phone_book)
+print (phone_book)
+
+''' # 字典理解
+Python还支持字典推导，其工作原理与列表推导非常相似。我们将基于现有字典创建新的键值对。
+但是，要迭代字典，我们将使用dict.items()将字典转换为(key, value)元组列表的操作。
+这是一个简单的示例，其中原始字典的键被平方'!'并附加到每个字符串值：'''
+houses = {1: "Gryffindor", 2: "Slytherin", 3: "Hufflepuff", 4: "Ravenclaw"}
+new_houses = {n**2:house+"!" for (n, house) in houses.items()}
+print (houses)
+print (new_houses)
+
 """
 #  集合类型 --- set, frozenset :  目前有两种内置集合类型，set 和 frozenset。 
 set 类型是可变的 --- 其内容可以使用 add() 和 remove() 这样的方法来改变。 
       由于是可变类型，它没有哈希值，且不能被用作字典的键或其他集合的元素。 
 frozenset 类型是不可变并且为 hashable --- 其内容在被创建后不能再改变；因此它可以被用作字典的键或其他集合的元素。
 """
+# Set 集合创建，集合的内容封装在大括号中{}, 使用len()方法计算长度
+random_set = {"Educative", 1408, 3.142, (True, False)}
+print (random_set, len(random_set))
+
+# 使用 set() 方法创建set集合，或者建立空集
+empty_set = set()
+random_set = set({"Educative", 1408, 3.142, (True, False)})
+
+# Set集合 添加元素  添加单个使用add()方法，要添加多个项目必须使用update()
+empty_set = set()
+empty_set.add(1)
+empty_set.update([2, 3, 4, 5, 6])
+print (empty_set)
+
+# 删除元素  discard()或remove()操作可以用来删除一组特定项目
+random_set.discard(1408)
+random_set.remove((True, False))
+
+# 遍历一个Set集合  使用for循环可用于无序数据结构（如集合
+odd_list = [1, 3, 5, 7]
+unordered_set = {9, 10, 11, 12, 13, 14, 15, 16, 17}
+print (unordered_set)
+for num in unordered_set:
+    if(not num % 2 == 0):
+        odd_list.append(num)
+print (odd_list)
+
 # 在Python中，可以使用管道运算符 | 或 union() 方法执行联合 产生并集。
 set_A = {1, 2, 3, 4}
 set_B = {'a', 'b', 'c', 'd'}
@@ -159,4 +214,52 @@ print (set_A & set_B)   #  结果相同  set_A.intersection(set_B)  set_B.inters
 # 在Python中，可以使用 - 运算符或 difference() 方法来找到两组之间的差异。
 print (set_A - set_B)   #  或方法  set_A.difference(set_B)
 print (set_B - set_A)   #  或方法  set_B.difference(set_A)
+
+# 数据结构转换
+"""  # 显式转换:  用于从一种数据结构显式转换为另一种数据结构的模板如下：
+destination_structure_name(source_structure_object)
+destination_structure_name 是我们要转换为的数据结构的名称。
+source_structure_object 是我们要转换的对象。 """
+
+# 转换到一个列表   可以使用list()构造函数将元组，集合或字典转换为列表。对于字典，只有键会转换为列表
+star_wars_tup = ("Anakin", "Darth Vader", 1000)
+star_wars_set = {"Anakin", "Darth Vader", 1000}
+star_wars_dict = {1:"Anakin", 2:"Darth Vader", 3:1000}
+print (star_wars_tup, star_wars_dict, star_wars_set)
+
+list_1 = list(star_wars_tup) # Converting from tuple
+list_2= list(star_wars_set) # Converting from set
+list_3 = list(star_wars_dict) # Converting from dictionary
+print (list_1, list_2, list_3)
+
+# 还可以使用dict.items()字典的方法将其转换为可迭代的(key, value)元组, 将其进一步转换为元组列表list()：
+star_wars_dict = {1:"Anakin", 2:"Darth Vader", 3:1000}
+print (star_wars_dict)
+star_wars_list = list(star_wars_dict.items())
+print (star_wars_list)
+
+# 转换为一个元组   使用tuple()构造函数将任何数据结构转换为元组。对于字典，只有键会转换为元组
+star_wars_tup = tuple(star_wars_list) # Converting from list
+star_wars_tup = tuple(star_wars_set) # Converting from set
+star_wars_tup = tuple(star_wars_dict) # Converting from dictionary
+
+# 转换为 set 集合  set() 构造可用于创建一组的任何其他数据结构。对于字典，只有键会转换为集合
+star_wars_set = set(star_wars_list) # Converting from list
+star_wars_set = set(star_wars_tup) # Converting from tuple
+star_wars_set = set(star_wars_dict) # Converting from dictionary
+
+# 转换为字典  dict() 构造函数不能以同样的方式为其他人，因为它需要的键值对，而不是只值来使用。因此，数据必须以成对存在的格式存储
+star_wars_list = [[1,"Anakin"], [2,"Darth Vader"], [3, 1000]]
+star_wars_tup = ((1, "Anakin"), (2, "Darth Vader"), (3, 1000))
+star_wars_set = {(1, "Anakin"), (2, "Darth Vader"), (3, 1000)}
+
+star_wars_dict = dict(star_wars_list) # Converting from list
+star_wars_dict = dict(star_wars_tup) # Converting from tuple
+star_wars_dict = dict(star_wars_set) # Converting from set
+
+# 从列表建立元组( 列表的第一个元素，最后一个元素和列表的长度 ）
+my_list = [50, "Twenty", 110, "Fifty", "Ten", 20, 10, 80, "Eighty"]
+my_tuple = (my_list[0], my_list[len(my_list) - 1], len(my_list))
+print (my_tuple)
+
 
