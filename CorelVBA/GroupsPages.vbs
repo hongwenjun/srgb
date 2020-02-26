@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} UniteOne 
-   Caption         =   "CorelDRAW 合并多页为一页 By 蘭公子 2010"
+   Caption         =   "CorelDRAW 合并多页为一页 蘭雅sRGB 2010-2020"
    ClientHeight    =   4005
    ClientLeft      =   45
    ClientTop       =   330
@@ -24,7 +24,7 @@ Option Explicit
                                 'txtHang, txtLie, txtYouyi, txtXiayi ,txtInfo
  Dim LogoFile As String         'Logo
  
- Dim s(1 To 1024) As Shape   '定义对象用于存放每页的群组
+ Dim s(1 To 255) As Shape   '定义对象用于存放每页的群组
  Dim p As Page          '定义多页
  
 
@@ -60,13 +60,44 @@ Private Sub cmdRun_Click()
   
  Next p
  
- 
-
-
  Unload Me '执行完成关闭
-
 End Sub
 
+
+'**** 主程序 副本 横排序
+Private Sub cmdRunX_Click()
+
+ Dim x_M, y_M
+ ActiveDocument.Unit = cdrMillimeter
+ ActiveDocument.EditAcrossLayers = False    '跨图层编辑禁止
+ 
+ For Each p In ActiveDocument.Pages
+    p.Activate                    '激活每页
+    p.Shapes.All.CreateSelection          '每页全选
+    Set s(p.Index) = ActiveSelection.Group    '存放每页的群组
+ Next p
+ 
+ ActiveDocument.EditAcrossLayers = True     '跨图层编辑开启
+ 
+  x_M = y_M = 0
+  
+  For Each p In ActiveDocument.Pages
+    p.Activate
+       
+    s(p.Index).MoveToLayer ActivePage.DesktopLayer    '每页对象移动到桌面层
+    s(p.Index).Move (iYouyi * y_M), -(300 + iXiayi * x_M) '排列对象  右偏移，下偏移
+  
+  y_M = y_M + 1
+  
+  If y_M = iHang Then
+  x_M = x_M + 1
+  y_M = 0
+  End If
+  
+ Next p
+ 
+ Unload Me '执行完成关闭
+End Sub
 
 
 '*********** 初始化程序 ***************
@@ -122,7 +153,7 @@ Private Sub cmdHelp_Click()
 
 WebHelp
 
-txtInfo.Text = "点击访问 Http://sRGB.cz.cc 详细帮助,寻找更多的视频教程！"
+txtInfo.Text = "点击访问 Http://sRGB.vicp.net 详细帮助,寻找更多的视频教程！"
 txtInfo.ForeColor = &HFF0000
 cmdHelp.Caption = "在线帮助"
 cmdHelp.ForeColor = &HFF0000
@@ -137,7 +168,7 @@ Private Sub LogoPic_MouseDown(ByVal Button As Integer, ByVal Shift As Integer, B
     LogoPic.Picture = LoadPicture(LogoFile)   '换LOGO图
   End If
   
-txtInfo.Text = "好靓的美女呀！想知道她的QQ号吗？欢迎访问 Http://sRGB.cz.cc "
+txtInfo.Text = "好靓的美女呀！想知道她的QQ号吗？欢迎访问 Http://sRGB.vicp.net "
  
 UniteOne.Repaint
 End Sub
@@ -264,12 +295,9 @@ Function WebHelp()
  Dim h As Long, r As Long
  
  If cmdHelp.Caption = "在线帮助" Then
- h = FindWindow(vbNullString, "CorelDRAW 合并多页为一页 By 蘭公子 2010")
- r = ShellExecute(h, "", "http://sRGB.cz.cc", "", "", 1)
+ h = FindWindow(vbNullString, "CorelDRAW 合并多页为一页 蘭雅sRGB 2010-2020")
+ r = ShellExecute(h, "", "http://sRGB.vicp.net", "", "", 1)
  End If
 End Function
 
 
-Private Sub 偏移量选择_Click()
-
-End Sub
