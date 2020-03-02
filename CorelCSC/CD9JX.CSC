@@ -1,4 +1,4 @@
-REM 创建 2007年8月28日 By  蘭雅sRGB    更新于2020年02月19日
+REM 创建 2007年8月28日 By  蘭雅sRGB    更新于2020年03月02日
 GLOBAL BITMAP_LOGO$ , Help_File$ , BJ_File$ ,BITMAP_CD3D$, URLText$
 
 DECLARE SUB ShellExecute LIB "shell32" (BYVAL hWnd&,BYVAL Operation&,BYVAL File$,BYVAL Parameters&,BYVAL Directory&,BYVAL Show&) ALIAS "ShellExecuteA"
@@ -16,16 +16,15 @@ DECLARE SUB Colorstrip_Place3B    ' 把色条放置到页面三边
 
 DECLARE FUNCTION CheckDrawDoc&()    '  检查 CorelDRAW 文档 ，是否选择物件 
 
-'  设置 CorelDRAW 软件版本 9=9，如果 X4=14
+' 设置 CorelDRAW 软件版本 9=9，如果 X4=14
 #define DRAWOBJECT "CorelDRAW.Automation.9"
 
 ' 找到当前目录程序
 CurDir$ = GetCurrFolder()
 IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
-    ' Make sure CurDir does not end with a backslash, since we
-    ' will add one.
+    ' Make sure CurDir does not end with a backslash, since we will add one.
     CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-ENDIF
+END IF
 
 BITMAP_LOGO$ = CurDir$+"\CD9JX.bmp"
 BITMAP_CD3D$ = CurDir$+"\CD3D.bmp"
@@ -36,19 +35,19 @@ URLText$ = "sRGB.vicp.net"
 XZ=6   ' 对话框选择功能，默认 6 =  COLORMARK
 
 BEGIN DIALOG Dialog1 257, 143, " sRGB.vicp.net  CorelDRAW9精品工具箱 By 蘭雅sRGB"
-    OPTIONGROUP XZ
-        OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
-        OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
-        OPTIONBUTTON  12, 35, 154, 13, "把中线放置到页边中间(请先选择中线)"
-        OPTIONBUTTON  11, 50, 150, 13, "把所有文本转曲线(不需要解散群组)"
-        OPTIONBUTTON  12, 65, 150, 13, "调用外部插件: 自动拼版5.0画角线"
-        OPTIONBUTTON  12, 80, 153, 13, "CorelDRAW9 3D展示盒变形插件"
-        OPTIONBUTTON  12, 95, 153, 13, "自动完成页面和色标套准标记"		
-    PUSHBUTTON  20, 115, 80, 22, "开始执行所选命令"
-    PUSHBUTTON  112, 115, 60, 22, "关闭"
-    IMAGE  179, 8, 67, 67, BITMAP_LOGO$
-    PUSHBUTTON  187, 115, 60, 22, "帮助说明"
-    TEXTBOX  173, 95, 77, 13, URLText$
+	OPTIONGROUP XZ
+		OPTIONBUTTON  12, 5, 150, 13, "快速导入个性标记文件"
+		OPTIONBUTTON  12, 20, 150, 13, "把角线放置到页面四角(请先选择角线)"
+		OPTIONBUTTON  12, 35, 154, 13, "把中线放置到页边中间(请先选择中线)"
+		OPTIONBUTTON  11, 50, 150, 13, "把所有文本转曲线(不需要解散群组)"
+		OPTIONBUTTON  12, 65, 150, 13, "调用外部插件: 自动拼版5.0画角线"
+		OPTIONBUTTON  12, 80, 153, 13, "CorelDRAW9 3D展示盒变形插件"
+		OPTIONBUTTON  12, 95, 153, 13, "自动完成页面和色标套准标记"
+	PUSHBUTTON  20, 115, 80, 22, "开始执行所选命令"
+	PUSHBUTTON  112, 115, 60, 22, "关闭"
+	IMAGE  179, 8, 67, 67, BITMAP_LOGO$
+	PUSHBUTTON  187, 115, 60, 22, "帮助说明"
+	TEXTBOX  173, 95, 77, 13, URLText$
 END DIALOG
 
 j=dialog(dialog1)
@@ -140,49 +139,49 @@ SUB Colorstrip_Place3B     ' 把色条放置到页面三边
     IF PXSize& >= PYSize& THEN         ' 如果页面是横	
         .SelectObjectOfCDRStaticID Id&
         .AlignToCenterOfPage 2, 1 '左上对齐到页面中心
-        .MoveObject -PXSize&/2,  PYSize&/2 '左上移
+        .MoveObject -PXSize&/2+100000,  PYSize&/2 '左上移
         .OrderToBack ' 移到最下
         
         .DuplicateObject 0, 0
         .AlignToCenterOfPage 1, 1
-        .MoveObject  PXSize&/2,  PYSize&/2 '右上移
+        .MoveObject  PXSize&/2-100000,  PYSize&/2 '右上移
         .OrderToBack ' 移到最下
         
         .DuplicateObject 0, 0
         .RotateObject 90000000, FALSE, 0, 0
         .AlignToCenterOfPage 2, 2
-        .MoveObject -PXSize&/2, -PYSize&/2 '左下移
+        .MoveObject -PXSize&/2, -PYSize&/2+100000 '左下移
         .OrderToBack ' 移到最下
         
         .DuplicateObject 0, 0
         '  .RotateObject -180000000, FALSE, 0, 0
         .AlignToCenterOfPage 1, 2
-        .MoveObject  PXSize&/2, -PYSize&/2 '右下移
+        .MoveObject  PXSize&/2, -PYSize&/2+100000 '右下移
         .OrderToBack ' 移到最下
     ENDIF
 
     IF PXSize& < PYSize& THEN         ' 如果页面是竖	
         .SelectObjectOfCDRStaticID Id&
         .AlignToCenterOfPage 2, 1 '左上对齐到页面中心
-        .MoveObject -PXSize&/2,  PYSize&/2 '左上移
+        .MoveObject -PXSize&/2+100000,  PYSize&/2 '左上移
         .OrderToBack ' 移到最下
         
         .DuplicateObject 0, 0
         .AlignToCenterOfPage 2, 2
-        .MoveObject -PXSize&/2, -PYSize&/2 '左下移
+        .MoveObject -PXSize&/2+100000, -PYSize&/2 '左下移
         .OrderToBack 
 
         .DuplicateObject 0, 0
         .RotateObject -90000000, FALSE, 0, 0
         .AlignToCenterOfPage 1, 1
-        .MoveObject  PXSize&/2,  PYSize&/2 '右上移
+        .MoveObject  PXSize&/2,  PYSize&/2-100000 '右上移
         .OrderToBack 
         
         .DuplicateObject 0, 0
         .AlignToCenterOfPage 1, 2
-        .MoveObject  PXSize&/2, -PYSize&/2 '右下移
+        .MoveObject  PXSize&/2, -PYSize&/2+100000 '右下移
         .OrderToBack
-    ENDIF
+    END IF
 
   END WITHOBJECT
 END SUB
@@ -225,19 +224,19 @@ SUB Xgs2   ' 调用外部插件
     CurDir$ = GetCurrFolder()
     IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
         CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-    ENDIF
+    END IF
         Xgs_File$ = CurDir$+"\Xgs5.csb"
 
     ShellExecute 0,0, Xgs_File$ ,0,0,0
 END SUB
 
-SUB OPENBJ ' "隐藏功能：编辑标记文件" 
+SUB OPENBJ ' 隐藏功能：编辑标记文件" 
   WITHOBJECT DRAWOBJECT
 
     CurDir$ = GetCurrFolder()
     IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
         CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-    ENDIF
+    END IF
     BJ_File$ = CurDir$+"\CD9JX.cdr"
     .FileOpen BJ_File$
   END WITHOBJECT
@@ -251,12 +250,12 @@ SUB COLORMARK     ' 导入颜色套准标记文件， 格式化MarkNameID&(5) �
     
     .SuppressPainting TRUE  ' 禁止屏幕更新
 
-    CALL SetPageSize    ' 按拼版物 设定页面大小
+    CALL SetPageSize    ' 按拼版物件尺寸 设定页面大小
 
     CurDir$ = GetCurrFolder()
     IF MID(CurDir$, LEN(CurDir$), 1) = "\" THEN
         CurDir$ = LEFT(CurDir$, LEN(CurDir$) - 1)
-    ENDIF
+    END IF
     BJ_File$ = CurDir$+"\ColorMark.cdr"
     .GetPageSize PXSize&, PYSize& '得到页面大小
     .FileImport BJ_File$, 1796, FALSE  '导入文件
@@ -266,7 +265,7 @@ SUB COLORMARK     ' 导入颜色套准标记文件， 格式化MarkNameID&(5) �
     .Ungroup
 
     DIM MarkNameID&(5)   ' 存储颜色套准标记Id号
-    .SelectAllObjects   ' 先全选，就会从最后导入的物件选择了
+    .SelectAllObjects    ' 先全选，就会从最后导入的物件选择了
 
     FOR ix = 1 TO 10 STEP 1	     ' 存储颜色套准标记 到 MarkNameID&(5) 数组中
         .SelectNextObject 0
@@ -276,18 +275,18 @@ SUB COLORMARK     ' 导入颜色套准标记文件， 格式化MarkNameID&(5) �
             MarkNameID&(1) = .GetObjectID(0,TRUE,TRUE)
             .ClearObjectData ( "MarkName" )
 
-        ELSEIF 	MarkName$ = "TargetLine" THEN
+        ELSEIF MarkName$ = "TargetLine" THEN
             MarkNameID&(2) = .GetObjectID(0,TRUE,TRUE)
             .ClearObjectData ( "MarkName" )
 
-        ELSEIF 	MarkName$ = "ColorStrip" THEN
+        ELSEIF MarkName$ = "ColorStrip" THEN
             MarkNameID&(3) = .GetObjectID(0,TRUE,TRUE)
             .ClearObjectData ( "MarkName" )
 
-        ELSEIF 	MarkName$ = "ColorMark" THEN
+        ELSEIF MarkName$ = "ColorMark" THEN
             MarkNameID&(4) = .GetObjectID(0,TRUE,TRUE)
             .ClearObjectData ( "MarkName" )
-        ENDIF
+        END IF
     NEXT ix
     
     FOR ix = 1 TO 5 STEP 1
@@ -324,7 +323,7 @@ SUB CMYKMARK     '  放置 CMYK 四色标记
         .MoveObject 0, -(PYSize&/2 - 23000)  ' 上移2.3mm参数 为了移动到页面内
         '缩放 .ZoomToSelection     ' 方便修改文件名
         .ZoomOut		
-    ENDIF
+    END IF
 
     IF PXSize& < PYSize& THEN         ' 如果页面是竖
         .RotateObject -90000000, FALSE, 0, 0
@@ -332,7 +331,7 @@ SUB CMYKMARK     '  放置 CMYK 四色标记
         .MoveObject -PXSize&/2, 0    '左移
         .MoveObject 0,  20000     ' Y 坐标上移动 2mm
         .ZoomOut		
-    ENDIF
+    END IF
 
     .Ungroup                  ' 解散群组
     .UnSelectAll
@@ -370,45 +369,45 @@ SUB SetPageSize    '拼版物件居中设定页面大小
 END SUB
 
 SUB sRGB3D  ' 3D展示盒变形插件 
-CD3D=0
-BEGIN DIALOG CD3D_Dialog 227, 131, "CorelDRAW9 3D展示盒变形插件 By 蘭雅sRGB"
-    OPTIONGROUP CD3D
-        OPTIONBUTTON  12, 5, 120, 13, "正面变形(请先选择正面物件)"
-        OPTIONBUTTON  12, 20, 120, 13, "侧面变形(请先选择侧面物件)"
-        OPTIONBUTTON  11, 35, 120, 13, "顶盖变形(请先选择顶盖物件)"
-    PUSHBUTTON  15, 101, 80, 22, "执行所选变形命令"
-    PUSHBUTTON  106, 101, 60, 22, "关闭"
-    IMAGE  152, 8, 67, 67, BITMAP_LOGO$
-    IMAGE  6, 50, 136, 47, BITMAP_CD3D$
-    TEXTBOX  146, 80, 77, 13, URLText$
-END DIALOG
+    CD3D=0
+    BEGIN DIALOG CD3D_Dialog 227, 131, "CorelDRAW9 3D展示盒变形插件 By 蘭雅sRGB"
+        OPTIONGROUP CD3D
+            OPTIONBUTTON  12, 5, 120, 13, "正面变形(请先选择正面物件)"
+            OPTIONBUTTON  12, 20, 120, 13, "侧面变形(请先选择侧面物件)"
+            OPTIONBUTTON  11, 35, 120, 13, "顶盖变形(请先选择顶盖物件)"
+        PUSHBUTTON  15, 101, 80, 22, "执行所选变形命令"
+        PUSHBUTTON  106, 101, 60, 22, "关闭"
+        IMAGE  152, 8, 67, 67, BITMAP_LOGO$
+        IMAGE  6, 50, 136, 47, BITMAP_CD3D$
+        TEXTBOX  146, 80, 77, 13, URLText$
+    END DIALOG
 
-J3D=dialog(CD3D_Dialog)
+    J3D=dialog(CD3D_Dialog)
 
-  IF J3D=3 THEN '选择确定
-     SELECT CASE CD3D
-        case 0
-        '正面变形
-WITHOBJECT DRAWOBJECT
-    .StretchObject 0.951, 1, 0.937, 1, FALSE, FALSE, 1
-    .SkewObject 0, 7000000, 1
-END WITHOBJECT
-        case 1
-'侧面变形
-WITHOBJECT DRAWOBJECT
-    .StretchObject 0.468, 1, 0.937, 1, FALSE, FALSE, 3
-    .SkewObject 0, -45000000, 3
-END WITHOBJECT
-        case 2
-'顶盖变形
-WITHOBJECT DRAWOBJECT
-    .StretchObject 0.951, 1, 0.525, 1, FALSE, FALSE, 1
-    .SkewObject 41700000, 7000000, 1
-END WITHOBJECT
-        case else
-        '没有选择操作
-    END SELECT
-  END IF
+    IF J3D=3 THEN '选择确定
+        SELECT CASE CD3D
+            case 0
+            '正面变形
+    WITHOBJECT DRAWOBJECT
+        .StretchObject 0.951, 1, 0.937, 1, FALSE, FALSE, 1
+        .SkewObject 0, 7000000, 1
+    END WITHOBJECT
+            case 1
+    '侧面变形
+    WITHOBJECT DRAWOBJECT
+        .StretchObject 0.468, 1, 0.937, 1, FALSE, FALSE, 3
+        .SkewObject 0, -45000000, 3
+    END WITHOBJECT
+            case 2
+    '顶盖变形
+    WITHOBJECT DRAWOBJECT
+        .StretchObject 0.951, 1, 0.525, 1, FALSE, FALSE, 1
+        .SkewObject 41700000, 7000000, 1
+    END WITHOBJECT
+            case else
+            '没有选择操作
+        END SELECT
+    END IF
 END SUB
 
 '  检查 CorelDRAW 文档 ，是否选择物件 
@@ -424,7 +423,7 @@ FUNCTION CheckDrawDoc&()
                 MessageBox "当前文档没有物件选择，请选择拼版物件再使用工具!","请选择拼版物件",0
                 ret=1
             END IF
-        ENDIF
+        END IF
     END WITHOBJECT
     CheckDrawDoc=ret
 END FUNCTION
