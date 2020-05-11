@@ -1,18 +1,3 @@
-VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} UniteOne 
-   Caption         =   "CorelDRAW 合并多页为一页 蘭雅sRGB 2010-2020"
-   ClientHeight    =   4005
-   ClientLeft      =   45
-   ClientTop       =   330
-   ClientWidth     =   5220
-   OleObjectBlob   =   "UniteOne.frx":0000
-   StartUpPosition =   1  '所有者中心
-End
-Attribute VB_Name = "UniteOne"
-Attribute VB_GlobalNameSpace = False
-Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = True
-Attribute VB_Exposed = False
 Private Declare Function ShellExecute Lib "shell32.dll" Alias "ShellExecuteA" (ByVal hwnd As Long, ByVal lpOperation As String, ByVal lpFile As String, ByVal lpParameters As String, ByVal lpDirectory As String, ByVal nShowCmd As Long) As Long
 Private Declare Function FindWindow Lib "user32" Alias "FindWindowA" (ByVal lpClassName As String, ByVal lpWindowName As String) As Long
 
@@ -24,7 +9,7 @@ Option Explicit
                                 'txtHang, txtLie, txtYouyi, txtXiayi ,txtInfo
  Dim LogoFile As String         'Logo
  
- Dim s(1 To 255) As Shape   '定义对象用于存放每页的群组
+ Dim s(1 To 1024) As Shape   '定义对象用于存放每页的群组
  Dim p As Page          '定义多页
  
 
