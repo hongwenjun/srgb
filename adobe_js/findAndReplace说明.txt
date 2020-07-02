@@ -1,0 +1,10 @@
+AI 多物件替换脚本
+
+findAndReplaceGraphic_centered.jsx
+
+选择2个以上物件或群组，使用最上层替换其他的，居中对齐，删除最上层的哪个物件
+
+
+findAndReplaceGraphic_transformToFit.jsx
+
+选择2个以上物件或群组，使用最上层替换其他的，居中对齐，并且和目标对象一样大小
