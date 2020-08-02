@@ -14,6 +14,24 @@ https://www.jianshu.com/p/7dee0837b3d2
 ### Python 3.8.0 中文文档 镜像
 - http://srgb.vicp.net/python-zh-cn/
 
+## 清华大学开源软件镜像站  pypi 镜像使用帮助
+https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
+
+- 临时使用
+	pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+
+- 设为默认
+
+```
+pip install pip -U
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 如果您到 pip 默认源的网络连接较差，临时使用本镜像站来升级 pip：
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pip -U
+```
+
+
 ### 如何在不破坏apt的情况下更新Python 3的替代方案？
 
 - sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.7 3
