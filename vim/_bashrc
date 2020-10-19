@@ -26,12 +26,3 @@ alias hg='history | grep --color=auto'
 alias ssr="http_proxy=http://127.0.0.1:1080 https_proxy=http://127.0.0.1:1080"
 alias grep='grep --color=auto'
 
-function git-branch-name {
-  git symbolic-ref --short -q HEAD 2>/dev/null
-}
-function git-branch-prompt {
-  local branch=`git-branch-name`
-  if [ $branch ]; then printf " [%s]" $branch; fi
-}
-PS1="\u@\h:\[\033[0;36m\]\w\033[0;32m\]\$(git-branch-prompt)\[\033[0m\]\$ "
-
