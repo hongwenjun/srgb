@@ -1,3 +1,6 @@
+### Chrome 浏览器离线安装包
+https://www.google.cn/chrome/?standalone=1&platform=win64
+
 ### 天地图-浙江
 http://www.zjditu.cn/map
 
