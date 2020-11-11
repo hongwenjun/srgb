@@ -16,17 +16,29 @@ def setText(aString):
     w.EmptyClipboard()
     w.SetClipboardText(aString)
     w.CloseClipboard()
-    
+
+# 获取剪贴板文本
 url = getText()
 print(url)
 
 # 替换 EmbyMedia 路径 到URL 给PotPlayer播放视频
 emby_path = "/mnt/EmbyMedia/"
-http_url = "http://192.168.1.11/"
+http_url = "http://192.168.1.111/"
 
-url = url.replace( emby_path , http_url )
+url = url.replace( emby_path , http_url ).replace('\n', '')
+
+# 把文本写回剪贴板
 setText(url)
 print(url)
 
-print(":: 替换EmbyMedia路径到URL给PotPlayer播放视频，剪贴板已经替换成功！\n")
-os.system("pause")
+path = "C:\Program Files\DAUM\PotPlayer"
+os.chdir(path)
+
+cmdline ='cmd /c  ' + 'PotPlayerMini64.exe  \"' +  url + '\"'
+
+print(cmdline)
+
+# 调用 PotPlayer 64 bit
+os.system(cmdline)
+
+# os.system('pause')
