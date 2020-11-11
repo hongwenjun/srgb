@@ -25,10 +25,12 @@ IPDB 格式官方解析代码
 https://www.ipip.net/support/code.html
 https://github.com/ipipdotnet/ipdb-python
 
-## qqwry.ipdb   纯真数据库 IPIP.net 格式版，精简并匹配为国家、省、市、运营商。
+qqwry.ipdb   纯真数据库 IPIP.net 格式版，精简并匹配为国家、省、市、运营商。
 https://github.com/metowolf/qqwry.ipdb
-
-# 原版  https://cdn.jsdelivr.net/npm/qqwry.raw.ipdb/qqwry.ipdb
+    
+IP 地址库 数据基于纯真数据库分类，更新日期 20201105.
+https://github.com/metowolf/iplist
+wget https://registry.npmjs.org/qqwry.ipdb/-/qqwry.ipdb-2020.11.5.tgz
 
 #########################################################################################
 
