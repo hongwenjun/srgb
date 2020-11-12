@@ -1,3 +1,47 @@
+## 解决GitHud上传/下载文件速度慢的问题
+```
+改hosts
+
+140.82.114.3 github.com
+199.232.69.194 github.global.ssl.fastly.net
+140.82.114.10 codeload.github.com
+199.232.68.133 raw.githubusercontent.com
+
+或
+
+代理
+export ALL_PROXY=socks5://127.0.0.1:7070
+
+☞全局代理
+
+# socks5协议，1080端口修改成自己的本地代理端口
+git config --global http.proxy socks5://127.0.0.1:1080
+git config --global https.proxy socks5://127.0.0.1:1080
+
+# http协议，1081端口修改成自己的本地代理端口
+git config --global http.proxy http://127.0.0.1:1081
+git config --global https.proxy https://127.0.0.1:1081
+
+☞仅github走本地代理，其他的保持不变
+
+# socks5协议，1080端口修改成自己的本地代理端口
+git config --global http.https://github.com.proxy socks5://127.0.0.1:1080
+git config --global https.https://github.com.proxy socks5://127.0.0.1:1080
+
+# http协议，1081端口修改成自己的本地代理端口
+git config --global http.https://github.com.proxy https://127.0.0.1:1081
+git config --global https.https://github.com.proxy https://127.0.0.1:1081
+
+# 查看所有配置
+git config -l
+# reset 代理设置
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+或导入gitee
+
+```
+
 ### Chrome 浏览器离线安装包
 https://www.google.cn/chrome/?standalone=1&platform=win64
 
