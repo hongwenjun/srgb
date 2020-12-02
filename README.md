@@ -1,3 +1,19 @@
+
+##  CorelDraw不能另存与导出的解决方法
+```
+CorelDraw不能另存与导出的解决方法
+
+把这个目录删除  C:\Users\vip\AppData\Roaming\Corel\CorelDRAW Graphics Suite X4
+
+CorelDraw有时会出现不能另存与导出的情况，重装CorelDraw也不能解决问题，只有重装系统，再重装CorelDraw才行。
+
+实际上这个问题是由于CorelDraw的工作配置文件出错造成的，删除CorelDraw的配置文件夹，再重新启动一下CorelDraw就行了。
+
+Windows 7 删除这个文件夹：C:\用户\当前用户(如Administrator)\AppData\Roaming\Corel
+
+Windows XP 删除这个文件夹：C:\Documents and Settings\All Users\Application Data\Corel
+```
+
 ## 解决GitHud上传/下载文件速度慢的问题
 ```
 改hosts
