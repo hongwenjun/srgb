@@ -1,4 +1,26 @@
+## 搭建KMS服务器激活Windows
+```
+安装 vlmscd
+docker pull mikolatero/vlmcsd
+docker run -d -p 1688:1688 --restart=always --name="vlmcsd" mikolatero/vlmcsd
 
+前一个是主机端口，后一个是容器端口
+
+配置 GVLK
+
+没有输入过其它的 key 的跳过这一步. 替换对应系统版本的 key
+
+slmgr /ipk GVLK
+
+配置 KMS 服务器
+slmgr /skms ip:port
+
+slmgr /skms jp.262235.xyz:1688
+
+激活
+slmgr /ato
+
+```
 ##  CorelDraw不能另存与导出的解决方法
 ```
 CorelDraw不能另存与导出的解决方法
