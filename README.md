@@ -20,6 +20,19 @@ slmgr /skms jp.262235.xyz:1688
 激活
 slmgr /ato
 
+# 用kms命令激活office2010
+
+# 管理员CMD进入ospp.vbs所在目录
+cd "C:\Program Files (x86)\Microsoft Office\Office14"
+
+# 设置office2010专业增强版激活密钥；
+cscript ospp.vbs /inpkey:VYBBJ-TRJPB-QFQRF-QFT4D-H3GVB
+
+# 3个命令分别是设置kms服务器，激活office产品，查看office激活状态；
+cscript ospp.vbs /sethst:jp.262235.xyz
+cscript ospp.vbs /act
+cscript ospp.vbs /dstatus
+
 ```
 ##  CorelDraw不能另存与导出的解决方法
 ```
