@@ -1429,7 +1429,7 @@ var CodeMirror = {};
     <!-- custom -->
     <?php custom_script('js'); ?>
     <!-- files -->
-    <script src="<?php echo config::$assets ?>js/files.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/yyingc/js@v2.0/files.js"></script>
 
   </body>
 </html>
