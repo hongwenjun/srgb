@@ -15,7 +15,7 @@ slmgr /ipk GVLK
 配置 KMS 服务器
 slmgr /skms ip:port
 
-slmgr /skms jp.262235.xyz:1688
+slmgr /skms gcp.262235.xyz:1688
 
 激活
 slmgr /ato
@@ -32,6 +32,15 @@ cscript ospp.vbs /inpkey:VYBBJ-TRJPB-QFQRF-QFT4D-H3GVB
 cscript ospp.vbs /sethst:jp.262235.xyz
 cscript ospp.vbs /act
 cscript ospp.vbs /dstatus
+
+Windows7系统如何设置开机自动登录：
+
+control userpasswords2
+
+Windows系统一句命令激活 https://v0v.bid/
+命令提示符(管理员)：slmgr /skms kms.v0v.bid && slmgr /ato
+
+更多装机技巧访问 “窝窝零”:https://oo0.bid 海量免费资源！
 
 ```
 ##  CorelDraw不能另存与导出的解决方法
