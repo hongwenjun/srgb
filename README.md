@@ -1,3 +1,9 @@
+### Linux 使用代理 加速git 和安装软件
+```
+export http_proxy="http://192.168.1.135:8010"
+export https_proxy="http://192.168.1.135:8010"
+```
+
 ## 搭建KMS服务器激活Windows
 ```
 安装 vlmscd
