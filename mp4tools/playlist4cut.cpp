@@ -11,6 +11,8 @@ struct Timestamp {
     char name[512];
 };
 
+char * strtrim(char *s);
+
 int main(int argc, char* argv[])
 {
     if (2 > argc) {
@@ -30,9 +32,10 @@ int main(int argc, char* argv[])
         return -1;
 
     while (fgets(line, LINE_SIZE, input)) {
-        if (pch = strtok(line, " \t")) {
+        if (pch = strtok(line, " \t\n")) {
             strcpy(one.start, pch);
             pch = strtok(NULL, "\n\r");
+            pch = strtrim(pch);
             strcpy(one.name, pch);
 
             vec_one.push_back(one);   // 把读取的时间戳装载到容器
@@ -53,10 +56,23 @@ int main(int argc, char* argv[])
 
     for (auto it = vec_one.begin(), itcp = vec_copy.begin(); it != vec_one.end(); ++it, ++itcp) {
         strcpy(it->end, itcp->start);
-        fprintf(output, "::MP3CUT::  %s  %s  \"%s.mp3\"\n", it->start, it->end, it->name);
+        fprintf(output, "::M4ACUT::  %s  %s  \"%s.m4a\"\n", it->start, it->end, it->name);
     }
 
     fprintf(output, "\n## 注意最后一行时间结束时间要手工修改  ##");
 
     return 0;
+}
+
+// strtrim 去掉字符串前后的空格和制表符
+char * strtrim(char *s) {
+    char *p = s;
+    char *q = s;
+    while (*p==' ' || *p=='\t') ++p;
+    while (*q++=*p++)
+        ;
+    q -= 2;
+    while (*q==' ' || *q=='\t') --q;
+    *(q+1) ='\0';
+    return s;
 }

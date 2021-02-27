@@ -7,6 +7,7 @@ int main(int argc, char* argv[])
 {
     if (5 != argc) {
         puts("Usage: mp3cut.exe  sample.mp3  00:08  01:18  Name.mp3 ");
+        puts("       mp3cut.exe  sample.m4a  00:08  01:18  Name.m4a ");
         return -1;
     }
 
