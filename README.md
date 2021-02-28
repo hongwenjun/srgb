@@ -1,3 +1,23 @@
+### 香橙派挂载玩客云移动硬盘适合PT
+```
+root@orangepizero:/var$ smbclient -L 192.168.1.90 -N
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        8cb3            Disk
+
+Reconnecting with SMB1 for workgroup listing.
+
+        WORKGROUP            OTCLOUD_7737
+
+
+mount -t cifs //192.168.1.90/8cb3  /home/samba/hd2t   -o guest,rw,iocharset=utf8
+
+#  完全权限 适合 PT
+mount -t cifs //192.168.1.90/8cb3  /home/samba/hd2t   -o guest,rw,iocharset=utf8,file_mode=0777,dir_mode=0777,nodfs
+
+```
+
 ### Linux 使用代理 加速git 和安装软件
 ```
 export http_proxy="http://192.168.1.135:8010"
