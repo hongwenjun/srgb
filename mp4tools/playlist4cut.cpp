@@ -65,14 +65,17 @@ int main(int argc, char* argv[])
 }
 
 // strtrim 去掉字符串前后的空格和制表符
-char * strtrim(char *s) {
-    char *p = s;
-    char *q = s;
-    while (*p==' ' || *p=='\t') ++p;
-    while (*q++=*p++)
-        ;
-    q -= 2;
-    while (*q==' ' || *q=='\t') --q;
-    *(q+1) ='\0';
+char* strtrim(char* s)
+{
+    char* p = s;
+    while (isspace(*p))
+        ++p;
+
+    char* end = s + strlen(s) - 1;
+    while (isspace(*end))
+        --end;
+    *(end + 1) = '\0';
+
+    strcpy(s, p);
     return s;
 }
