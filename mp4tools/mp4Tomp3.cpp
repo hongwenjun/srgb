@@ -6,14 +6,17 @@
 int main(int argc, char* argv[])
 {
     if (1 == argc) {
-        puts("Usage: mp4Tomp3.exe  sample.mp4 ");
+        puts("Usage: mp4Tomp3.exe  sample.mp4  [192k]");
         return -1;
     }
 
+    const char* bitrate = "192k";
+    if (3 == argc)
+        bitrate = argv[2];
+
     char cmdline[4096];
-    strcpy(cmdline, "ffmpeg -i  \"");
-    strcat(cmdline, argv[1]);
-    strcat(cmdline, "\"   -ar  44100 -ac 2 -ab 192k -f mp3  \"");
+
+    sprintf(cmdline, "ffmpeg -i \"%s\"  -ar 44100 -ac 2 -ab %s -f mp3  \"", argv[1], bitrate);
     strcat(cmdline, argv[1]);
 
     char* pch = strrchr(cmdline, '.');
@@ -26,10 +29,8 @@ int main(int argc, char* argv[])
         pFile = fopen(argv[1], "r");
         if (pFile != NULL) {
 
-            //   puts(cmdline);
-
             system(cmdline);
+            puts(cmdline);
         }
-
     }
 }
