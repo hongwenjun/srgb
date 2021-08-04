@@ -9,8 +9,14 @@ url = 'https://262235.xyz/'
 if (len(argv) > 1) :
     url = argv[1]
 
-r = requests.get(url)
-# html_doc = r.text
+# 请求头，模拟浏览器UA
+headers = { 'User-Agent': ' '.join(['Mozilla/5.0 (Windows NT 10.0; Win64; x64; ServiceUI 14)',
+             'AppleWebKit/537.36 (KHTML, like Gecko)', 'Chrome/70.0.3538.102', 'Safari/537.36',
+             'Edge/18.18363'])
+}
+
+r = requests.get(url=url, headers=headers)
+html_doc = r.text
 
 soup = BeautifulSoup(html_doc, 'html5lib')
 
@@ -38,7 +44,7 @@ for link in links :
 	print(image_url , save_image_file )
 	
 	# 下载图片
-	r = requests.get(url=image_url)
+	r = requests.get(url=image_url , headers)
 
 	# 注意要以二进制只写打开文件
 	with open(save_image_file, 'wb') as f:
