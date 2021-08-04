@@ -3,18 +3,22 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlsplit
 from PIL import Image
+from sys import argv
 
-r = requests.get('https://www.262235.xyz/index.php/archives/179/')
-html_doc = r.text
+url = 'https://262235.xyz/'
+if (len(argv) > 1) :
+    url = argv[1]
+
+r = requests.get(url)
+# html_doc = r.text
 
 soup = BeautifulSoup(html_doc, 'html5lib')
 
-print(soup.prettify())
+# print(soup.prettify())
 
 title_tag = soup.title
 print(title_tag.text)
 print(soup.title.text)
-
 
 links = soup.find_all('img')
 len(links)
