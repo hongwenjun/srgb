@@ -44,7 +44,7 @@ for link in links :
 	print(image_url , save_image_file )
 	
 	# 下载图片
-	r = requests.get(url=image_url , headers)
+	r = requests.get(url=image_url , headers=headers)
 
 	# 注意要以二进制只写打开文件
 	with open(save_image_file, 'wb') as f:
