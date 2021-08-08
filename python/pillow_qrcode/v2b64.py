@@ -1,6 +1,6 @@
 import requests
 
-url = 'https://v3.v2b64.xyz/c/UUID'
+url = 'https://m.262235.xyz/USA'
 r = requests.get(url)
 
 
