@@ -22,8 +22,8 @@ vms = s.split('\n')
 # 节点配置转换 Qrcode 二维码
 def make_qrc(vms , i):
     img = qrcode.make(vms[i])
-    new_size = (int(img.size[0]/2), int(img.size[1]/2))
-    img = img.resize(new_size)
+    (width, height) = (img.width // 2, img.height // 2)
+    img = img.resize((width, height))
     text = vms[i][:32]
     img = image_add_text(img, text , 2, 2 , text_color=(0,0,0), text_size=18)
     img = img.convert("L")
