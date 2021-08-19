@@ -1,5 +1,7 @@
 import  ipdb, ipaddress
 from flask import Flask
+from flask import request, jsonify
+
 # export FLASK_ENV=development
 # flask run --host=0.0.0.0
 
@@ -21,3 +23,17 @@ def show_ip_profile(ipaddr):
     except:
         pass
     return ipaddr
+
+@app.route('/ip/')
+def show_ip(): 
+    ip = request.remote_addr  
+    try:
+        _ip = request.headers["X-Real-IP"]
+        if _ip is not None:
+            ip = _ip
+            ipaddress.ip_address(ip).is_global
+            city = db.find(ip, "CN")
+            ip =  ip + " @" + city[0] + city[1] + city[2] + "\n"
+    except Exception as e:
+        print(e)
+    return ip
