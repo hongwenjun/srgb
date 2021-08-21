@@ -1,5 +1,6 @@
 import ipdb, ipaddress
 from flask import Flask, request, jsonify
+from socket import gethostbyname
 
 db = ipdb.BaseStation("qqwry.ipdb")
 app = Flask(__name__)
@@ -24,8 +25,13 @@ def show_ip(ipaddr=None):
         ipaddress.ip_address(ip).is_global
         city = db.find(ip, "CN")
         ipaddr = ip + " @" + city[0] + city[1] + city[2] + city[3] + "\n"
-    except Exception as e:
-        print(e)
+    except:
+        try:
+            ip = gethostbyname(ip)     # 域名反解析得到的IP
+            city = db.find(ip, "CN")
+            ipaddr = ip + " @" + city[0] + city[1] + city[2] + city[3] + "\n"
+        except Exception as e:
+            print(e)
 
     return ipaddr
 
