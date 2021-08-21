@@ -5,6 +5,10 @@ from socket import gethostbyname
 db = ipdb.BaseStation("qqwry.ipdb")
 app = Flask(__name__)
 
+def iplocated(ip):
+    city = db.find(ip, "CN")
+    return ip + " @" + city[0] + city[1] + city[2] + city[3] + "\n"
+
 @app.route("/ip/")
 @app.route("/ip/<ipaddr>")
 def show_ip(ipaddr=None):
@@ -23,13 +27,11 @@ def show_ip(ipaddr=None):
     # ip地址 从纯真IP数据库 搜索城市定位
     try:
         ipaddress.ip_address(ip).is_global
-        city = db.find(ip, "CN")
-        ipaddr = ip + " @" + city[0] + city[1] + city[2] + city[3] + "\n"
+        ipaddr = iplocated(ip)
     except:
         try:
             ip = gethostbyname(ip)     # 域名反解析得到的IP
-            city = db.find(ip, "CN")
-            ipaddr = ip + " @" + city[0] + city[1] + city[2] + city[3] + "\n"
+            ipaddr = iplocated(ip)
         except Exception as e:
             print(e)
 
