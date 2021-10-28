@@ -75,13 +75,9 @@ set pastetoggle=<F11>  " 快捷键来激活/取消 paste模式 按F11 然后 Shi
                        " gg 移动光标到第一行,  =G 格式化所有行文本
                        " 使用vim寄存器 "+p  粘贴不用考虑是否自动缩进，是否paste模式，直接原文传递
 
-
-
 syntax on
 filetype plugin on
 au BufRead,BufNewFile *.txt setlocal ft=txt
-
-
 
 " C++ 按F5编译运行
 map <F5> :call CompileRunGcc()<CR>
@@ -119,3 +115,8 @@ func! Rungdb()
     exec "!gdb ./%<"
 endfunc
 
+" Vim不保存退出 按F10
+map <F10> :call Exit()<CR>
+func! Exit()
+    exec "qa!"
+endfunc
