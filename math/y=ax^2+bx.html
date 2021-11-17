@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+
+        form {
+            user-select: none;
+            display: block;
+            width: 460px;
+            height: 40px;
+            margin: 0 auto;
+        }
+
+        span {
+            color: #0f0f0f;
+        }
+
+        label {
+            color: #f00000;
+        }
+
+        input {
+            width: 30px;
+        }
+
+        b {
+            display: inline-block;
+            width: 10px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            let x, y;
+            let canvas = document.getElementById("canvas");
+            x = canvas.width;
+            y = canvas.height;
+            canvas.style.width = x;
+            canvas.style.height = y;
+            drawCross(1, "#000000");
+            drawPara(1, "#ff0000");
+            drawCenter(1, "#00ff00");
+        };
+
+        //十字
+        function drawCross(line_width, line_color) {
+            let x, y;
+            let canvas = document.getElementById("canvas");
+            x = canvas.width;
+            y = canvas.height;
+            //横线
+            drawLine(line_width, line_color, 0, y / 2, x, y / 2);
+            //竖线
+            drawLine(line_width, line_color, x / 2, 0, x / 2, y);
+            //横箭头
+            drawLine(line_width, line_color, x - 3, y / 2 - 3, x, y / 2, x - 3, y / 2 + 3);
+            //纵箭头
+            drawLine(line_width, line_color, x / 2 - 3, 3, x / 2, 0, x / 2 + 3, 3);
+            let i;
+            let x_step = x / 40;
+            let y_step = y / 40;
+            for (i = 0; i < 40; i++) {
+                //横刻度
+                drawLine(line_width, line_color, x_step * i, y / 2 - 3, x_step * i, y / 2 + 3);
+                //纵刻度
+                drawLine(line_width, line_color, x / 2 - 3, y - y_step * i, x / 2 + 3, y - y_step * i);
+                //横辅助线
+                drawLine(line_width, line_color, x_step * i, 0, x_step * i, y, undefined, undefined, 0.1);
+                //纵辅助线
+                drawLine(line_width, line_color, 0, y - y_step * i, x, y - y_step * i, undefined, undefined, 0.1);
+            }
+        }
+
+        //抛物线
+        function drawPara(line_width, line_color) {
+            let x1, y1, x2, y2;
+            let a = document.getElementById("a").value;
+            let b = document.getElementById("b").value;
+            let c = document.getElementById("c").value;
+
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+            context.beginPath();
+            context.save();
+            context.lineWidth = line_width;
+            context.strokeStyle = line_color;
+            for (x1 = -20; x1 <= 20; x1 = x1 + 0.05) {
+                y1 = (a * x1 * x1) + (b * x1) + (c * 1);
+                x2 = xToPoint(x1);
+                y2 = yToPoint(y1);
+                if (x1 === -20) {
+                    context.moveTo(x2, y2);
+                } else {
+                    context.lineTo(x2, y2);
+                    context.stroke();
+                }
+            }
+            context.restore();
+        }
+
+        //中轴
+        function drawCenter(line_width, line_color) {
+            let y;
+            let canvas = document.getElementById("canvas");
+            y = canvas.height;
+            let a = document.getElementById("a").value;
+            let b = document.getElementById("b").value;
+            let c1 = xToPoint(-b / (2 * a));
+            drawLine(line_width, line_color, c1, 0, c1, y);
+        }
+
+        //线段
+        function drawLine(line_width, line_color, x1, y1, x2, y2, x3 = undefined, y3 = undefined, alf = 1) {
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+            context.beginPath();
+            context.save();
+            if (alf < 1) {
+                context.globalAlpha = alf;
+            }
+            context.lineWidth = line_width;
+            context.strokeStyle = line_color;
+            context.moveTo(x1, y1);
+            context.lineTo(x2, y2);
+            if (typeof x3 !== 'undefined' && typeof y3 !== 'undefined') {
+                context.lineTo(x3, y3);
+            }
+            context.stroke();
+            context.restore();
+        }
+
+        //重绘
+        function reDraw() {
+            let x, y;
+            let canvas = document.getElementById("canvas");
+            let context = canvas.getContext("2d");
+            x = canvas.width;
+            y = canvas.height;
+            context.clearRect(0, 0, x, y);
+            canvas.width = x;
+            canvas.height = y;
+            drawCross(1, "#000000");
+            drawPara(1, "#ff0000");
+            drawCenter(1, "#00ff00");
+        }
+
+        //x转坐标
+        function xToPoint(x1) {
+            let x;
+            let canvas = document.getElementById("canvas");
+            x = canvas.width;
+            return x / 2 + x1 * (x / 40);
+        }
+
+        //y转坐标
+        function yToPoint(y1) {
+            let y;
+            let canvas = document.getElementById("canvas");
+            y = canvas.height;
+            return y / 2 - y1 * (y / 40);
+        }
+
+        //修改数值
+        function numChange(id, num) {
+            let dom = document.getElementById(id);
+            let now = dom.value;
+            dom.value = (now * 1 + num * 1).toFixed(1);
+            reDraw();
+        }
+    </script>
+</head>
+<body>
+<canvas id="canvas" width="800" height="800"></canvas>
+<form>
+    <span>y=ax<sup>2</sup> + bx + c</span>
+    <label for="a">当前a</label>
+    <input type="text" id="a" value="0.1" onchange="reDraw()">
+    <b onclick="numChange('a',0.1)">↑</b>
+    <b onclick="numChange('a',-0.1)">↓</b>
+    <label for="b">当前b</label>
+    <input type="text" id="b" value="0.0" onchange="reDraw()">
+    <b onclick="numChange('b',0.1)">↑</b>
+    <b onclick="numChange('b',-0.1)">↓</b>
+    <label for="c">当前c</label>
+    <input type="text" id="c" value="0.0" onchange="reDraw()">
+    <b onclick="numChange('c',0.1)">↑</b>
+    <b onclick="numChange('c',-0.1)">↓</b>
+</form>
+</body>
+</html>
