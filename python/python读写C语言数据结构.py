@@ -1,27 +1,23 @@
 from ctypes import *
-
 class Location(Structure):
     _fields_ = [('lon', c_double), ('lat', c_double)]
 
-gps = Location(lon = 118.118, lat = 29.19)
-
+gps = Location(lon=118.118, lat=29.19)
 print(gps.lon, gps.lat)
 
-fo = open("gps.dat", "wb")
+f = open("gps.dat", "wb")
+f.write(gps)
 
-fo.write(gps)
-
-gps.lon = gps.lon / 2
-gps.lat = gps.lat / 2
-
+gps.lon = gps.lon / 10
+gps.lat = gps.lat + 40.0005
 
 print(gps.lon, gps.lat)
-fo.write(gps)
-
+f.write(gps) ; f.close
 # gps.dat
-# 00000000h: 64 3B DF 4F 8D 87 5D 40 71 3D 0A D7 A3 30 3D 40 ; d;逴崌]@q=.祝0=@
-# 00000010h: 64 3B DF 4F 8D 87 4D 40 71 3D 0A D7 A3 30 2D 40 ; d;逴崌M@q=.祝0-@
+# 00000000h: 64 3B DF 4F 8D 87 5D 40 71 3D 0A D7 A3 30 3D 40 ;
+# 00000010h: 1D C9 E5 3F A4 9F 27 40 D5 78 E9 26 31 4C 51 40 ;
 
+'''
 #include <stdio.h>
 struct gps {
     double x;
@@ -38,21 +34,30 @@ int main()
 
     return 0;
 }
-
-######## 
+'''
 
 import struct
+from ctypes import *
+class Location(Structure):
+    _fields_ = [('lon', c_double), ('lat', c_double)]
 
-fo = open("gps.dat", "rb")
+gps = Location()
+f = open("gps.dat", "rb")
 
-x = (fo.read(8))
-y = (fo.read(8))
+for i in range(2):
+    tmp = f.read(16)
+    print(tmp)
+    tmp = struct.unpack("2d", tmp)
 
-lon = struct.unpack("d", x)
-lat = struct.unpack("d", y)
+    gps.lon = tmp[0]
+    gps.lat = tmp[1]
 
-print((lon[0], lat[0]))
+    print(gps.lon, gps.lat)
 
+# struct --- 将字节串解读为打包的二进制数据
+# 此模块可以执行 Python 值和以 Python bytes 对象表示的 C 结构之间的转换。 
+# 这可以被用来处理存储在文件中或是从网络连接等其他来源获取的二进制数据。
+# 它使用 格式字符串 作为 C 结构布局的精简描述以及与 Python 值的双向转换。
 aa = struct.pack("4B", 1, 2, 3, 4)
 print(aa)
 bb = struct.unpack("f", aa)
