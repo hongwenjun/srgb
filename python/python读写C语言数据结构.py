@@ -12,7 +12,7 @@ gps.lon = gps.lon / 10
 gps.lat = gps.lat + 40.0005
 
 print(gps.lon, gps.lat)
-f.write(gps) ; f.close
+f.write(gps) ; f.flush(); f.close()
 # gps.dat
 # 00000000h: 64 3B DF 4F 8D 87 5D 40 71 3D 0A D7 A3 30 3D 40 ;
 # 00000010h: 1D C9 E5 3F A4 9F 27 40 D5 78 E9 26 31 4C 51 40 ;
@@ -63,4 +63,14 @@ print(aa)
 bb = struct.unpack("f", aa)
 print(bb)
 
+## Python读写C语言数据结构 总结精简
+import struct
+from ctypes import *
+class Location(Structure):
+    _fields_ = [('lon', c_double), ('lat', c_double)]
 
+f = open("gps.dat", "rb")
+t = f.read(16) ; print(t)
+t = struct.unpack("2d", t) ; print(t)
+gps =Location(lon=t[0], lat=t[1])
+print(gps.lon, gps.lat)
